@@ -16,7 +16,7 @@ namespace nom.tam.util
       _byteBuf = new byte[_byteBufferSize];
 		}
 
-    public void Write(String s)
+    public void Write(string s)
     {
       if(s == null)
       {
@@ -33,8 +33,8 @@ namespace nom.tam.util
         return;
       }
 
-      int j = 0;
-      for(int i = 0; i < c.Length;)
+      var j = 0;
+      for(var i = 0; i < c.Length;)
       {
         for(j = 0; i + j < c.Length && j < _byteBufferSize; ++j)
         {

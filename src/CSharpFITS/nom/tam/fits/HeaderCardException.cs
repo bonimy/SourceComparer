@@ -20,7 +20,7 @@ namespace nom.tam.fits
 		{
 		}
 		
-		public HeaderCardException(String s):base(s)
+		public HeaderCardException(string s):base(s)
 		{
 		}
 	}

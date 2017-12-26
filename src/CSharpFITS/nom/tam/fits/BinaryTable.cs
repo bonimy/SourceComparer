@@ -39,7 +39,7 @@ namespace nom.tam.fits
 		{
 			get
 			{
-				int len = nRow * rowLen;
+				var len = nRow * rowLen;
 				if (heap.Size > 0)
 				{
 					len += (int)(heap.Size + heapOffset);
@@ -48,7 +48,7 @@ namespace nom.tam.fits
 			}
 		}
 
-    override public Object DataArray
+    override public object DataArray
 		{
 			get
 			{
@@ -62,7 +62,7 @@ namespace nom.tam.fits
 					
 					table = CreateTable();
 					
-					long currentOffset = FitsUtil.FindOffset(currInput);
+					var currentOffset = FitsUtil.FindOffset(currInput);
 					//FitsUtil.Reposition(currInput, fileOffset);
           currInput.Seek(fileOffset, SeekOrigin.Begin);
 					//ReadTrueData(input);
@@ -111,7 +111,7 @@ namespace nom.tam.fits
 		}
 */
 
-    public Object[] FlatColumns
+    public object[] FlatColumns
 		{
 			get
 			{
@@ -119,7 +119,7 @@ namespace nom.tam.fits
 				{
 					try
 					{
-						Object generatedAux = DataArray;
+						var generatedAux = DataArray;
 					}
 					catch(FitsException)
 					{
@@ -187,7 +187,7 @@ namespace nom.tam.fits
 		internal Type[] bases;
 		
 		/// <summary>An example of the structure of a row</summary>
-		internal Object[] modelRow;
+		internal object[] modelRow;
 		
 		/// <summary>A pointer to the data in the columns.  This
 		/// variable is only used to assist in the
@@ -196,7 +196,7 @@ namespace nom.tam.fits
 		/// not generally filled.  The ColumnTable is used
 		/// to store the actual data of the BinaryTable.
 		/// </summary>
-		internal Object[] columns;
+		internal object[] columns;
 		
 		/// <summary>Where the data is actually stored.</summary>
 		internal ColumnTable table;
@@ -209,7 +209,7 @@ namespace nom.tam.fits
 		{
 			try
 			{
-				table = new ColumnTable(new Object[0], new int[0]);
+				table = new ColumnTable(new object[0], new int[0]);
 			}
 			catch (TableException e)
 			{
@@ -226,10 +226,10 @@ namespace nom.tam.fits
 		/// <param name="header	A">header describing what the binary table should look like.</param>
 		public BinaryTable(Header myHeader)
 		{
-			int heapSize = myHeader.GetIntValue("PCOUNT");
+			var heapSize = myHeader.GetIntValue("PCOUNT");
 			heapOffset = myHeader.GetIntValue("THEAP");
 			nRow = myHeader.GetIntValue("NAXIS2");
-			int rwsz = myHeader.GetIntValue("NAXIS1");
+			var rwsz = myHeader.GetIntValue("NAXIS1");
 			
 			// Subtract out the size of the regular table from
 			// the heap offset.
@@ -249,7 +249,7 @@ namespace nom.tam.fits
 			rowLen = 0;
 			
 			ExtendArrays(nCol);
-			for (int col = 0; col < nCol; col += 1)
+			for (var col = 0; col < nCol; col += 1)
 			{
 				rowLen += ProcessCol(myHeader, col);
 			}
@@ -257,8 +257,8 @@ namespace nom.tam.fits
 		
 		private int ProcessCol(Header header, int col)
 		{
-			String tform = header.GetStringValue("TFORM" + (col + 1)).Trim();
-			String tdims = header.GetStringValue("TDIM" + (col + 1));
+            var tform = header.GetStringValue("TFORM" + (col + 1)).Trim();
+            var tdims = header.GetStringValue("TDIM" + (col + 1));
 			
 			if (tform == null)
 			{
@@ -269,14 +269,14 @@ namespace nom.tam.fits
 				tdims = tdims.Trim();
 			}
 			
-			char type = GetTformType(tform);
+			var type = GetTformType(tform);
 			if (type == 'P')
 			{
 				flags[col] |= COL_VARYING;
 				type = GetTformVarType(tform);
 			}
 
-      int size = GetTformLength(tform);
+      var size = GetTformLength(tform);
 			
 			// Get number of bytes for a bit array.
 			if (type == 'X')
@@ -288,7 +288,7 @@ namespace nom.tam.fits
 			{
 				size = 2;
 			}
-			int bSize = size;
+			var bSize = size;
 			
 			int[] dims = null;
 			
@@ -315,7 +315,7 @@ namespace nom.tam.fits
 				case 'A': 
 					colBase = typeof(byte);
 					flags[col] |= COL_STRING;
-					bases[col] = typeof(String);
+					bases[col] = typeof(string);
 					break;
 				case 'L': 
 					colBase = typeof(byte);
@@ -366,7 +366,7 @@ namespace nom.tam.fits
 			}
 			else if ((flags[col] & COL_COMPLEX) != 0)
 			{
-				int[] xdims = new int[dims.Length + 1];
+				var xdims = new int[dims.Length + 1];
 				Array.Copy(dims, 0, xdims, 0, dims.Length);
 				xdims[dims.Length] = 2;
 				dims = xdims;
@@ -380,9 +380,9 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Get the type in the TFORM field</summary>
-		private char GetTformType(String tform)
+		private char GetTformType(string tform)
 		{
-			for (int i = 0; i < tform.Length; i += 1)
+			for (var i = 0; i < tform.Length; i += 1)
 			{
 				if (!Char.IsDigit(tform[i]))
 				{
@@ -394,9 +394,9 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Get the type in a varying length column TFORM</summary>
-		private char GetTformVarType(String tform)
+		private char GetTformVarType(string tform)
 		{
-			int ind = tform.IndexOf("P");
+			var ind = tform.IndexOf("P");
 			if (tform.Length > ind + 1)
 			{
 				return tform[ind + 1];
@@ -408,7 +408,7 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Get the explicit or implied length of the TFORM field</summary>
-		private int GetTformLength(String tform)
+		private int GetTformLength(string tform)
 		{
 			if(Char.IsDigit(tform[0]))
 			{
@@ -416,7 +416,7 @@ namespace nom.tam.fits
 			}
 			else
 			{
-				String xform = tform.Substring(1).Trim();
+                var xform = tform.Substring(1).Trim();
 				if (xform.Length == 0)
 				{
 					return 1;
@@ -430,7 +430,7 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Get an unsigned number at the beginning of a string</summary>
-		private int InitialNumber(String tform)
+		private int InitialNumber(string tform)
 		{
 			int i;
 			for (i = 0; i < tform.Length; i += 1)
@@ -456,25 +456,25 @@ namespace nom.tam.fits
 		/// <returns>An int array of the desired dimensions.
 		/// Note that the order of the tdims is the inverse
 		/// of the order in the TDIMS key.</returns>
-		public static int[] GetTDims(String tdims)
+		public static int[] GetTDims(string tdims)
 		{
 			// The TDIMs value should be of the form: "(iiii,jjjj,kkk,...)"
 			
 			int[] dims = null;
 			
-			int first = tdims.IndexOf('(');
-			int last = tdims.LastIndexOf(')');
+			var first = tdims.IndexOf('(');
+			var last = tdims.LastIndexOf(')');
 			if (first >= 0 && last > 0 && first < last)
 			{
 				tdims = tdims.Substring(first + 1, (last - first) - (first + 1));
 				
-				SupportClass.Tokenizer st = new SupportClass.Tokenizer(tdims, ",");
-				int dim = st.Count;
+				var st = new SupportClass.Tokenizer(tdims, ",");
+				var dim = st.Count;
 				if (dim > 0)
 				{
 					dims = new int[dim];
 					
-					for (int i = dim - 1; i >= 0; i -= 1)
+					for (var i = dim - 1; i >= 0; i -= 1)
 					{
 						dims[i] = Int32.Parse(st.NextToken().Trim());
 					}
@@ -495,13 +495,13 @@ namespace nom.tam.fits
 				h.SetNaxis(2, nRow);
 				h.AddValue("PCOUNT", heap.Size, null);
 				h.AddValue("GCOUNT", 1, null);
-				Cursor c = h.GetCursor();
+				var c = h.GetCursor();
 				c.Key = "GCOUNT";
 				c.MoveNext();
         c.Add("TFIELDS", new HeaderCard("TFIELDS", modelRow.Length, null));
         c.Add("THEAP", new HeaderCard("THEAP", 0, null));
         
-        for(int i = 0; i < modelRow.Length; i += 1)
+        for(var i = 0; i < modelRow.Length; i += 1)
 				{
 					if(i > 0)
 					{
@@ -518,7 +518,7 @@ namespace nom.tam.fits
 
 		internal void PointToColumn(int col, Header hdr)
 		{
-			Cursor c = hdr.GetCursor();
+			var c = hdr.GetCursor();
 			if(col > 0)
 			{
 				hdr.PositionAfterIndex("TFORM", col);
@@ -528,7 +528,7 @@ namespace nom.tam.fits
 		
 		internal void FillForColumn(Header h, int col, Cursor cursor)
 		{
-			String tform;
+            string tform;
 			if ((flags[col] & COL_VARYING) != 0)
 			{
 				tform = "1P";
@@ -566,7 +566,7 @@ namespace nom.tam.fits
       {
         tform += "L";
       }
-      else if (bases[col] == typeof(char) || bases[col] == typeof(String))
+      else if (bases[col] == typeof(char) || bases[col] == typeof(string))
       {
         tform += "A";
       }
@@ -574,16 +574,16 @@ namespace nom.tam.fits
       {
         throw new FitsException("Invalid column data class:" + bases[col]);
       }
-			
-			
-			String key = "TFORM" + (col + 1);
+
+
+            var key = "TFORM" + (col + 1);
 			cursor.Add(key, new HeaderCard(key, tform, null));
 			
 			if (dimens[col].Length > 0 && ((flags[col] & COL_VARYING) == 0))
 			{
-				System.Text.StringBuilder tdim = new System.Text.StringBuilder();
-				char comma = '(';
-				for (int i = dimens[col].Length - 1; i >= 0; i -= 1)
+				var tdim = new System.Text.StringBuilder();
+				var comma = '(';
+				for (var i = dimens[col].Length - 1; i >= 0; i -= 1)
 				{
 					tdim.Append(comma);
 					tdim.Append(dimens[col][i]);
@@ -591,7 +591,7 @@ namespace nom.tam.fits
 				}
 				tdim.Append(')');
 				key = "TDIM" + (col + 1);
-				cursor.Add(key, new HeaderCard(key, new String(tdim.ToString().ToCharArray()), null));
+				cursor.Add(key, new HeaderCard(key, new string(tdim.ToString().ToCharArray()), null));
 			}
 		}
 		
@@ -602,11 +602,11 @@ namespace nom.tam.fits
 		/// </summary>
 		private ColumnTable CreateTable()
 		{
-			int nfields = modelRow.Length;
+			var nfields = modelRow.Length;
 			
-			Object[] arrCol = new Object[nfields];
+			var arrCol = new object[nfields];
 			
-			for (int i = 0; i < nfields; i += 1)
+			for (var i = 0; i < nfields; i += 1)
 			{
 				arrCol[i] = ArrayFuncs.NewInstance(ArrayFuncs.GetBaseClass(modelRow[i]), sizes[i] * nRow);
 			}
@@ -627,49 +627,49 @@ namespace nom.tam.fits
 		
 		/// <summary>Create a binary table from existing data in row order.</summary>
 		/// <param name="data">The data used to initialize the binary table.</param>
-		public BinaryTable(Object[][] data):this(ConvertToColumns(data))
+		public BinaryTable(object[][] data):this(ConvertToColumns(data))
 		{
 		}
 		
 		/// <summary>Convert a two-d table to a table of columns.  Handle
 		/// String specially.  Every other element of data should be
 		/// a primitive array of some dimensionality.</summary>
-		private static Object[] ConvertToColumns(Object[][] data)
+		private static object[] ConvertToColumns(object[][] data)
 		{
       if(data == null)
       {
-        return new Object[0];
+        return new object[0];
       }
 
-			Object[] row = data[0];
-			int nrow = data.Length;
+			var row = data[0];
+			var nrow = data.Length;
 			
-			Object[] results = new Object[row.Length];
+			var results = new object[row.Length];
 			
-			for (int col = 0; col < row.Length; col += 1)
+			for (var col = 0; col < row.Length; col += 1)
 			{
-				if (row[col] is String)
+				if (row[col] is string)
 				{
-					String[] sa = new String[nrow];
-					for (int irow = 0; irow < nrow; irow += 1)
+                    var sa = new string[nrow];
+					for (var irow = 0; irow < nrow; irow += 1)
 					{
-						sa[irow] = (String) data[irow][col];
+						sa[irow] = (string) data[irow][col];
 					}
 					
 					results[col] = sa;
 				}
 				else
 				{
-					Type base_Renamed = ArrayFuncs.GetBaseClass(row[col]);
-					int[] dims = ArrayFuncs.GetDimensions(row[col]);
+					var base_Renamed = ArrayFuncs.GetBaseClass(row[col]);
+					var dims = ArrayFuncs.GetDimensions(row[col]);
 					
 					if(dims != null && (dims.Length > 1 || (dims.Length == 1 && dims[0] > 1)))
 					{
-						int[] xdims = new int[dims.Length + 1];
+						var xdims = new int[dims.Length + 1];
 						xdims[0] = nrow;
 						
-						Object[] arr = (Object[])ArrayFuncs.NewInstance(base_Renamed, xdims);
-						for (int irow = 0; irow < nrow; irow += 1)
+						var arr = (object[])ArrayFuncs.NewInstance(base_Renamed, xdims);
+						for (var irow = 0; irow < nrow; irow += 1)
 						{
 							arr[irow] = data[irow][col];
 						}
@@ -677,8 +677,8 @@ namespace nom.tam.fits
 					}
 					else if(base_Renamed != null)
 					{
-						Array arr = ArrayFuncs.NewInstance(base_Renamed, nrow);
-            for(int irow = 0; irow < nrow; irow += 1)
+						var arr = ArrayFuncs.NewInstance(base_Renamed, nrow);
+            for(var irow = 0; irow < nrow; irow += 1)
             {
               if(data[irow][col] != null && arr != null)
               {
@@ -693,13 +693,13 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Create a binary table from existing data in column order.</summary>
-		public BinaryTable(Object[] o)
+		public BinaryTable(object[] o)
 		{
 			heap = new FitsHeap(0);
-			modelRow = new Object[o.Length];
+			modelRow = new object[o.Length];
 			ExtendArrays(o.Length);
 			
-			for (int i = 0; i < o.Length; i += 1)
+			for (var i = 0; i < o.Length; i += 1)
 			{
 				AddColumn(o[i]);
 			}
@@ -715,10 +715,10 @@ namespace nom.tam.fits
 			bases = tab.Bases;
 			sizes = tab.Sizes;
 			
-			modelRow = new Object[nCol];
+			modelRow = new object[nCol];
 			
 			dimens = new int[nCol][];
-			for (int i = 0; i < nCol; i++)
+			for (var i = 0; i < nCol; i++)
 			{
 				dimens[i] = new int[1];
 			}
@@ -726,12 +726,12 @@ namespace nom.tam.fits
 			// Set all flags to 0.
 			flags = new int[nCol];
 			
-			for (int col = 0; col < nCol; col += 1)
+			for (var col = 0; col < nCol; col += 1)
 			{
 				dimens[col][0] = sizes[col];
 			}
 			
-			for (int col = 0; col < nCol; col += 1)
+			for (var col = 0; col < nCol; col += 1)
 			{
 				modelRow[col] = ArrayFuncs.NewInstance(bases[col], sizes[col]);
 			}
@@ -766,15 +766,15 @@ namespace nom.tam.fits
 		/// <summary>Get a row from memory.</summary>
 		private Array GetMemoryRow(int row)
 		{
-			Object[] data = new Object[modelRow.Length];
-			for (int col = 0; col < modelRow.Length; col += 1)
+			var data = new object[modelRow.Length];
+			for (var col = 0; col < modelRow.Length; col += 1)
 			{
-				Object o = table.GetElement(row, col);
+				var o = table.GetElement(row, col);
 				o = ColumnToArray(col, o);
 				data[col] = Encurl(o, col, 1);
-				if (data[col] is Object[])
+				if (data[col] is object[])
 				{
-					data[col] = ((Object[]) data[col])[0];
+					data[col] = ((object[]) data[col])[0];
 				}
 			}
 			
@@ -784,8 +784,8 @@ namespace nom.tam.fits
 		/// <summary>Get a row from the file.</summary>
 		private Array GetFileRow(int row)
 		{
-			Object[] data = new Object[nCol];
-			for (int col = 0; col < data.Length; col += 1)
+			var data = new object[nCol];
+			for (var col = 0; col < data.Length; col += 1)
 			{
 				data[col] = ArrayFuncs.NewInstance(ArrayFuncs.GetBaseClass(modelRow[col]), sizes[col]);
 			}
@@ -799,7 +799,7 @@ namespace nom.tam.fits
 			{
 				throw new FitsException("Error in deferred row read");
 			}
-			for (int col = 0; col < data.Length; col += 1)
+			for (var col = 0; col < data.Length; col += 1)
 			{
 				data[col] = ColumnToArray(col, data[col]);
 				data[col] = Encurl(data[col], col, 1);
@@ -821,7 +821,7 @@ namespace nom.tam.fits
 		{
 			if(table == null)
 			{
-				Object generatedAux = DataArray;
+				var generatedAux = DataArray;
 			}
 			
 			if (data.Length != NCols)
@@ -829,11 +829,11 @@ namespace nom.tam.fits
 				throw new FitsException("Updated row size does not agree with table");
 			}
 			
-			Object[] ydata = new Object[data.Length];
+			var ydata = new object[data.Length];
 			
-			for (int col = 0; col < data.Length; col += 1)
+			for (var col = 0; col < data.Length; col += 1)
 			{
-				Object o = ArrayFuncs.Flatten(data.GetValue(col));
+				var o = ArrayFuncs.Flatten(data.GetValue(col));
 				ydata[col] = ArrayToColumn(col, o);
 			}
 			
@@ -852,7 +852,7 @@ namespace nom.tam.fits
 		/// <param name="xcol">The new data for the column</param>
 		/// <exception cref=""> FitsException Thrown if the data does not match
 		/// the current column description.</exception>
-		public void SetColumn(int col, Object xcol)
+		public void SetColumn(int col, object xcol)
 		{
 			xcol = ArrayFuncs.Flatten(xcol);
 			xcol = ArrayToColumn(col, xcol);
@@ -865,16 +865,16 @@ namespace nom.tam.fits
 		/// primitive array.</param>
 		/// <exception cref=""> FitsException Thrown if the type of length of
 		/// the replacement data differs from the original.</exception>
-		public void SetFlattenedColumn(int col, Object data)
+		public void SetFlattenedColumn(int col, object data)
 		{
 			if (table == null)
 			{
-				Object generatedAux = DataArray;
+				var generatedAux = DataArray;
 			}
 			
 			data = ArrayToColumn(col, data);
 			
-			Object oldCol = table.GetColumn(col);
+			var oldCol = table.GetColumn(col);
 			if (data.GetType() != oldCol.GetType() || ((Array) data).Length != ((Array) oldCol).Length)
 			{
 				throw new FitsException("Replacement column mismatch at column:" + col);
@@ -891,25 +891,25 @@ namespace nom.tam.fits
 		
 		/// <summary>Get a given column</summary>
 		/// <param name="col">The index of the column.</param>
-		public  Object GetColumn(int col)
+		public object GetColumn(int col)
 		{
 			if (table == null)
 			{
-				Object generatedAux = DataArray;
+				var generatedAux = DataArray;
 			}
 			
-			Object res = GetFlattenedColumn(col);
+			var res = GetFlattenedColumn(col);
 			return Encurl(res, col, nRow);
 		}
 		
-		private Object Encurl(Object res, int col, int rows)
+		private object Encurl(object res, int col, int rows)
 		{
-			if (bases[col] != typeof(String))
+			if (bases[col] != typeof(string))
 			{
 				if (((flags[col] & COL_VARYING) == 0) && (dimens[col].Length > 1 || dimens[col][0] != 1))
 				{
 					
-					int[] dims = new int[dimens[col].Length + 1];
+					var dims = new int[dimens[col].Length + 1];
 					Array.Copy(dimens[col], 0, dims, 1, dimens[col].Length);
 					dims[0] = rows;
 					res = ArrayFuncs.Curl((Array)res, dims);
@@ -925,7 +925,7 @@ namespace nom.tam.fits
 				// at the beginning to curl.
 				if (dimens[col].Length > 2)
 				{
-					int[] dims = new int[dimens[col].Length];
+					var dims = new int[dimens[col].Length];
 					
 					Array.Copy(dimens[col], 0, dims, 1, dimens[col].Length - 1);
 					dims[0] = rows;
@@ -942,11 +942,11 @@ namespace nom.tam.fits
 		/// each row.  Leaving the data in flattened format means
 		/// that only a single object is created.</summary>
 		/// <param name="">col</param>
-		public  Object GetFlattenedColumn(int col)
+		public object GetFlattenedColumn(int col)
 		{
 			if (table == null)
 			{
-				Object generatedAux = DataArray;
+				var generatedAux = DataArray;
 			}
 			
 			if (!ValidColumn(col))
@@ -960,19 +960,19 @@ namespace nom.tam.fits
 		/// <summary>Get a particular element from the table.</summary>
 		/// <param name="i">The row of the element.</param>
 		/// <param name="j">The column of the element.</param>
-		public Object GetElement(int i, int j)
+		public object GetElement(int i, int j)
 		{
 			if (!ValidRow(i) || !ValidColumn(j))
 			{
 				throw new FitsException("No such element");
 			}
-			
-			Object ele;
+
+            object ele;
 			if (table == null)
 			{
 				// This is really inefficient.
 				// Need to either save the row, or just read the one element.
-				Array row = GetRow(i);
+				var row = GetRow(i);
 				ele = row.GetValue(j);
 			}
 			else
@@ -980,9 +980,9 @@ namespace nom.tam.fits
 				ele = table.GetElement(i, j);
 				ele = ColumnToArray(j, ele);
 				ele = Encurl(ele, j, 1);
-				if (ele is Object[])
+				if (ele is object[])
 				{
-					ele = ((Object[]) ele)[0];
+					ele = ((object[]) ele)[0];
 				}
 			}
 			
@@ -996,22 +996,22 @@ namespace nom.tam.fits
 		{
 			if (table == null)
 			{
-				Object generatedAux = DataArray;
+				var generatedAux = DataArray;
 			}
 			
 			if (nCol == 0 && nRow == 0)
 			{
-				for (int i = 0; i < o.Length; i += 1)
+				for (var i = 0; i < o.Length; i += 1)
 				{
 					AddColumn(o);
 				}
 			}
 			else
 			{
-				Object[] flatRow = new Object[NCols];
-				for (int i = 0; i < NCols; i += 1)
+				var flatRow = new object[NCols];
+				for (var i = 0; i < NCols; i += 1)
 				{
-					Object x = ArrayFuncs.Flatten(o.GetValue(i));
+					var x = ArrayFuncs.Flatten(o.GetValue(i));
 					flatRow[i] = ArrayToColumn(i, x);
 				}
 				try
@@ -1032,10 +1032,10 @@ namespace nom.tam.fits
 		/// <summary>Add a column to the end of a table.</summary>
 		/// <param name="o">An array of identically structured objects with the
 		/// same number of elements as other columns in the table.</param>
-		public int AddColumn(Object o)
+		public int AddColumn(object o)
 		{
 			ExtendArrays(nCol + 1);
-			Type base_Renamed = ArrayFuncs.GetBaseClass(o);
+			var base_Renamed = ArrayFuncs.GetBaseClass(o);
 			
 			// A varying length column is a two-d primitive
 			// array where the second index is not constant.
@@ -1051,12 +1051,12 @@ namespace nom.tam.fits
 			
 			if ((flags[nCol] & COL_VARYING) == 0)
 			{
-				int[] allDim = ArrayFuncs.GetDimensions(o);
+				var allDim = ArrayFuncs.GetDimensions(o);
 				
 				// Add a dimension for the length of Strings.
-				if (base_Renamed == typeof(String))
+				if (base_Renamed == typeof(string))
 				{
-					int[] xdim = new int[allDim.Length + 1];
+					var xdim = new int[allDim.Length + 1];
 					Array.Copy(allDim, 0, xdim, 0, allDim.Length);
 					xdim[allDim.Length] = - 1;
 					allDim = xdim;
@@ -1081,23 +1081,23 @@ namespace nom.tam.fits
 		/// <summary>Is this a variable length column?
 		/// It is if it's a two-d primitive array and
 		/// the second dimension is not constant.</summary>
-		private bool IsVarying(Object o)
+		private bool IsVarying(object o)
 		{
-			String classname = o.GetType().FullName;
+            var classname = o.GetType().FullName;
 			
 			if (classname.Length != 3 || classname[0] != '[' || classname[1] != '[')
 			{
 				return false;
 			}
 			
-			Object[] ox = (Object[]) o;
+			var ox = (object[]) o;
 			if (ox.Length < 2)
 			{
 				return false;
 			}
 			
-			int flen = ((Array) ox[0]).Length;
-			for (int i = 1; i < ox.Length; i += 1)
+			var flen = ((Array) ox[0]).Length;
+			for (var i = 1; i < ox.Length; i += 1)
 			{
 				if (((Array) ox[i]).Length != flen)
 				{
@@ -1110,7 +1110,7 @@ namespace nom.tam.fits
 		/// <summary>Add a column where the data is already flattened.</summary>
 		/// <param name="o">The new column data.  This should be a one-dimensional primitive array.</param>
 		/// <param name="dimens">The dimensions of one row of the column./param>
-		public int AddFlattenedColumn(Object o, int[] dims)
+		public int AddFlattenedColumn(object o, int[] dims)
 		{
 			ExtendArrays(nCol + 1);
 			
@@ -1120,7 +1120,7 @@ namespace nom.tam.fits
 			{
 				flags[nCol] |= COL_BOOLEAN;
 			}
-			else if (bases[nCol] == typeof(String))
+			else if (bases[nCol] == typeof(string))
 			{
 				flags[nCol] |= COL_STRING;
 			}
@@ -1131,16 +1131,16 @@ namespace nom.tam.fits
 			
 			o = ArrayToColumn(nCol, o);
 			
-			int size = 1;
+			var size = 1;
 			
-			for (int dim = 0; dim < dims.Length; dim += 1)
+			for (var dim = 0; dim < dims.Length; dim += 1)
 			{
 				size *= dims[dim];
 			}
 			sizes[nCol] = size;
 			
 			
-			int xRow = ((Array) o).Length / size;
+			var xRow = ((Array) o).Length / size;
 			if (NCols == 0)
 			{
 				nRow = xRow;
@@ -1217,7 +1217,7 @@ namespace nom.tam.fits
 		/// <param name="i">The row of the data.</param>
 		/// <param name="j">The column of the data.</param>
 		/// <param name="o">The replacement data.</param>
-		public void SetElement(int i, int j, Object o)
+		public void SetElement(int i, int j, object o)
 		{
 			try
 			{
@@ -1239,18 +1239,18 @@ namespace nom.tam.fits
 			{
 				try
 				{
-					//BinaryReader temp_BinaryReader;
-					Int64 temp_Int64;
+                    //BinaryReader temp_BinaryReader;
+                    long temp_Int64;
 					//temp_BinaryReader = i;
 					temp_Int64 = i.Position;//temp_BinaryReader.BaseStream.Position;
 					temp_Int64 = i.Seek(TrueSize, SeekOrigin.Current) - temp_Int64; //temp_BinaryReader.BaseStream.Seek(TrueSize, IO.SeekOrigin.Current) - temp_Int64;
-					int generatedAux = (int)temp_Int64;
-					//IO.BinaryReader temp_BinaryReader2;
-					Int64 temp_Int65;
+					var generatedAux = (int)temp_Int64;
+                    //IO.BinaryReader temp_BinaryReader2;
+                    long temp_Int65;
 					//temp_BinaryReader2 = i;
 					temp_Int65 = i.Position;//temp_BinaryReader2.BaseStream.Position;
 					temp_Int65 = i.Seek(FitsUtil.Padding(TrueSize), SeekOrigin.Current) - temp_Int65;//temp_BinaryReader2.BaseStream.Seek(FitsUtil.padding(TrueSize), IO.SeekOrigin.Current) - temp_Int65;
-					int generatedAux2 = (int)temp_Int65;
+					var generatedAux2 = (int)temp_Int65;
 				}
 				catch(IOException e)
 				{
@@ -1278,19 +1278,19 @@ namespace nom.tam.fits
 			try
 			{
 				len = table.Read(i);
-//				IO.BinaryReader temp_BinaryReader;
-				Int64 temp_Int64;
+                //				IO.BinaryReader temp_BinaryReader;
+                long temp_Int64;
 				//temp_BinaryReader = i;
 				temp_Int64 = i.Position; //temp_BinaryReader.BaseStream.Position;
 				temp_Int64 = i.Seek(heapOffset, SeekOrigin.Current) - temp_Int64; //temp_BinaryReader.BaseStream.Seek(heapOffset, IO.SeekOrigin.Current) - temp_Int64;
-				int generatedAux = (int)temp_Int64;
+				var generatedAux = (int)temp_Int64;
 				heap.Read(i);
-				//IO.BinaryReader temp_BinaryReader2;
-				Int64 temp_Int65;
+                //IO.BinaryReader temp_BinaryReader2;
+                long temp_Int65;
 				//temp_BinaryReader2 = i;
 				temp_Int65 = i.Position; //temp_BinaryReader2.BaseStream.Position;
 				temp_Int65 = i.Seek(FitsUtil.Padding(TrueSize), SeekOrigin.Current) - temp_Int65;  //temp_BinaryReader2.BaseStream.Seek(FitsUtil.padding(TrueSize), IO.SeekOrigin.Current) - temp_Int65;
-				int generatedAux2 = (int)temp_Int65;
+				var generatedAux2 = (int)temp_Int65;
 			}
 			catch(IOException e)
 			{
@@ -1303,8 +1303,8 @@ namespace nom.tam.fits
 		{
 			if(table == null)
 			{
-				long currentOffset = FitsUtil.FindOffset(os);
-				Object generatedAux = DataArray;
+				var currentOffset = FitsUtil.FindOffset(os);
+				var generatedAux = DataArray;
 				//FitsUtil.Reposition(os, currentOffset);
         os.Seek(currentOffset, SeekOrigin.Begin);
 			}
@@ -1337,7 +1337,7 @@ namespace nom.tam.fits
 		/// variable length arrays -> pointers (after writing data
 		/// to heap).
 		/// </summary>
-		private Object ArrayToColumn(int col, Object o)
+		private object ArrayToColumn(int col, object o)
 		{
 			if (flags[col] == 0)
 			{
@@ -1349,18 +1349,18 @@ namespace nom.tam.fits
 				if ((flags[col] & COL_STRING) != 0)
 				{
 					// Convert strings to array of bytes.
-					int[] dims = dimens[col];
+					var dims = dimens[col];
 					
 					// Set the length of the string if we are just adding the column.
 					if (dims[dims.Length - 1] < 0)
 					{
-						dims[dims.Length - 1] = FitsUtil.MaxLength((String[]) o);
+						dims[dims.Length - 1] = FitsUtil.MaxLength((string[]) o);
 					}
-					if (o is String)
+					if (o is string)
 					{
-						o = new String[]{(String) o};
+						o = new string[]{(string) o};
 					}
-					o = FitsUtil.StringsToByteArray((String[]) o, dims[dims.Length - 1]);
+					o = FitsUtil.StringsToByteArray((string[]) o, dims[dims.Length - 1]);
 				}
 				else if ((flags[col] & COL_BOOLEAN) != 0)
 				{
@@ -1379,9 +1379,9 @@ namespace nom.tam.fits
 					}
 					
 					// Convert boolean to byte arrays
-					bool[][] to = (bool[][]) o;
-					byte[][] xo = new byte[to.Length][];
-					for (int i = 0; i < to.Length; i += 1)
+					var to = (bool[][]) o;
+					var xo = new byte[to.Length][];
+					for (var i = 0; i < to.Length; i += 1)
 					{
 						xo[i] = FitsUtil.BooleanToByte(to[i]);
 					}
@@ -1389,26 +1389,26 @@ namespace nom.tam.fits
 				}
 				
 				// Write all rows of data onto the heap.
-				int offset = heap.PutData(o);
+				var offset = heap.PutData(o);
 				
-				int blen = ArrayFuncs.GetBaseLength(o);
+				var blen = ArrayFuncs.GetBaseLength(o);
 				
 				// Handle an addRow of a variable length element.
 				// -- We only get a one-d array, but the following
 				//    lets us use the same code as when we add in a column!
-				if (!(o is Object[]))
+				if (!(o is object[]))
 				{
-					o = new Object[]{o};
+					o = new object[]{o};
 				}
 				
 				// Create the array descriptors
-				int nrow = ((Array) o).Length;
-				int[] descrip = new int[2 * nrow];
+				var nrow = ((Array) o).Length;
+				var descrip = new int[2 * nrow];
 				
-				Object[] x = (Object[]) o;
+				var x = (object[]) o;
 				
 				// Fill the descriptor for each row.
-				for (int i = 0; i < nrow; i += 1)
+				for (var i = 0; i < nrow; i += 1)
 				{
 					descrip[2 * i] = ((Array) x[i]).Length;
 					descrip[2 * i + 1] = offset;
@@ -1427,7 +1427,7 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Convert data from binary table representation to external Java representation.</summary>
-		private Object ColumnToArray(int col, Object o)
+		private object ColumnToArray(int col, object o)
 		{
 			// Most of the time we need do nothing!
 			if (flags[col] == 0)
@@ -1440,10 +1440,10 @@ namespace nom.tam.fits
 			
 			if ((flags[col] & COL_VARYING) != 0)
 			{
-				int[] descrip = (int[]) o;
-				int nrow = descrip.Length / 2;
-				
-				Object[] res; // Res will be the result of extracting from the heap.
+				var descrip = (int[]) o;
+				var nrow = descrip.Length / 2;
+
+                object[] res; // Res will be the result of extracting from the heap.
 				int[] dims; // Used to create result arrays.
 				
 				
@@ -1451,7 +1451,7 @@ namespace nom.tam.fits
 				{
 					// Complex columns have an extra dimension for each row
 					dims = new int[]{nrow, 0, 0};
-					res = (Object[]) ArrayFuncs.NewInstance(bases[col], dims);
+					res = (object[]) ArrayFuncs.NewInstance(bases[col], dims);
 					// Set up dims for individual rows.
 					dims = new int[2];
 					dims[1] = 2;
@@ -1460,15 +1460,15 @@ namespace nom.tam.fits
 				{
 					// Non-complex data has a simple primitive array for each row
 					dims = new int[]{nrow, 0};
-					res = (Object[]) ArrayFuncs.NewInstance(bases[col], dims);
+					res = (object[]) ArrayFuncs.NewInstance(bases[col], dims);
 				}
 				
 				// Now read in each requested row.
-				for (int i = 0; i < nrow; i += 1)
+				for (var i = 0; i < nrow; i += 1)
 				{
-					Object row;
-					int offset = descrip[2 * i + 1];
-					int dim = descrip[2 * i];
+                    object row;
+					var offset = descrip[2 * i + 1];
+					var dim = descrip[2 * i];
 					
 					if ((flags[col] & COL_COMPLEX) != 0)
 					{
@@ -1506,7 +1506,7 @@ namespace nom.tam.fits
 				// Need to convert String byte arrays to appropriate Strings.
 				if ((flags[col] & COL_STRING) != 0)
 				{
-					int[] dims = dimens[col];
+					var dims = dimens[col];
 					o = FitsUtil.ByteArrayToStrings((byte[]) o, dims[dims.Length - 1]);
 				}
 				else if ((flags[col] & COL_BOOLEAN) != 0)
@@ -1522,7 +1522,7 @@ namespace nom.tam.fits
 		/// long enough, and if not extend them.</summary>
 		private void ExtendArrays(int need)
 		{
-			bool wasNull = false;
+			var wasNull = false;
 			if (sizes == null)
 			{
 				wasNull = true;
@@ -1533,16 +1533,16 @@ namespace nom.tam.fits
 			}
 			
 			// Allocate the arrays.
-			int[] newSizes = new int[need];
-			int[][] newDimens = new int[need][];
-			int[] newFlags = new int[need];
-			Object[] newModel = new Object[need];
-			Object[] newColumns = new Object[need];
-			Type[] newBases = new Type[need];
+			var newSizes = new int[need];
+			var newDimens = new int[need][];
+			var newFlags = new int[need];
+			var newModel = new object[need];
+			var newColumns = new object[need];
+			var newBases = new Type[need];
 			
 			if (!wasNull)
 			{
-				int len = sizes.Length;
+				var len = sizes.Length;
 				Array.Copy(sizes, 0, newSizes, 0, len);
 				Array.Copy(dimens, 0, newDimens, 0, len);
 				Array.Copy(flags, 0, newFlags, 0, len);

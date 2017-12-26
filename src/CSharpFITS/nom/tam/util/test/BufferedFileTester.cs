@@ -37,33 +37,33 @@ namespace nom.tam.util.test
 		[STAThread]
 		public static void Test(System.String[] args)
 		{
-			System.String filename = args[0];
-			int dim = 1000;
+			var filename = args[0];
+			var dim = 1000;
 			if (args.Length > 1)
 			{
 				dim = System.Int32.Parse(args[1]);
 			}
-			int numIts = 1;
+			var numIts = 1;
 			if (args.Length > 2)
 			{
 				numIts = System.Int32.Parse(args[2]);
 			}
 			
 			System.Console.Out.WriteLine("Allocating arrays.");
-			double[] db = new double[dim];
-			float[] fl = new float[dim];
-			int[] in_Renamed = new int[dim];
-			long[] ln = new long[dim];
-			short[] sh = new short[dim];
-			byte[] by = new byte[dim];
-			char[] ch = new char[dim];
-			bool[] bl = new bool[dim];
+			var db = new double[dim];
+			var fl = new float[dim];
+			var in_Renamed = new int[dim];
+			var ln = new long[dim];
+			var sh = new short[dim];
+			var by = new byte[dim];
+			var ch = new char[dim];
+			var bl = new bool[dim];
 
       System.Console.Out.WriteLine("Initializing arrays -- may take a while");
-			int sign = 1;
-			for (int i = 0; i < dim; i += 1)
+			var sign = 1;
+			for (var i = 0; i < dim; i += 1)
 			{
-				double x = sign * System.Math.Pow(10.0, 20 * SupportClass.Random.NextDouble() - 10);
+				var x = sign * System.Math.Pow(10.0, 20 * SupportClass.Random.NextDouble() - 10);
 				db[i] = x;
 				fl[i] = (float) x;
 				
@@ -113,42 +113,42 @@ namespace nom.tam.util.test
       db[4] = System.Double.NaN;
       db[5] = 0;
 
-			double[] db2 = new double[dim];
-			float[] fl2 = new float[dim];
-			int[] in2 = new int[dim];
-			long[] ln2 = new long[dim];
-			short[] sh2 = new short[dim];
-			byte[] by2 = new byte[dim];
-			char[] ch2 = new char[dim];
-			bool[] bl2 = new bool[dim];
+			var db2 = new double[dim];
+			var fl2 = new float[dim];
+			var in2 = new int[dim];
+			var ln2 = new long[dim];
+			var sh2 = new short[dim];
+			var by2 = new byte[dim];
+			var ch2 = new char[dim];
+			var bl2 = new bool[dim];
 			
-			int[][][][] multi = new int[10][][][];
-			for (int i2 = 0; i2 < 10; i2++)
+			var multi = new int[10][][][];
+			for (var i2 = 0; i2 < 10; i2++)
 			{
 				multi[i2] = new int[10][][];
-				for (int i3 = 0; i3 < 10; i3++)
+				for (var i3 = 0; i3 < 10; i3++)
 				{
 					multi[i2][i3] = new int[10][];
-					for (int i4 = 0; i4 < 10; i4++)
+					for (var i4 = 0; i4 < 10; i4++)
 					{
 						multi[i2][i3][i4] = new int[10];
 					}
 				}
 			}
-			int[][][][] multi2 = new int[10][][][];
-			for (int i5 = 0; i5 < 10; i5++)
+			var multi2 = new int[10][][][];
+			for (var i5 = 0; i5 < 10; i5++)
 			{
 				multi2[i5] = new int[10][][];
-				for (int i6 = 0; i6 < 10; i6++)
+				for (var i6 = 0; i6 < 10; i6++)
 				{
 					multi2[i5][i6] = new int[10][];
-					for (int i7 = 0; i7 < 10; i7++)
+					for (var i7 = 0; i7 < 10; i7++)
 					{
 						multi2[i5][i6][i7] = new int[10];
 					}
 				}
 			}
-			for (int i = 0; i < 10; i += 1)
+			for (var i = 0; i < 10; i += 1)
 			{
 				multi[i][i][i][i] = i;
 			}
@@ -180,13 +180,13 @@ namespace nom.tam.util.test
 		{
 			System.Console.Out.WriteLine("Standard I/O library: java.io.RandomAccessFile");
 			
-			FileStream f = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-			int dim = in_Renamed.Length;
+			var f = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+			var dim = in_Renamed.Length;
 			resetTime();
 			f.Seek(0, SeekOrigin.Begin);
-			for (int j = 0; j < numIts; j += 1)
+			for (var j = 0; j < numIts; j += 1)
 			{
-				for (int i = 0; i < dim; i += 1)
+				for (var i = 0; i < dim; i += 1)
 				{
 					BinaryWriter temp_BinaryWriter;
 					temp_BinaryWriter = new BinaryWriter(f);
@@ -197,9 +197,9 @@ namespace nom.tam.util.test
 			System.Console.Out.WriteLine("  RAF Int write: " + (4 * dim * numIts) / (1000 * deltaTime()));
 			f.Seek(0, SeekOrigin.Begin);
 			resetTime();
-			for (int j = 0; j < numIts; j += 1)
+			for (var j = 0; j < numIts; j += 1)
 			{
-				for (int i = 0; i < dim; i += 1)
+				for (var i = 0; i < dim; i += 1)
 				{
 					BinaryReader temp_BinaryReader;
 					temp_BinaryReader = new BinaryReader(f);
@@ -214,9 +214,9 @@ namespace nom.tam.util.test
 			lock (f)
 			{
 				f.Seek(0, SeekOrigin.Begin);
-				for (int j = 0; j < numIts; j += 1)
+				for (var j = 0; j < numIts; j += 1)
 				{
-					for (int i = 0; i < dim; i += 1)
+					for (var i = 0; i < dim; i += 1)
 					{
 						BinaryWriter temp_BinaryWriter;
 						temp_BinaryWriter = new BinaryWriter(f);
@@ -227,9 +227,9 @@ namespace nom.tam.util.test
 				System.Console.Out.WriteLine("  SyncRAF Int write: " + (4 * dim * numIts) / (1000 * deltaTime()));
 				f.Seek(0, SeekOrigin.Begin);
 				resetTime();
-				for (int j = 0; j < numIts; j += 1)
+				for (var j = 0; j < numIts; j += 1)
 				{
-					for (int i = 0; i < dim; i += 1)
+					for (var i = 0; i < dim; i += 1)
 					{
 						BinaryReader temp_BinaryReader2;
 						temp_BinaryReader2 = new BinaryReader(f);
@@ -247,12 +247,12 @@ namespace nom.tam.util.test
 			System.Console.Out.WriteLine("Standard I/O library: java.io.DataXXputStream");
 			System.Console.Out.WriteLine("                      layered atop a BufferedXXputStream");
 			
-			BinaryWriter f = new BinaryWriter(new BufferedStream(new FileStream(filename, FileMode.Create), 32768));
+			var f = new BinaryWriter(new BufferedStream(new FileStream(filename, FileMode.Create), 32768));
 			resetTime();
-			int dim = in_Renamed.Length;
-			for (int j = 0; j < numIts; j += 1)
+			var dim = in_Renamed.Length;
+			for (var j = 0; j < numIts; j += 1)
 			{
-				for (int i = 0; i < dim; i += 1)
+				for (var i = 0; i < dim; i += 1)
 				{
 					f.Write(in_Renamed[i]);
 				}
@@ -261,11 +261,11 @@ namespace nom.tam.util.test
 			f.Close();
 			System.Console.Out.WriteLine("  DIS Int write: " + (4 * dim * numIts) / (1000 * deltaTime()));
 			
-			BinaryReader is_Renamed = new BinaryReader(new BufferedStream(new FileStream(filename, FileMode.Open, FileAccess.Read), 32768));
+			var is_Renamed = new BinaryReader(new BufferedStream(new FileStream(filename, FileMode.Open, FileAccess.Read), 32768));
 			resetTime();
-			for (int j = 0; j < numIts; j += 1)
+			for (var j = 0; j < numIts; j += 1)
 			{
-				for (int i = 0; i < dim; i += 1)
+				for (var i = 0; i < dim; i += 1)
 				{
 					in2[i] = is_Renamed.ReadInt32();
 				}
@@ -278,9 +278,9 @@ namespace nom.tam.util.test
 			dim = in_Renamed.Length;
 			lock (f)
 			{
-				for (int j = 0; j < numIts; j += 1)
+				for (var j = 0; j < numIts; j += 1)
 				{
-					for (int i = 0; i < dim; i += 1)
+					for (var i = 0; i < dim; i += 1)
 					{
 						f.Write(in_Renamed[i]);
 					}
@@ -291,9 +291,9 @@ namespace nom.tam.util.test
 				
 				is_Renamed = new BinaryReader(new BufferedStream(new FileStream(filename, FileMode.Open, FileAccess.Read), 32768));
 				resetTime();
-				for (int j = 0; j < numIts; j += 1)
+				for (var j = 0; j < numIts; j += 1)
 				{
-					for (int i = 0; i < dim; i += 1)
+					for (var i = 0; i < dim; i += 1)
 					{
 						in2[i] = is_Renamed.ReadInt32();
 					}
@@ -307,12 +307,12 @@ namespace nom.tam.util.test
 			
 			System.Console.Out.WriteLine("New libraries:  nom.tam.BufferedDataXXputStream");
 			System.Console.Out.WriteLine("                Using non-array I/O");
-			BufferedDataStream f = new BufferedDataStream(new FileStream(filename, FileMode.Create), 32768);
+			var f = new BufferedDataStream(new FileStream(filename, FileMode.Create), 32768);
 			resetTime();
-			int dim = in_Renamed.Length;
-			for (int j = 0; j < numIts; j += 1)
+			var dim = in_Renamed.Length;
+			for (var j = 0; j < numIts; j += 1)
 			{
-				for (int i = 0; i < dim; i += 1)
+				for (var i = 0; i < dim; i += 1)
 				{
 					f.Write(in_Renamed[i]);
 				}
@@ -321,11 +321,11 @@ namespace nom.tam.util.test
 			f.Close();
 			System.Console.Out.WriteLine("  BDS Int write: " + (4 * dim * numIts) / (1000 * deltaTime()));
 			
-			BufferedDataStream is_Renamed = new BufferedDataStream(new BufferedStream(new FileStream(filename, FileMode.Open, FileAccess.Read), 32768));
+			var is_Renamed = new BufferedDataStream(new BufferedStream(new FileStream(filename, FileMode.Open, FileAccess.Read), 32768));
 			resetTime();
-			for (int j = 0; j < numIts; j += 1)
+			for (var j = 0; j < numIts; j += 1)
 			{
-				for (int i = 0; i < dim; i += 1)
+				for (var i = 0; i < dim; i += 1)
 				{
 					in2[i] = is_Renamed.ReadInt32();
 				}
@@ -336,55 +336,79 @@ namespace nom.tam.util.test
 		
 		public static void  bufferedStreamTest(System.String filename, int numIts, double[] db, double[] db2, float[] fl, float[] fl2, long[] ln, long[] ln2, int[] in_Renamed, int[] in2, short[] sh, short[] sh2, char[] ch, char[] ch2, byte[] by, byte[] by2, bool[] bl, bool[] bl2, int[][][][] multi, int[][][][] multi2)
 		{
-			int dim = db.Length;
+			var dim = db.Length;
 			
-			double ds = SupportClass.Random.NextDouble() - 0.5;
+			var ds = SupportClass.Random.NextDouble() - 0.5;
 			double ds2;
-			float fs = (float) (SupportClass.Random.NextDouble() - 0.5);
+			var fs = (float) (SupportClass.Random.NextDouble() - 0.5);
 			float fs2;
-			int is_Renamed = (int) (1000000 * (SupportClass.Random.NextDouble() - 500000));
+			var is_Renamed = (int) (1000000 * (SupportClass.Random.NextDouble() - 500000));
 			int is2;
-			long ls = (long) (100000000000L * (SupportClass.Random.NextDouble() - 50000000000L));
+			var ls = (long) (100000000000L * (SupportClass.Random.NextDouble() - 50000000000L));
 			long ls2;
-			short ss = (short) (60000 * (SupportClass.Random.NextDouble() - 30000));
+			var ss = (short) (60000 * (SupportClass.Random.NextDouble() - 30000));
 			short ss2;
-			char cs = (char) (60000 * SupportClass.Random.NextDouble());
+			var cs = (char) (60000 * SupportClass.Random.NextDouble());
 			char cs2;
-			byte bs = (byte) (256 * SupportClass.Random.NextDouble() - 128);
+			var bs = (byte) (256 * SupportClass.Random.NextDouble() - 128);
 			byte bs2;
-			bool bls = (SupportClass.Random.NextDouble() > 0.5);
+			var bls = (SupportClass.Random.NextDouble() > 0.5);
 			bool bls2;
 			System.Console.Out.WriteLine("New libraries: nom.tam.util.BufferedDataXXputStream");
 			System.Console.Out.WriteLine("               Using array I/O methods");
 			
 			{
-				BufferedDataStream f = new BufferedDataStream(new FileStream(filename, FileMode.Create));
+				var f = new BufferedDataStream(new FileStream(filename, FileMode.Create));
 				
 				resetTime();
-				for (int i = 0; i < numIts; i += 1)
-					f.WriteArray(db);
-				System.Console.Out.WriteLine("  BDS Dbl write: " + (8 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.WriteArray(fl);
-				System.Console.Out.WriteLine("  BDS Flt write: " + (4 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.WriteArray(in_Renamed);
-				System.Console.Out.WriteLine("  BDS Int write: " + (4 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.WriteArray(ln);
-				System.Console.Out.WriteLine("  BDS Lng write: " + (8 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.WriteArray(sh);
-				System.Console.Out.WriteLine("  BDS Sht write: " + (2 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.WriteArray(ch);
-				System.Console.Out.WriteLine("  BDS Chr write: " + (2 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.WriteArray((byte[]) by);
-				System.Console.Out.WriteLine("  BDS Byt write: " + (1 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.WriteArray(bl);
-				System.Console.Out.WriteLine("  BDS Boo write: " + (1 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.WriteArray(db);
+                }
+
+                System.Console.Out.WriteLine("  BDS Dbl write: " + (8 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.WriteArray(fl);
+                }
+
+                System.Console.Out.WriteLine("  BDS Flt write: " + (4 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.WriteArray(in_Renamed);
+                }
+
+                System.Console.Out.WriteLine("  BDS Int write: " + (4 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.WriteArray(ln);
+                }
+
+                System.Console.Out.WriteLine("  BDS Lng write: " + (8 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.WriteArray(sh);
+                }
+
+                System.Console.Out.WriteLine("  BDS Sht write: " + (2 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.WriteArray(ch);
+                }
+
+                System.Console.Out.WriteLine("  BDS Chr write: " + (2 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.WriteArray((byte[]) by);
+                }
+
+                System.Console.Out.WriteLine("  BDS Byt write: " + (1 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.WriteArray(bl);
+                }
+
+                System.Console.Out.WriteLine("  BDS Boo write: " + (1 * dim * numIts) / (1000 * deltaTime()));
 				
 				f.Write((byte) bs);
 				f.Write((System.Char) cs);
@@ -401,33 +425,57 @@ namespace nom.tam.util.test
 			}
 			
 			{
-				BufferedDataStream f = new BufferedDataStream(new FileStream(filename, FileMode.Open, FileAccess.Read));
+				var f = new BufferedDataStream(new FileStream(filename, FileMode.Open, FileAccess.Read));
 				
 				resetTime();
-				for (int i = 0; i < numIts; i += 1)
-					f.ReadArray(db2);
-				System.Console.Out.WriteLine("  BDS Dbl read:  " + (8 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.ReadArray(fl2);
-				System.Console.Out.WriteLine("  BDS Flt read:  " + (4 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.ReadArray(in2);
-				System.Console.Out.WriteLine("  BDS Int read:  " + (4 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.ReadArray(ln2);
-				System.Console.Out.WriteLine("  BDS Lng read:  " + (8 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.ReadArray(sh2);
-				System.Console.Out.WriteLine("  BDS Sht read:  " + (2 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.ReadArray(ch2);
-				System.Console.Out.WriteLine("  BDS Chr read:  " + (2 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.ReadArray((byte[]) by2);
-				System.Console.Out.WriteLine("  BDS Byt read:  " + (1 * dim * numIts) / (1000 * deltaTime()));
-				for (int i = 0; i < numIts; i += 1)
-					f.ReadArray(bl2);
-				System.Console.Out.WriteLine("  BDS Boo read:  " + (1 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.ReadArray(db2);
+                }
+
+                System.Console.Out.WriteLine("  BDS Dbl read:  " + (8 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.ReadArray(fl2);
+                }
+
+                System.Console.Out.WriteLine("  BDS Flt read:  " + (4 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.ReadArray(in2);
+                }
+
+                System.Console.Out.WriteLine("  BDS Int read:  " + (4 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.ReadArray(ln2);
+                }
+
+                System.Console.Out.WriteLine("  BDS Lng read:  " + (8 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.ReadArray(sh2);
+                }
+
+                System.Console.Out.WriteLine("  BDS Sht read:  " + (2 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.ReadArray(ch2);
+                }
+
+                System.Console.Out.WriteLine("  BDS Chr read:  " + (2 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.ReadArray((byte[]) by2);
+                }
+
+                System.Console.Out.WriteLine("  BDS Byt read:  " + (1 * dim * numIts) / (1000 * deltaTime()));
+				for (var i = 0; i < numIts; i += 1)
+                {
+                    f.ReadArray(bl2);
+                }
+
+                System.Console.Out.WriteLine("  BDS Boo read:  " + (1 * dim * numIts) / (1000 * deltaTime()));
 				
 				bs2 = (byte) f.ReadByte();
 				cs2 = f.ReadChar();
@@ -438,13 +486,13 @@ namespace nom.tam.util.test
 				ds2 = f.ReadDouble();
 				bls2 = f.ReadBoolean();
 				
-				for (int i = 0; i < 10; i += 1)
+				for (var i = 0; i < 10; i += 1)
 				{
 					multi2[i][i][i][i] = 0;
 				}
 				
 				// Now read only pieces of the multidimensional array.
-				for (int i = 0; i < 5; i += 1)
+				for (var i = 0; i < 5; i += 1)
 				{
 					System.Console.Out.WriteLine("Multiread:" + i);
 					// Skip the odd initial indices and
@@ -454,7 +502,7 @@ namespace nom.tam.util.test
 					//temp_BinaryReader = f;
 					temp_Int64 = f.Position;  //temp_BinaryReader.BaseStream.Position;
 					temp_Int64 = f.Seek(4000) - temp_Int64;  //temp_BinaryReader.BaseStream.Seek(4000, SeekOrigin.Current) - temp_Int64;
-					int generatedAux28 = (int)temp_Int64;
+					var generatedAux28 = (int)temp_Int64;
 					f.ReadArray(multi2[2 * i + 1]);
 				}
 				f.Close();
@@ -464,7 +512,7 @@ namespace nom.tam.util.test
 			System.Console.Out.WriteLine("  An error should be reported for double and float NaN's");
 			System.Console.Out.WriteLine("  Arrays:");
 			
-			for (int i = 0; i < dim; i += 1)
+			for (var i = 0; i < dim; i += 1)
 			{
 				if(db[i] != db2[i] && !Double.IsNaN(db[i]) && !Double.IsNaN(db2[i]))
 				{
@@ -536,7 +584,7 @@ namespace nom.tam.util.test
 			}
 			
 			System.Console.Out.WriteLine("  Multi: odd rows should match");
-			for (int i = 0; i < 10; i += 1)
+			for (var i = 0; i < 10; i += 1)
 			{
 				System.Console.Out.WriteLine("      " + i + " " + multi[i][i][i][i] + " " + multi2[i][i][i][i]);
 			}
@@ -546,56 +594,80 @@ namespace nom.tam.util.test
 
     public static void  bufferedFileTest(System.String filename, int numIts, double[] db, double[] db2, float[] fl, float[] fl2, long[] ln, long[] ln2, int[] in_Renamed, int[] in2, short[] sh, short[] sh2, char[] ch, char[] ch2, byte[] by, byte[] by2, bool[] bl, bool[] bl2, int[][][][] multi, int[][][][] multi2)
 		{
-			int dim = db.Length;
+			var dim = db.Length;
 
-			double ds = SupportClass.Random.NextDouble() - 0.5;
+			var ds = SupportClass.Random.NextDouble() - 0.5;
 			double ds2;
-			float fs = (float) (SupportClass.Random.NextDouble() - 0.5);
+			var fs = (float) (SupportClass.Random.NextDouble() - 0.5);
 			float fs2;
-			int is_Renamed = (int) (1000000 * (SupportClass.Random.NextDouble() - 500000));
+			var is_Renamed = (int) (1000000 * (SupportClass.Random.NextDouble() - 500000));
 			int is2;
-			long ls = (long) (100000000000L * (SupportClass.Random.NextDouble() - 50000000000L));
+			var ls = (long) (100000000000L * (SupportClass.Random.NextDouble() - 50000000000L));
 			long ls2;
-			short ss = (short) (60000 * (SupportClass.Random.NextDouble() - 30000));
+			var ss = (short) (60000 * (SupportClass.Random.NextDouble() - 30000));
 			short ss2;
 //			char cs = (char) (60000 * SupportClass.Random.NextDouble());
-      char cs = SupportClass.NextChar();
+      var cs = SupportClass.NextChar();
 			char cs2;
-			byte bs = (byte) (256 * SupportClass.Random.NextDouble() - 128);
+			var bs = (byte) (256 * SupportClass.Random.NextDouble() - 128);
 			byte bs2;
-			bool bls = (SupportClass.Random.NextDouble() > 0.5);
+			var bls = (SupportClass.Random.NextDouble() > 0.5);
 			bool bls2;
 
 			System.Console.Out.WriteLine("New libraries: nom.tam.util.BufferedFile");
 			System.Console.Out.WriteLine("               Using array I/O methods.");
 
-			BufferedFile f = new BufferedFile(filename, FileAccess.ReadWrite);
+			var f = new BufferedFile(filename, FileAccess.ReadWrite);
 
       resetTime();
-			for (int i = 0; i < numIts; i += 1)
-				f.WriteArray(db);
-			System.Console.Out.WriteLine("  BF  Dbl write: " + (8 * dim * numIts) / (1000 * deltaTime()));
-      for (int i = 0; i < numIts; i += 1)
-				f.WriteArray(fl);
-			System.Console.Out.WriteLine("  BF  Flt write: " + (4 * dim * numIts) / (1000 * deltaTime()));
-      for (int i = 0; i < numIts; i += 1)
-				f.WriteArray(in_Renamed);
-			System.Console.Out.WriteLine("  BF  Int write: " + (4 * dim * numIts) / (1000 * deltaTime()));
-			for (int i = 0; i < numIts; i += 1)
-				f.WriteArray(ln);
-			System.Console.Out.WriteLine("  BF  Lng write: " + (8 * dim * numIts) / (1000 * deltaTime()));
-			for (int i = 0; i < numIts; i += 1)
-				f.WriteArray(sh);
-			System.Console.Out.WriteLine("  BF  Sht write: " + (2 * dim * numIts) / (1000 * deltaTime()));
-      for (int i = 0; i < numIts; i += 1)
-				f.WriteArray(ch);
-			System.Console.Out.WriteLine("  BF  Chr write: " + (2 * dim * numIts) / (1000 * deltaTime()));
-      for (int i = 0; i < numIts; i += 1)
-				f.WriteArray(by);
-			System.Console.Out.WriteLine("  BF  Byt write: " + (1 * dim * numIts) / (1000 * deltaTime()));
-			for (int i = 0; i < numIts; i += 1)
-				f.WriteArray(bl);
-			System.Console.Out.WriteLine("  BF  Boo write: " + (1 * dim * numIts) / (1000 * deltaTime()));
+			for (var i = 0; i < numIts; i += 1)
+            {
+                f.WriteArray(db);
+            }
+
+            System.Console.Out.WriteLine("  BF  Dbl write: " + (8 * dim * numIts) / (1000 * deltaTime()));
+      for (var i = 0; i < numIts; i += 1)
+            {
+                f.WriteArray(fl);
+            }
+
+            System.Console.Out.WriteLine("  BF  Flt write: " + (4 * dim * numIts) / (1000 * deltaTime()));
+      for (var i = 0; i < numIts; i += 1)
+            {
+                f.WriteArray(in_Renamed);
+            }
+
+            System.Console.Out.WriteLine("  BF  Int write: " + (4 * dim * numIts) / (1000 * deltaTime()));
+			for (var i = 0; i < numIts; i += 1)
+            {
+                f.WriteArray(ln);
+            }
+
+            System.Console.Out.WriteLine("  BF  Lng write: " + (8 * dim * numIts) / (1000 * deltaTime()));
+			for (var i = 0; i < numIts; i += 1)
+            {
+                f.WriteArray(sh);
+            }
+
+            System.Console.Out.WriteLine("  BF  Sht write: " + (2 * dim * numIts) / (1000 * deltaTime()));
+      for (var i = 0; i < numIts; i += 1)
+            {
+                f.WriteArray(ch);
+            }
+
+            System.Console.Out.WriteLine("  BF  Chr write: " + (2 * dim * numIts) / (1000 * deltaTime()));
+      for (var i = 0; i < numIts; i += 1)
+            {
+                f.WriteArray(by);
+            }
+
+            System.Console.Out.WriteLine("  BF  Byt write: " + (1 * dim * numIts) / (1000 * deltaTime()));
+			for (var i = 0; i < numIts; i += 1)
+            {
+                f.WriteArray(bl);
+            }
+
+            System.Console.Out.WriteLine("  BF  Boo write: " + (1 * dim * numIts) / (1000 * deltaTime()));
 
       f.Write((byte) bs);
 			f.Write((System.Char) cs);
@@ -611,30 +683,54 @@ namespace nom.tam.util.test
       f.Seek(0, SeekOrigin.Begin);
 
 			resetTime();
-			for (int i = 0; i < numIts; i += 1)
-				f.ReadArray(db2);
-			System.Console.Out.WriteLine("  BF  Dbl read:  " + (8 * dim * numIts) / (1000 * deltaTime()));
-      for (int i = 0; i < numIts; i += 1)
-				f.ReadArray(fl2);
-      System.Console.Out.WriteLine("  BF  Flt read:  " + (4 * dim * numIts) / (1000 * deltaTime()));
-      for (int i = 0; i < numIts; i += 1)
-				f.ReadArray(in2);
-			System.Console.Out.WriteLine("  BF  Int read:  " + (4 * dim * numIts) / (1000 * deltaTime()));
-			for (int i = 0; i < numIts; i += 1)
-				f.ReadArray(ln2);
-			System.Console.Out.WriteLine("  BF  Lng read:  " + (8 * dim * numIts) / (1000 * deltaTime()));
-			for (int i = 0; i < numIts; i += 1)
-				f.ReadArray(sh2);
-			System.Console.Out.WriteLine("  BF  Sht read:  " + (2 * dim * numIts) / (1000 * deltaTime()));
-      for (int i = 0; i < numIts; i += 1)
-				f.ReadArray(ch2);
-			System.Console.Out.WriteLine("  BF  Chr read:  " + (2 * dim * numIts) / (1000 * deltaTime()));
-      for (int i = 0; i < numIts; i += 1)
-				f.ReadArray(by2);
-			System.Console.Out.WriteLine("  BF  Byt read:  " + (1 * dim * numIts) / (1000 * deltaTime()));
-			for (int i = 0; i < numIts; i += 1)
-				f.ReadArray(bl2);
-			System.Console.Out.WriteLine("  BF  Boo read:  " + (1 * dim * numIts) / (1000 * deltaTime()));
+			for (var i = 0; i < numIts; i += 1)
+            {
+                f.ReadArray(db2);
+            }
+
+            System.Console.Out.WriteLine("  BF  Dbl read:  " + (8 * dim * numIts) / (1000 * deltaTime()));
+      for (var i = 0; i < numIts; i += 1)
+            {
+                f.ReadArray(fl2);
+            }
+
+            System.Console.Out.WriteLine("  BF  Flt read:  " + (4 * dim * numIts) / (1000 * deltaTime()));
+      for (var i = 0; i < numIts; i += 1)
+            {
+                f.ReadArray(in2);
+            }
+
+            System.Console.Out.WriteLine("  BF  Int read:  " + (4 * dim * numIts) / (1000 * deltaTime()));
+			for (var i = 0; i < numIts; i += 1)
+            {
+                f.ReadArray(ln2);
+            }
+
+            System.Console.Out.WriteLine("  BF  Lng read:  " + (8 * dim * numIts) / (1000 * deltaTime()));
+			for (var i = 0; i < numIts; i += 1)
+            {
+                f.ReadArray(sh2);
+            }
+
+            System.Console.Out.WriteLine("  BF  Sht read:  " + (2 * dim * numIts) / (1000 * deltaTime()));
+      for (var i = 0; i < numIts; i += 1)
+            {
+                f.ReadArray(ch2);
+            }
+
+            System.Console.Out.WriteLine("  BF  Chr read:  " + (2 * dim * numIts) / (1000 * deltaTime()));
+      for (var i = 0; i < numIts; i += 1)
+            {
+                f.ReadArray(by2);
+            }
+
+            System.Console.Out.WriteLine("  BF  Byt read:  " + (1 * dim * numIts) / (1000 * deltaTime()));
+			for (var i = 0; i < numIts; i += 1)
+            {
+                f.ReadArray(bl2);
+            }
+
+            System.Console.Out.WriteLine("  BF  Boo read:  " + (1 * dim * numIts) / (1000 * deltaTime()));
 
       bs2 = (byte) f.ReadByte();
 			cs2 = f.ReadChar();
@@ -646,13 +742,13 @@ namespace nom.tam.util.test
 			bls2 = f.ReadBoolean();
 
       // Now read only pieces of the multidimensional array.
-			for (int i = 0; i < 5; i += 1)
+			for (var i = 0; i < 5; i += 1)
 			{
 				// Skip the odd initial indices and read the evens.
 				System.Int64 temp_Int64;
 				temp_Int64 = f.Position;
 				temp_Int64 = f.Seek(4000) - temp_Int64;
-				int generatedAux27 = (int)temp_Int64;
+				var generatedAux27 = (int)temp_Int64;
 				f.ReadArray(multi2[2 * i + 1]);
 			}
 
@@ -662,7 +758,7 @@ namespace nom.tam.util.test
 			System.Console.Out.WriteLine("  An error should be reported for double and float NaN's");
 			System.Console.Out.WriteLine("  Arrays:");
 
-			for (int i = 0; i < dim; i += 1)
+			for (var i = 0; i < dim; i += 1)
 			{
 				if(db[i] != db2[i] && !Double.IsNaN(db[i]) && !Double.IsNaN(db2[i]))
 				{
@@ -734,7 +830,7 @@ namespace nom.tam.util.test
 			}
 
       System.Console.Out.WriteLine("  Multi: odd rows should match");
-			for (int i = 0; i < 10; i += 1)
+			for (var i = 0; i < 10; i += 1)
 			{
 				System.Console.Out.WriteLine("      " + i + " " + multi[i][i][i][i] + " " + multi2[i][i][i][i]);
 			}
@@ -748,7 +844,7 @@ namespace nom.tam.util.test
 		}
 		internal static double deltaTime()
 		{
-			long time = lastTime;
+			var time = lastTime;
 			lastTime = ((System.DateTime.Now.Ticks - 621355968000000000) / 10000) - (long) System.TimeZone.CurrentTimeZone.GetUtcOffset(System.DateTime.Now).TotalMilliseconds;
 			return (lastTime - time) / 1000.0;
 		}

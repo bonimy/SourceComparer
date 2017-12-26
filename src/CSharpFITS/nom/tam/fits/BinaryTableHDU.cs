@@ -52,25 +52,25 @@ namespace nom.tam.fits
 		/// <exception cref=""> FitsException if there was a problem with the data.</exception>
 		public static Header ManufactureHeader(Data data)
 		{
-			Header hdr = new Header();
+			var hdr = new Header();
 			data.FillHeader(hdr);
 			return hdr;
 		}
 		
 		/// <summary>Encapsulate data in a BinaryTable data type</summary>
-		public static Data Encapsulate(Object o)
+		public static Data Encapsulate(object o)
 		{
 			if(o is ColumnTable)
 			{
 				return new BinaryTable((ColumnTable) o);
 			}
-			else if (o is Object[][])
+			else if (o is object[][])
 			{
-				return new BinaryTable((Object[][]) o);
+				return new BinaryTable((object[][]) o);
 			}
-			else if (o is Object[])
+			else if (o is object[])
 			{
-				return new BinaryTable((Object[]) o);
+				return new BinaryTable((object[]) o);
 			}
 			else
 			{
@@ -83,7 +83,7 @@ namespace nom.tam.fits
 		/// <returns> <CODE>true</CODE> if this is a binary table header.</returns>
 		public static new bool IsHeader(Header header)
 		{
-			String xten = header.GetStringValue("XTENSION");
+            var xten = header.GetStringValue("XTENSION");
 			if (xten == null)
 			{
 				return false;
@@ -105,9 +105,9 @@ namespace nom.tam.fits
 		* This routine doesn't check that the dimensions of arrays are properly
 		* consistent.
 		*/
-		public static bool IsData(Object o)
+		public static bool IsData(object o)
 		{
-			if (o is ColumnTable || o is Object[][] || o is Object[])
+			if (o is ColumnTable || o is object[][] || o is object[])
 			{
 				return true;
 			}
@@ -128,9 +128,9 @@ namespace nom.tam.fits
 		/// will have elements which are 2-d integer arrays with TDIM = (10,20).
 		/// </param>
 		/// <exception cref=""> FitsException the column could not be added.</exception>
-		public override int AddColumn(Object data)
+		public override int AddColumn(object data)
 		{
-			int col = table.AddColumn(data);
+			var col = table.AddColumn(data);
 			table.PointToColumn(NCols - 1, myHeader);
 			return col;
 		}
@@ -138,7 +138,7 @@ namespace nom.tam.fits
 		// Need to tell header about the Heap before writing.
 		public override void Write(ArrayDataIO ado)
 		{
-			int oldSize = myHeader.GetIntValue("PCOUNT");
+			var oldSize = myHeader.GetIntValue("PCOUNT");
 			if (oldSize != table.HeapSize)
 			{
 				myHeader.AddValue("PCOUNT", table.HeapSize, "Includes Heap");
@@ -151,7 +151,7 @@ namespace nom.tam.fits
 			else
 			{
 				myHeader.GetIntValue("TFIELDS");
-				int offset = myHeader.GetIntValue("NAXIS1") * myHeader.GetIntValue("NAXIS2") + table.HeapOffset;
+				var offset = myHeader.GetIntValue("NAXIS1") * myHeader.GetIntValue("NAXIS2") + table.HeapOffset;
 				myHeader.AddValue("THEAP", offset, "");
 			}
 			
@@ -161,19 +161,19 @@ namespace nom.tam.fits
 		/// <summary>Print out some information about this HDU.</summary>
 		public override void Info()
 		{
-			BinaryTable myData = (BinaryTable) this.myData;
+			var myData = (BinaryTable) this.myData;
 
       Console.Out.WriteLine("  Binary Table");
 			Console.Out.WriteLine("      Header Information:");
 			
-			int nhcol = myHeader.GetIntValue("TFIELDS", - 1);
-			int nrow = myHeader.GetIntValue("NAXIS2", - 1);
-			int rowsize = myHeader.GetIntValue("NAXIS1", - 1);
+			var nhcol = myHeader.GetIntValue("TFIELDS", - 1);
+			var nrow = myHeader.GetIntValue("NAXIS2", - 1);
+			var rowsize = myHeader.GetIntValue("NAXIS1", - 1);
 			
 			Console.Out.Write("          " + nhcol + " fields");
 			Console.Out.WriteLine(", " + nrow + " rows of length " + rowsize);
 			
-			for (int i = 1; i <= nhcol; i += 1)
+			for (var i = 1; i <= nhcol; i += 1)
 			{
 				Console.Out.Write("           " + i + ":");
 				CheckField("TTYPE" + i);
@@ -199,8 +199,8 @@ namespace nom.tam.fits
 				{
 					Console.Out.WriteLine("          Heap size is: " + table.HeapSize + " bytes");
 				}
-				Object[] cols = table.FlatColumns;
-				for (int i = 0; i < cols.Length; i += 1)
+				var cols = table.FlatColumns;
+				for (var i = 0; i < cols.Length; i += 1)
 				{
 					Console.Out.WriteLine("           " + i + ":" + ArrayFuncs.ArrayDescription(cols[i]));
 				}

@@ -43,8 +43,8 @@ namespace nom.tam.util
 			
 			set
 			{
-				this.input = value;
-				this.offset = 0;
+                input = value;
+                offset = 0;
 			}
 		}
 		/// <summary>Get the current offset</summary>
@@ -60,7 +60,7 @@ namespace nom.tam.util
 			
 			set
 			{
-				this.offset = value;
+                offset = value;
 			}
 		}
 		/// <summary>Do we require a field to completely fill up the specified
@@ -154,7 +154,7 @@ namespace nom.tam.util
 		public ByteParser(byte[] input)
 		{
 			this.input = input;
-			this.offset = 0;
+            offset = 0;
 		}
 
     /// <summary>Look for a double in the buffer.  Leading spaces are ignored.</summary>
@@ -165,9 +165,9 @@ namespace nom.tam.util
 		{
 			//	System.out.println("Checking: "+new String(input, offset, length));
 			
-			int startOffset = offset;
+			var startOffset = offset;
 			
-			bool error = true;
+			var error = true;
 			
 			double number = 0;
 //			int i = 0;
@@ -200,7 +200,7 @@ namespace nom.tam.util
 				offset += 1;
 				length -= 1;
 				
-				double numerator = getBareInteger(length);
+				var numerator = getBareInteger(length);
 				if (numerator > 0)
 				{
 					number += numerator / System.Math.Pow(10.0, numberLength);
@@ -231,14 +231,14 @@ namespace nom.tam.util
 					length -= 1;
 					if (length > 0)
 					{
-						int sign = checkSign();
+						var sign = checkSign();
 						if (foundSign)
 						{
 							length -= 1;
 						}
 						
 						//UPGRADE_WARNING: Narrowing conversions may produce unexpected results in C#. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1042"'
-						int exponent = (int) getBareInteger(length);
+						var exponent = (int) getBareInteger(length);
 						number *= System.Math.Pow(10.0, exponent * sign);
 						length -= numberLength;
 					}
@@ -273,14 +273,14 @@ namespace nom.tam.util
 		/// <summary>Convert a region of the buffer to an integer</summary>
 		public virtual int getInt(int length)
 		{
-			int startOffset = offset;
+			var startOffset = offset;
 			
 			length -= skipWhite(length);
 			
-			int number = 0;
-			bool error = true;
+			var number = 0;
+			var error = true;
 			
-			int sign = checkSign();
+			var sign = checkSign();
 			if (foundSign)
 			{
 				length -= 1;
@@ -322,13 +322,13 @@ namespace nom.tam.util
     /// <summary>Look for a long in a specified region of the buffer</summary>
 		public virtual long getLong(int length)
 		{
-			int startOffset = offset;
+			var startOffset = offset;
 			
 			// Skip white space.
 			length -= skipWhite(length);
 			
 			long number = 0;
-			bool error = true;
+			var error = true;
 			
 			long sign = checkSign();
 			if (foundSign)
@@ -370,16 +370,16 @@ namespace nom.tam.util
 		
 		/// <summary>Get a string</summary>
 		/// <param name="length">The length of the string.</param>
-		public virtual String getString(int length)
+		public virtual string getString(int length)
 		{
 			//char[] tmpChar;
 			//tmpChar = new char[input.Length];
 			//input.CopyTo(tmpChar, 0);
       /// TODO: FIGURE OUT WHY THIS HANGS ALL THE TIME
 			//String s = new String(tmpChar, offset, length);
-      char[] tmpChar = new char[length];
+      var tmpChar = new char[length];
       Array.Copy(input, offset, tmpChar, 0, length);
-      String s = new String(tmpChar);//new String(input, offset, length);
+            var s = new string(tmpChar);//new String(input, offset, length);
 			offset += length;
 			numberLength = length;
 			return s;
@@ -388,14 +388,14 @@ namespace nom.tam.util
     /// <summary>Get a boolean value from a specified region of the buffer</summary>
 		public virtual bool getBoolean(int length)
 		{
-			int startOffset = offset;
+			var startOffset = offset;
 			length -= skipWhite(length);
 			if (length == 0)
 			{
 				throw new FormatException("Blank boolean field");
 			}
 			
-			bool value_Renamed = false;
+			var value_Renamed = false;
 			if (input[offset] == 'T' || input[offset] == 't')
 			{
 				value_Renamed = true;
@@ -444,7 +444,7 @@ namespace nom.tam.util
 		/// <param name="length">The maximum number of characters to use.</param>
 		private double getBareInteger(int length)
 		{
-			int startOffset = offset;
+			var startOffset = offset;
 			double number = 0;
 			
 			while (length > 0 && input[offset] >= '0' && input[offset] <= '9')
@@ -517,8 +517,8 @@ namespace nom.tam.util
 		/// </param>
 		private bool isWhite(int length)
 		{
-			int oldOffset = offset;
-			bool value_Renamed = skipWhite(length) == length;
+			var oldOffset = offset;
+			var value_Renamed = skipWhite(length) == length;
 			offset = oldOffset;
 			return value_Renamed;
 		}

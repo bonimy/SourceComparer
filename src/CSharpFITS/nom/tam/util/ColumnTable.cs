@@ -73,7 +73,7 @@ namespace nom.tam.util
 		}
     */
 		/// <summary>Get the actual data arrays</summary>
-		virtual public Object[] Columns
+		virtual public object[] Columns
 		{
 			get
 			{
@@ -92,7 +92,7 @@ namespace nom.tam.util
 
     #region Instance Variables
 		/// <summary>The columns to be read/written</summary>
-		private Object[] arrays;
+		private object[] arrays;
 		
 		/// <summary>The number of elements in a row for each column</summary>
 		private int[] sizes;
@@ -127,13 +127,13 @@ namespace nom.tam.util
 		/// <param name="arrays"> An array of one-d primitive arrays representing columns.</param>
 		/// <param name="sizes">  The number of elements in each row
 		/// for the corresponding column</param>
-		public ColumnTable(Object[] arrays, int[] sizes)
+		public ColumnTable(object[] arrays, int[] sizes)
 		{
 			Setup(arrays, sizes);
 		}
 		
 		/// <summary>Actually perform the initialization.</summary>
-		protected internal virtual void Setup(Object[] arrays, int[] sizes)
+		protected internal virtual void Setup(object[] arrays, int[] sizes)
 		{
 			CheckArrayConsistency(arrays, sizes);
 			GetNumberOfRows();
@@ -144,7 +144,7 @@ namespace nom.tam.util
 		/// <param name="col">The column desired.</param>
 		/// <returns> an object containing the column data desired.
 		/// This will be an instance of a 1-d primitive array.</returns>
-		public virtual Object GetColumn(int col)
+		public virtual object GetColumn(int col)
 		{
 			return arrays[col];
 		}
@@ -156,9 +156,9 @@ namespace nom.tam.util
 		/// <param name="newColumn">The new column data.  This should be a primitive array.</param>
 		/// <exception cref=""> TableException Thrown when the new data is not commenserable with
 		/// informaiton in the table.</exception>
-		public virtual void SetColumn(int col, Object newColumn)
+		public virtual void SetColumn(int col, object newColumn)
 		{
-			bool reset = newColumn.GetType() != arrays[col].GetType() ||
+			var reset = newColumn.GetType() != arrays[col].GetType() ||
         ((Array)newColumn).Length != ((Array) arrays[col]).Length;
 			arrays[col] = newColumn;
 			if(reset)
@@ -176,11 +176,11 @@ namespace nom.tam.util
 			
 			GetNumberOfRows();
 			
-			int ncol = arrays.Length;
+			var ncol = arrays.Length;
 			
-			Object[] newArrays = new Object[ncol + 1];
-			int[] newSizes = new int[ncol + 1];
-			Type[] newBases = new Type[ncol + 1];
+			var newArrays = new object[ncol + 1];
+			var newSizes = new int[ncol + 1];
+			var newBases = new Type[ncol + 1];
 //			char[] newTypes = new char[ncol + 1];
 			
 			Array.Copy(arrays, 0, newArrays, 0, ncol);
@@ -203,11 +203,11 @@ namespace nom.tam.util
 		/// <summary>Add a row to the table.  This method is very inefficient
 		/// for adding multiple rows and should be avoided if possible.
 		/// </summary>
-		public virtual void AddRow(Object[] row)
+		public virtual void AddRow(object[] row)
 		{
 			if(arrays.Length == 0)
 			{
-				for (int i = 0; i < row.Length; i += 1)
+				for (var i = 0; i < row.Length; i += 1)
 				{
 					AddColumn((Array)row[i], ((Array)row[i]).Length);
 				}
@@ -219,13 +219,13 @@ namespace nom.tam.util
 					throw new TableException("Row length mismatch");
 				}
 				
-				for (int i = 0; i < row.Length; i += 1)
+				for (var i = 0; i < row.Length; i += 1)
 				{
 					if (row[i].GetType() != arrays[i].GetType() || ((Array) row[i]).Length != sizes[i])
 					{
 						throw new TableException("Row column mismatch at column:" + i);
 					}
-					Object xarray = ArrayFuncs.NewInstance(bases[i], (nrow + 1) * sizes[i]);
+                    object xarray = ArrayFuncs.NewInstance(bases[i], (nrow + 1) * sizes[i]);
 					Array.Copy((Array)arrays[i], 0, (Array)xarray, 0, nrow * sizes[i]);
 					Array.Copy((Array)row[i], 0, (Array)xarray, nrow * sizes[i], sizes[i]);
 					arrays[i] = xarray;
@@ -241,9 +241,9 @@ namespace nom.tam.util
 		/// <returns> A primitive array containing the information.  Note
 		/// that an array will be returned even if the element
 		/// is a scalar.</returns>
-		public virtual Object GetElement(int row, int col)
+		public virtual object GetElement(int row, int col)
 		{
-			Array x = ArrayFuncs.NewInstance(bases[col], sizes[col]);
+			var x = ArrayFuncs.NewInstance(bases[col], sizes[col]);
 			Array.Copy((Array)arrays[col], sizes[col] * row, x, 0, sizes[col]);
 			return x;
 		}
@@ -254,7 +254,7 @@ namespace nom.tam.util
 		/// <param name="x">  The new datum.  This should be 1-d primitive array.</param>
 		/// <exception cref=""> TableException Thrown when the new data
 		/// is not of the same type as the data it replaces.</exception>
-		public virtual void SetElement(int row, int col, Object x)
+		public virtual void SetElement(int row, int col, object x)
 		{
 			//String classname = x.GetType().FullName;
 			
@@ -276,10 +276,10 @@ namespace nom.tam.util
 		/// <summary>Get a row of data.</summary>
 		/// <param name="The">row desired.</param>
 		/// <returns> An array of objects each containing a primitive array.</returns>
-		public virtual Object GetRow(int row)
+		public virtual object GetRow(int row)
 		{
-			Object[] x = new Object[arrays.Length];
-			for (int col = 0; col < arrays.Length; col += 1)
+			var x = new object[arrays.Length];
+			for (var col = 0; col < arrays.Length; col += 1)
 			{
 				x[col] = GetElement(row, col);
 			}
@@ -293,14 +293,14 @@ namespace nom.tam.util
 		/// here since other table implementations may
 		/// use other methods to store the data (e.g.,</param>
 		/// <seealso cref="">ColumnTable.getColumn.</seealso>
-		public virtual void SetRow(int row, Object x)
+		public virtual void SetRow(int row, object x)
 		{
 			if(ArrayFuncs.CountDimensions(x) != 1)//!(x is Object[]))
 			{
 				throw new TableException("setRow: Incompatible row");
 			}
 			
-			for (int col = 0; col < arrays.Length; col += 1)
+			for (var col = 0; col < arrays.Length; col += 1)
 			{
 				SetElement(row, col, ((Array)x).GetValue(col));
 			}
@@ -317,7 +317,7 @@ namespace nom.tam.util
 		/// </summary>
 		/// <param name="arrays">The arrays defining the columns.</param>
 		/// <param name="sizes">The number of elements in each row for the column.</param>
-		protected internal virtual void CheckArrayConsistency(Object[] arrays, int[] sizes)
+		protected internal virtual void CheckArrayConsistency(object[] arrays, int[] sizes)
 		{
 			// This routine throws an error if it detects an inconsistency
 			// between the arrays being read in.
@@ -329,16 +329,16 @@ namespace nom.tam.util
 			}
 			
 			// Now check that that we fill up all of the arrays exactly.
-			int ratio = 0;
-			int rowSize = 0;
-			
-			//this.types = new char[arrays.Length];
-			this.bases = new Type[arrays.Length];
+			var ratio = 0;
+			var rowSize = 0;
+
+            //this.types = new char[arrays.Length];
+            bases = new Type[arrays.Length];
 			
 			// Check for a null table.
 //			bool nullTable = true;
 			
-			for(int i = 0; i < arrays.Length; i += 1)
+			for(var i = 0; i < arrays.Length; i += 1)
 			{
 				ratio = CheckColumnConsistency((Array)arrays[i], ratio, sizes[i]);
 
@@ -346,8 +346,8 @@ namespace nom.tam.util
 				//types[i] = classname[1];
 				bases[i] = ArrayFuncs.GetBaseClass(arrays[i]);
 			}
-			
-			this.nrow = ratio;
+
+            nrow = ratio;
 			this.rowSize = rowSize;
 			this.arrays = arrays;
 			this.sizes = sizes;
@@ -361,7 +361,7 @@ namespace nom.tam.util
 				throw new TableException("Non-primitive array for column");
 			}
 			
-			int thisSize = data.Length;
+			var thisSize = data.Length;
 			if(thisSize == 0 && size != 0 || thisSize != 0 && size == 0)
 			{
 				throw new TableException("Size mismatch in column");
@@ -375,7 +375,7 @@ namespace nom.tam.util
 			
 			// Finally the ratio of sizes must be the same for all columns -- this
 			// is the number of rows in the table.
-			int thisRatio = 0;
+			var thisRatio = 0;
 			if (size > 0)
 			{
 				thisRatio = thisSize / size;
@@ -400,26 +400,26 @@ namespace nom.tam.util
 		/// <param name="nrows">  The number of rows in the table.</param>
 		protected internal virtual void GetNumberOfRows()
 		{
-			int bufSize = 65536;
+			var bufSize = 65536;
 			
 			// If a row is larger than bufSize, then read one row at a time.
 			if(rowSize == 0)
 			{
-				this.chunk = 0;
+                chunk = 0;
 			}
 			else if(rowSize > bufSize)
 			{
-				this.chunk = 1;
+                chunk = 1;
 				
 				// If the entire set is not too big, just read it all.
 			}
 			else if(bufSize / rowSize >= nrow)
 			{
-				this.chunk = nrow;
+                chunk = nrow;
 			}
 			else
 			{
-				this.chunk = bufSize / rowSize + 1;
+                chunk = bufSize / rowSize + 1;
 			}
 		}
 		
@@ -433,9 +433,9 @@ namespace nom.tam.util
 			nbyte = 0; nshort = 0; nint = 0; nlong = 0;
 			nfloat = 0; ndouble = 0; nchar = 0; nboolean = 0;
 
-			for(int col = 0; col < arrays.Length; col += 1)
+			for(var col = 0; col < arrays.Length; col += 1)
 			{
-        Type t = bases[col];
+        var t = bases[col];
 
         if(typeof(byte).Equals(t))// || typeof(sbyte).Equals(t))
         {
@@ -519,9 +519,9 @@ namespace nom.tam.util
 			nbyte = 0; nshort = 0; nint = 0; nlong = 0;
 			nfloat = 0; ndouble = 0; nchar = 0; nboolean = 0;
 			
-			for(int col = 0; col < arrays.Length; col += 1)
+			for(var col = 0; col < arrays.Length; col += 1)
 			{
-        Type t = bases[col];
+        var t = bases[col];
 
         if(typeof(byte).Equals(t))
         {
@@ -607,63 +607,63 @@ namespace nom.tam.util
 		}
 		
 		// Add a pointer in the pointer lists.
-		protected internal virtual void AddPointer(Object data)
+		protected internal virtual void AddPointer(object data)
 		{
 //			String classname = data.GetType().FullName;
 //			char type = classname[1];
-	    Type t = data.GetType();
+	    var t = data.GetType();
       if(typeof(byte).Equals(t))
       {
-        byte[][] xb = new byte[bytePointers.Length + 1][];
+        var xb = new byte[bytePointers.Length + 1][];
         Array.Copy(bytePointers, 0, xb, 0, bytePointers.Length);
         xb[bytePointers.Length] = (byte[]) data;
         bytePointers = xb;
       }
       else if(typeof(bool).Equals(t))
       {
-        bool[][] xb = new bool[booleanPointers.Length + 1][];
+        var xb = new bool[booleanPointers.Length + 1][];
         Array.Copy(booleanPointers, 0, xb, 0, booleanPointers.Length);
         xb[booleanPointers.Length] = (bool[]) data;
         booleanPointers = xb;
       }
       else if(typeof(char).Equals(t))
       {
-        char[][] xb = new char[charPointers.Length + 1][];
+        var xb = new char[charPointers.Length + 1][];
         Array.Copy(charPointers, 0, xb, 0, charPointers.Length);
         xb[charPointers.Length] = (char[]) data;
         charPointers = xb;
       }
       else if(typeof(short).Equals(t))
       {
-        short[][] xb = new short[shortPointers.Length + 1][];
+        var xb = new short[shortPointers.Length + 1][];
         Array.Copy(shortPointers, 0, xb, 0, shortPointers.Length);
         xb[shortPointers.Length] = (short[]) data;
         shortPointers = xb;
       }
       else if(typeof(int).Equals(t))
       {
-        int[][] xb = new int[intPointers.Length + 1][];
+        var xb = new int[intPointers.Length + 1][];
         Array.Copy(intPointers, 0, xb, 0, intPointers.Length);
         xb[intPointers.Length] = (int[]) data;
         intPointers = xb;
       }
       else if(typeof(long).Equals(t))
       {
-        long[][] xb = new long[longPointers.Length + 1][];
+        var xb = new long[longPointers.Length + 1][];
         Array.Copy(longPointers, 0, xb, 0, longPointers.Length);
         xb[longPointers.Length] = (long[]) data;
         longPointers = xb;
       }
       else if(typeof(float).Equals(t))
       {
-        float[][] xb = new float[floatPointers.Length + 1][];
+        var xb = new float[floatPointers.Length + 1][];
         Array.Copy(floatPointers, 0, xb, 0, floatPointers.Length);
         xb[floatPointers.Length] = (float[]) data;
         floatPointers = xb;
       }
       else if(typeof(double).Equals(t))
       {
-        double[][] xb = new double[doublePointers.Length + 1][];
+        var xb = new double[doublePointers.Length + 1][];
         Array.Copy(doublePointers, 0, xb, 0, doublePointers.Length);
         xb[doublePointers.Length] = (double[]) data;
         doublePointers = xb;
@@ -754,69 +754,69 @@ namespace nom.tam.util
 		public virtual int Read(ArrayDataIO is_Renamed)
 		{
 			// While we have not finished reading the table..
-			for (int row = 0; row < nrow; row += 1)
+			for (var row = 0; row < nrow; row += 1)
 			{
-				int ibyte = 0;
-				int ishort = 0;
-				int iint = 0;
-				int ilong = 0;
-				int ichar = 0;
-				int ifloat = 0;
-				int idouble = 0;
-				int iboolean = 0;
+				var ibyte = 0;
+				var ishort = 0;
+				var iint = 0;
+				var ilong = 0;
+				var ichar = 0;
+				var ifloat = 0;
+				var idouble = 0;
+				var iboolean = 0;
 				
 				// Loop over the columns within the row.
-				for (int col = 0; col < arrays.Length; col += 1)
+				for (var col = 0; col < arrays.Length; col += 1)
 				{
-					int arrOffset = sizes[col] * row;
-					int size = sizes[col];
+					var arrOffset = sizes[col] * row;
+					var size = sizes[col];
 					
-          Type t = bases[col];
+          var t = bases[col];
           if(typeof(int).Equals(t))
           {
-            int[] ia = intPointers[iint];
+            var ia = intPointers[iint];
             iint += 1;
             is_Renamed.Read(ia, arrOffset, size);
           }
           else if(typeof(short).Equals(t))
           {
-            short[] s = shortPointers[ishort];
+            var s = shortPointers[ishort];
             ishort += 1;
             is_Renamed.Read(s, arrOffset, size);
           }
           else if(typeof(byte).Equals(t))
           {
-            byte[] b = bytePointers[ibyte];
+            var b = bytePointers[ibyte];
             ibyte += 1;
             is_Renamed.Read(b, arrOffset, size);
           }
           else if(typeof(float).Equals(t))
           {
-            float[] f = floatPointers[ifloat];
+            var f = floatPointers[ifloat];
             ifloat += 1;
             is_Renamed.Read(f, arrOffset, size);
           }
           else if(typeof(double).Equals(t))
           {
-            double[] d = doublePointers[idouble];
+            var d = doublePointers[idouble];
             idouble += 1;
             is_Renamed.Read(d, arrOffset, size);
           }
           else if(typeof(char).Equals(t))
           {
-            char[] c = charPointers[ichar];
+            var c = charPointers[ichar];
             ichar += 1;
             is_Renamed.Read(c, arrOffset, size);
           }
           else if(typeof(long).Equals(t))
           {
-            long[] l = longPointers[ilong];
+            var l = longPointers[ilong];
             ilong += 1;
             is_Renamed.Read(l, arrOffset, size);
           }
           else if(typeof(bool).Equals(t))
           {
-            bool[] bool_Renamed = booleanPointers[iboolean];
+            var bool_Renamed = booleanPointers[iboolean];
             iboolean += 1;
             is_Renamed.Read(bool_Renamed, arrOffset, size);
           }
@@ -836,69 +836,69 @@ namespace nom.tam.util
 				return 0;
 			}
 			
-      for (int row = 0; row < nrow; row += 1)
+      for (var row = 0; row < nrow; row += 1)
 			{
-        int ibyte = 0;
-        int ishort = 0;
-        int iint = 0;
-        int ilong = 0;
-        int ichar = 0;
-        int ifloat = 0;
-        int idouble = 0;
-        int iboolean = 0;
+        var ibyte = 0;
+        var ishort = 0;
+        var iint = 0;
+        var ilong = 0;
+        var ichar = 0;
+        var ifloat = 0;
+        var idouble = 0;
+        var iboolean = 0;
 				
         // Loop over the columns within the row.
-				for (int col = 0; col < arrays.Length; col += 1)
+				for (var col = 0; col < arrays.Length; col += 1)
 				{
-					int arrOffset = sizes[col] * row;
-					int size = sizes[col];
+					var arrOffset = sizes[col] * row;
+					var size = sizes[col];
 					
-          Type t = bases[col];
+          var t = bases[col];
           if(typeof(int).Equals(t))
           {
-            int[] ia = intPointers[iint];
+            var ia = intPointers[iint];
             iint += 1;
             os.Write(ia, arrOffset, size);
           }
           else if(typeof(short).Equals(t))
           {
-            short[] s = shortPointers[ishort];
+            var s = shortPointers[ishort];
             ishort += 1;
             os.Write(s, arrOffset, size);
           }
           else if(typeof(byte).Equals(t))
           {
-            byte[] b = bytePointers[ibyte];
+            var b = bytePointers[ibyte];
             ibyte += 1;
             os.Write(b, arrOffset, size);
           }
           else if(typeof(float).Equals(t))
           {
-            float[] f = floatPointers[ifloat];
+            var f = floatPointers[ifloat];
             ifloat += 1;
             os.Write(f, arrOffset, size);
           }
           else if(typeof(double).Equals(t))
           {
-            double[] d = doublePointers[idouble];
+            var d = doublePointers[idouble];
             idouble += 1;
             os.Write(d, arrOffset, size);
           }
           else if(typeof(char).Equals(t))
           {
-            char[] c = charPointers[ichar];
+            var c = charPointers[ichar];
             ichar += 1;
             os.Write(c, arrOffset, size);
           }
           else if(typeof(long).Equals(t))
           {
-            long[] l = longPointers[ilong];
+            var l = longPointers[ilong];
             ilong += 1;
             os.Write(l, arrOffset, size);
           }
           else if(typeof(bool).Equals(t))
           {
-            bool[] bool_Renamed = booleanPointers[iboolean];
+            var bool_Renamed = booleanPointers[iboolean];
             iboolean += 1;
             os.Write(bool_Renamed, arrOffset, size);
           }

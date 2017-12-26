@@ -11,20 +11,22 @@ namespace nom.tam.util
 
     static PrimitiveInfo()
     {
-      sizes = new Hashtable();
-      sizes[typeof(byte)] = 1; // BitConverter.GetBytes((byte)0).Length;
-      sizes[typeof(sbyte)] = BitConverter.GetBytes((sbyte)0).Length;
-      sizes[typeof(bool)] = BitConverter.GetBytes(true).Length;
-      sizes[typeof(char)] = 1;//BitConverter.GetBytes('a').Length;
-      sizes[typeof(short)] = BitConverter.GetBytes((short)0).Length;
-      sizes[typeof(ushort)] = BitConverter.GetBytes((ushort)0).Length;
-      sizes[typeof(int)] = BitConverter.GetBytes((int)0).Length;
-      sizes[typeof(uint)] = BitConverter.GetBytes((uint)0).Length;
-      sizes[typeof(long)] = BitConverter.GetBytes((long)0).Length;
-      sizes[typeof(ulong)] = BitConverter.GetBytes((ulong)0).Length;
-      sizes[typeof(float)] = BitConverter.GetBytes((float)0.0).Length;
-      sizes[typeof(double)] = BitConverter.GetBytes((double)0.0).Length;
-    }
+            sizes = new Hashtable
+            {
+                [typeof(byte)] = 1, // BitConverter.GetBytes((byte)0).Length;
+                [typeof(sbyte)] = BitConverter.GetBytes((sbyte)0).Length,
+                [typeof(bool)] = BitConverter.GetBytes(true).Length,
+                [typeof(char)] = 1,//BitConverter.GetBytes('a').Length;
+                [typeof(short)] = BitConverter.GetBytes((short)0).Length,
+                [typeof(ushort)] = BitConverter.GetBytes((ushort)0).Length,
+                [typeof(int)] = BitConverter.GetBytes((int)0).Length,
+                [typeof(uint)] = BitConverter.GetBytes((uint)0).Length,
+                [typeof(long)] = BitConverter.GetBytes((long)0).Length,
+                [typeof(ulong)] = BitConverter.GetBytes((ulong)0).Length,
+                [typeof(float)] = BitConverter.GetBytes((float)0.0).Length,
+                [typeof(double)] = BitConverter.GetBytes((double)0.0).Length
+            };
+        }
 
     /// <summary>Suffixes used for the classnames for primitive arrays. 
 			/// </summary>

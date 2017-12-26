@@ -59,15 +59,15 @@ namespace nom.tam.fits
 		}
 
     /// <summary>Check if this data is usable as an ASCII table.</summary>
-		public static bool IsData(Object o)
+		public static bool IsData(object o)
 		{
       if(ArrayFuncs.CountDimensions(o) != 2)
       {
         return false;
       }
 
-      Type t = ArrayFuncs.GetBaseClass(o);
-      return t != null && (t.Equals(typeof(String)) || t.Equals(typeof(int)) || t.Equals(typeof(long)) ||
+      var t = ArrayFuncs.GetBaseClass(o);
+      return t != null && (t.Equals(typeof(string)) || t.Equals(typeof(int)) || t.Equals(typeof(long)) ||
         t.Equals(typeof(float)) || t.Equals(typeof(double)));
 /*
       if(o is Object[])
@@ -105,21 +105,21 @@ namespace nom.tam.fits
 		
 		public static Header ManufactureHeader(Data d)
 		{
-			Header hdr = new Header();
+			var hdr = new Header();
 			d.FillHeader(hdr);
-			Cursor c = hdr.GetCursor();
+			var c = hdr.GetCursor();
 			return hdr;
 		}
 		
-		public static Data Encapsulate(Object o)
+		public static Data Encapsulate(object o)
 		{
       if(o != null && o.GetType().IsArray)
       {
         if(ArrayFuncs.IsArrayOfArrays(o))
         {
-          Array oo = (Array)o;
-          AsciiTable d = new AsciiTable();
-          for(int i = 0; i < oo.Length; i += 1)
+          var oo = (Array)o;
+          var d = new AsciiTable();
+          for(var i = 0; i < oo.Length; i += 1)
           {
             d.AddColumn(oo.GetValue(i));
           }
@@ -146,7 +146,7 @@ namespace nom.tam.fits
 		{
 			if(flag)
 			{
-				String nullStr = myHeader.GetStringValue("TNULL" + (col + 1));
+                var nullStr = myHeader.GetStringValue("TNULL" + (col + 1));
 				if (nullStr == null)
 				{
 					SetNullString(col, "NULL");
@@ -162,7 +162,7 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Set the null string for a column</summary>
-		public virtual void SetNullString(int col, String newNull)
+		public virtual void SetNullString(int col, string newNull)
 		{
 			myHeader.PositionAfterIndex("TBCOL", col + 1);
 			try
@@ -178,20 +178,20 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Add a column</summary>
-		public override int AddColumn(Object newCol)
+		public override int AddColumn(object newCol)
 		{
 			data.AddColumn(newCol);
 			
 			// Move the cursor to point after all the data describing
 			// the previous column.
 			
-			Cursor c = myHeader.PositionAfterIndex("TBCOL", data.NCols);
+			var c = myHeader.PositionAfterIndex("TBCOL", data.NCols);
 			
-			int rowlen = data.AddColInfo(NCols, c);
-			int oldRowlen = myHeader.GetIntValue("NAXIS1");
+			var rowlen = data.AddColInfo(NCols, c);
+			var oldRowlen = myHeader.GetIntValue("NAXIS1");
 			myHeader.SetNaxis(1, rowlen + oldRowlen);
 			
-			int oldTfields = myHeader.GetIntValue("TFIELDS");
+			var oldTfields = myHeader.GetIntValue("TFIELDS");
 			try
 			{
 				myHeader.AddValue("TFIELDS", oldTfields + 1, null);
@@ -212,8 +212,8 @@ namespace nom.tam.fits
 			Console.Out.WriteLine("    Number of rows:  " + myHeader.GetIntValue("NAXIS2"));
 			Console.Out.WriteLine("    Length of row:   " + myHeader.GetIntValue("NAXIS1"));
 			Console.Out.WriteLine("  Data:");
-			Array data = (Array)Kernel;
-			for (int i = 0; i < NCols; i += 1)
+			var data = (Array)Kernel;
+			for (var i = 0; i < NCols; i += 1)
 			{
 				System.Console.Out.WriteLine("      " + i + ":" + ArrayFuncs.ArrayDescription(data.GetValue(i)));
 			}

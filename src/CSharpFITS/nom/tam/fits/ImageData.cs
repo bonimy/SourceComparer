@@ -48,7 +48,7 @@ namespace nom.tam.fits
 		/// a very commonly called method and we prefered
 		/// not to change how users must invoke it.
 		/// </summary>
-		override public Object DataArray
+		override public object DataArray
 		{
 			get
 			{
@@ -87,7 +87,7 @@ namespace nom.tam.fits
 		/// invoked, or it may be filled by during the read
 		/// call when a non-random access device is used.
 		/// </summary>
-		internal Object dataArray;
+		internal object dataArray;
 		
 		/// <summary>This class describes an array</summary>
 		protected internal class ArrayDesc
@@ -180,8 +180,8 @@ namespace nom.tam.fits
 			//Object dataArray;
 			Type baseClass;
 			
-			int gCount = h.GetIntValue("GCOUNT", 1);
-			int pCount = h.GetIntValue("PCOUNT", 0);
+			var gCount = h.GetIntValue("GCOUNT", 1);
+			var pCount = h.GetIntValue("PCOUNT", 0);
 			if (gCount > 1 || pCount != 0)
 			{
 				throw new FitsException("Group data treated as images");
@@ -230,7 +230,7 @@ namespace nom.tam.fits
 			byteSize = 1;
 			for (i = 0; i < ndim; i += 1)
 			{
-				int cdim = h.GetIntValue("NAXIS" + (i + 1), 0);
+				var cdim = h.GetIntValue("NAXIS" + (i + 1), 0);
 				if (cdim < 0)
 				{
 					throw new FitsException("Invalid array dimension:" + cdim);
@@ -260,7 +260,7 @@ namespace nom.tam.fits
 		/// array but this is not checked currently.
 		/// 
 		/// </param>
-		public ImageData(Object x)
+		public ImageData(object x)
 		{
 			dataArray = x;
 			byteSize = ArrayFuncs.ComputeSize(x);
@@ -277,9 +277,9 @@ namespace nom.tam.fits
 				return ;
 			}
 			
-			System.String classname = dataArray.GetType().FullName;
+			var classname = dataArray.GetType().FullName;
 			
-			int[] dimens = ArrayFuncs.GetDimensions(dataArray);
+			var dimens = ArrayFuncs.GetDimensions(dataArray);
 			
 			if (dimens == null || dimens.Length == 0)
 			{
@@ -318,7 +318,7 @@ namespace nom.tam.fits
 			head.Bitpix = bitpix;
 			head.Naxes = dimens.Length;
 			
-			for (int i = 1; i <= dimens.Length; i += 1)
+			for (var i = 1; i <= dimens.Length; i += 1)
 			{
 				if (dimens[i - 1] == - 1)
 				{
@@ -370,10 +370,10 @@ namespace nom.tam.fits
 				tiler = new ImageDataTiler(this, null, 0, dataDescription);
 			}
 			
-			int pad = FitsUtil.Padding(TrueSize);
+			var pad = FitsUtil.Padding(TrueSize);
 			try
 			{
-				long pos = i.Seek(pad);
+				var pos = i.Seek(pad);
         if(pos != pad)
 				{
           throw new FitsException("Error skipping padding");
@@ -429,7 +429,7 @@ namespace nom.tam.fits
 				throw new FitsException("IO Error on image write" + e);
 			}
 			
-			byte[] padding = new byte[FitsUtil.Padding(TrueSize)];
+			var padding = new byte[FitsUtil.Padding(TrueSize)];
 			try
 			{
 				o.Write(padding);

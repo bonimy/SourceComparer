@@ -54,17 +54,17 @@ namespace nom.tam.fits
 			return table.GetRow(row);
 		}
 		
-		public virtual Object GetColumn(String colName)
+		public virtual object GetColumn(string colName)
 		{
 			return GetColumn(FindColumn(colName));
 		}
 		
-		public virtual Object GetColumn(int col)
+		public virtual object GetColumn(int col)
 		{
 			return table.GetColumn(col);
 		}
 		
-		public virtual Object GetElement(int row, int col)
+		public virtual object GetElement(int row, int col)
 		{
 			return table.GetElement(row, col);
 		}
@@ -74,33 +74,33 @@ namespace nom.tam.fits
 			table.SetRow(row, newRow);
 		}
 		
-		public virtual void SetColumn(String colName, Object newCol)
+		public virtual void SetColumn(string colName, object newCol)
 		{
 			SetColumn(FindColumn(colName), newCol);
 		}
 		
-		public virtual void SetColumn(int col, Object newCol)
+		public virtual void SetColumn(int col, object newCol)
 		{
 			table.SetColumn(col, newCol);
 		}
 		
-		public virtual void SetElement(int row, int col, Object element)
+		public virtual void SetElement(int row, int col, object element)
 		{
 			table.SetElement(row, col, element);
 		}
 		
 		public virtual int AddRow(Array newRow)
 		{
-			int row = table.AddRow(newRow);
+			var row = table.AddRow(newRow);
 			myHeader.AddValue("NAXIS2", row, null);
 			return row;
 		}
 		
-		public virtual int FindColumn(String colName)
+		public virtual int FindColumn(string colName)
 		{
-			for (int i = 0; i < NCols; i += 1)
+			for (var i = 0; i < NCols; i += 1)
 			{
-				String val = myHeader.GetStringValue("TTYPE" + (i + 1));
+                var val = myHeader.GetStringValue("TTYPE" + (i + 1));
 				if (val != null && val.Trim().Equals(colName))
 				{
 					return i;
@@ -109,15 +109,15 @@ namespace nom.tam.fits
 			return - 1;
 		}
 		
-		public abstract int AddColumn(Object data);
+		public abstract int AddColumn(object data);
 
     /// <summary>Get the name of a column in the table.</summary>
 		/// <param name="index">The 0-based column index.</param>
 		/// <returns> The column name.</returns>
 		/// <exception cref=""> FitsException if an invalid index was requested.</exception>
-		public virtual String GetColumnName(int index)
+		public virtual string GetColumnName(int index)
 		{
-			String ttype = myHeader.GetStringValue("TTYPE" + (index + 1));
+            var ttype = myHeader.GetStringValue("TTYPE" + (index + 1));
 			if (ttype != null)
 			{
 				ttype = ttype.Trim();
@@ -125,7 +125,7 @@ namespace nom.tam.fits
 			return ttype;
 		}
 		
-		public virtual void SetColumnName(int index, String name, String comment)
+		public virtual void SetColumnName(int index, string name, string comment)
 		{
 			if (NCols > index && index >= 0)
 			{
@@ -137,9 +137,9 @@ namespace nom.tam.fits
 		/// <summary>Get the FITS type of a column in the table.</summary>
 		/// <returns> The FITS type.</returns>
 		/// <exception cref=""> FitsException if an invalid index was requested.</exception>
-		public virtual String GetColumnFormat(int index)
+		public virtual string GetColumnFormat(int index)
 		{
-			int flds = myHeader.GetIntValue("TFIELDS", 0);
+			var flds = myHeader.GetIntValue("TFIELDS", 0);
 			if (index < 0 || index >= flds)
 			{
 				throw new FitsException("Bad column index " + index + " (only " + flds + " columns)");

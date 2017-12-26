@@ -47,7 +47,7 @@ namespace nom.tam.fits
 		/// that computeSize may be wrong!
 		/// </summary>
 		/// <param name="o">The Object being tested.</param>
-		public static bool IsData(System.Object o)
+		public static bool IsData(object o)
 		{
 			if (ArrayFuncs.ComputeSize(o) > 0)
 			{
@@ -86,14 +86,14 @@ namespace nom.tam.fits
 		/// </exception>
 		public static Header ManufactureHeader(Data d)
 		{
-			Header h = new Header();
+			var h = new Header();
 			d.FillHeader(h);
 			
 			return h;
 		}
 		
 		/// <summary>Encapsulate an object as an ImageHDU.</summary>
-		public static Data Encapsulate(System.Object o)
+		public static Data Encapsulate(object o)
 		{
 			return new UndefinedData(o);
 		}

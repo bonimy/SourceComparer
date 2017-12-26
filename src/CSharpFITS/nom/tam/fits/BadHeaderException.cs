@@ -21,7 +21,7 @@ namespace nom.tam.fits
 		public BadHeaderException():base()
 		{
 		}
-		public BadHeaderException(String msg):base(msg)
+		public BadHeaderException(string msg):base(msg)
 		{
 		}
 	}

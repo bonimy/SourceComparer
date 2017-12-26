@@ -13,35 +13,35 @@ namespace nom.tam.util.test
 		/// </param>
 		[STAThread]
 //		public static void  Main(String[] args)
-      public static void Test(String[] args)
+      public static void Test(string[] args)
 		{
 			
-			int[][][] test1 = new int[10][][];
-			for (int i = 0; i < 10; i++)
+			var test1 = new int[10][][];
+			for (var i = 0; i < 10; i++)
 			{
 				test1[i] = new int[9][];
-				for (int i2 = 0; i2 < 9; i2++)
+				for (var i2 = 0; i2 < 9; i2++)
 				{
 					test1[i][i2] = new int[8];
-          for(int i3 = 0; i3 < 8; ++i3)
+          for(var i3 = 0; i3 < 8; ++i3)
           {
             test1[i][i2][i3] = SupportClass.Random.Next(9);
           }
 				}
 			}
-			bool[][] test2 = new bool[4][];
+			var test2 = new bool[4][];
 			test2[0] = new bool[5];
 			test2[1] = new bool[4];
 			test2[2] = new bool[3];
 			test2[3] = new bool[2];
 			
-			double[][] test3 = new double[10][];
-			for (int i3 = 0; i3 < 10; i3++)
+			var test3 = new double[10][];
+			for (var i3 = 0; i3 < 10; i3++)
 			{
 				test3[i3] = new double[20];
 			}
-			System.Text.StringBuilder[][] test4 = new System.Text.StringBuilder[3][];
-			for (int i4 = 0; i4 < 3; i4++)
+			var test4 = new System.Text.StringBuilder[3][];
+			for (var i4 = 0; i4 < 3; i4++)
 			{
 				test4[i4] = new System.Text.StringBuilder[2];
 			}
@@ -79,7 +79,7 @@ namespace nom.tam.util.test
 			//System.Console.Out.WriteLine("");
 			
 			System.Console.Out.WriteLine("Using aggregates:");
-			System.Object[] agg = new System.Object[4];
+			var agg = new object[4];
 			agg[0] = test1;
 			agg[1] = test2;
 			agg[2] = test3;
@@ -106,13 +106,13 @@ namespace nom.tam.util.test
 			}
 	*/		
 			
-			int[][][] test5 = (int[][][]) ArrayFuncs.DeepClone(test1);
+			var test5 = (int[][][]) ArrayFuncs.DeepClone(test1);
 			System.Console.Out.WriteLine("deepClone: copied array");
-			for (int i = 0; i < test5.Length; i += 1)
+			for (var i = 0; i < test5.Length; i += 1)
 			{
-				for (int j = 0; j < test5[0].Length; j += 1)
+				for (var j = 0; j < test5[0].Length; j += 1)
 				{
-					for (int k = 0; k < test5[0][0].Length; k += 1)
+					for (var k = 0; k < test5[0][0].Length; k += 1)
 					{
 						System.Console.Out.Write(" " + test5[i][j][k]);
 					}
@@ -128,29 +128,31 @@ namespace nom.tam.util.test
 			
 			
 			System.Console.Out.WriteLine("Flatten an array:");
-			int[] test6 = (int[]) ArrayFuncs.Flatten(test1);
+			var test6 = (int[]) ArrayFuncs.Flatten(test1);
 			System.Console.Out.WriteLine("    arrayDescription of test6:" + ArrayFuncs.ArrayDescription(test6));
-			for (int i = 0; i < test6.Length; i += 1)
+			for (var i = 0; i < test6.Length; i += 1)
 			{
 				System.Console.Out.Write(" " + test6[i]);
 				if (i > 0 && i % 10 == 0)
-					System.Console.Out.WriteLine("");
-			}
+                {
+                    System.Console.Out.WriteLine("");
+                }
+            }
 			System.Console.Out.WriteLine("");
 			
 			System.Console.Out.WriteLine("Curl an array, we'll reformat test1's data");
-			int[] newdims = new int[]{8, 9, 10};
+			var newdims = new int[]{8, 9, 10};
 
-      Array a = ArrayFuncs.Curl(test6, newdims);
+      var a = ArrayFuncs.Curl(test6, newdims);
       Console.Out.WriteLine("type of a: " + a.GetType().FullName);
-			int[,,] test7 = (int[,,])ArrayFuncs.Curl(test6, newdims);
+			var test7 = (int[,,])ArrayFuncs.Curl(test6, newdims);
 			System.Console.Out.WriteLine("    arrayDescription of test7:" + ArrayFuncs.ArrayDescription(test7));
 			
-			for (int i = 0; i < test7.GetLength(0); i += 1)
+			for (var i = 0; i < test7.GetLength(0); i += 1)
 			{
-				for (int j = 0; j < test7.GetLength(1); j += 1)
+				for (var j = 0; j < test7.GetLength(1); j += 1)
 				{
-					for (int k = 0; k < test7.GetLength(2); k += 1)
+					for (var k = 0; k < test7.GetLength(2); k += 1)
 					{
 						System.Console.Out.Write(" " + test7[i,j,k]);
 					}
@@ -167,8 +169,8 @@ namespace nom.tam.util.test
 			//System.Console.Out.WriteLine("   test1[3][3][3]=" + test1[3][3][3] + "  xtest1=" + xtest1[3][3][3]);
 			
 			System.Console.Out.WriteLine("Converting float[700][700] to byte");
-			float[][] big = new float[700][];
-			for (int i5 = 0; i5 < 700; i5++)
+			var big = new float[700][];
+			for (var i5 = 0; i5 < 700; i5++)
 			{
 				big[i5] = new float[700];
 			}

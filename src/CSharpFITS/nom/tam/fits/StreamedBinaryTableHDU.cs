@@ -104,7 +104,7 @@ namespace nom.tam.fits
 
     protected void SetupRenderers()
     {
-      Array[] modelRow = ReplaceTroolean(_rs.ModelRow);
+      var modelRow = ReplaceTroolean(_rs.ModelRow);
       Array[] modelRow2 = null;
       switch(_writeMode)
       {
@@ -120,7 +120,7 @@ namespace nom.tam.fits
           _stringArrayRenderer = ByteRenderer.STRING_ARRAY_RENDERER_HEAP;
           break;
         case StringWriteMode.TRUNCATE:
-          modelRow2 = CopyModelRowReplaceStrings(modelRow, new String[]{new String(' ', _stringTruncationLength)});
+          modelRow2 = CopyModelRowReplaceStrings(modelRow, new string[]{new string(' ', _stringTruncationLength)});
           modelRow2 = CopyModelRowStripUnknowns(modelRow2, new byte[1]);
           _rowSizeInBytes = ArrayFuncs.ComputeSize(modelRow2);
           myHeader = ManufactureHeader(modelRow2, _rs.ColumnNames, _rs.TNULL, _rs.NRows);
@@ -130,11 +130,11 @@ namespace nom.tam.fits
       }
       
       _hasStrings = false;
-      for(int i = 0; i < _rs.ModelRow.Length; ++i)
+      for(var i = 0; i < _rs.ModelRow.Length; ++i)
       {
         _byteRenderers[i] = ByteRenderer.GetByteRenderer(_rs.ModelRow[i].GetType());
         
-        if(_rs.ModelRow[i] is String[])
+        if(_rs.ModelRow[i] is string[])
         {
           _byteRenderers[i] = _stringArrayRenderer;
           _hasStrings = true;
@@ -149,11 +149,11 @@ namespace nom.tam.fits
 
     protected static Array[] CopyModelRowStripUnknowns(Array[] a, Array a2)
     {
-      Array[] result = new Array[a.Length];
+      var result = new Array[a.Length];
 
-      for(int i = 0; i < a.Length; ++i)
+      for(var i = 0; i < a.Length; ++i)
       {
-        if(a[i] == null || (a[i].GetType() != typeof(String[]) && ByteRenderer.GetByteRenderer(a[i].GetType()).GetType() == typeof(ByteRenderer.NullByteRenderer)))
+        if(a[i] == null || (a[i].GetType() != typeof(string[]) && ByteRenderer.GetByteRenderer(a[i].GetType()).GetType() == typeof(ByteRenderer.NullByteRenderer)))
         {
           result[i] = a2;
         }
@@ -168,11 +168,11 @@ namespace nom.tam.fits
 
     protected static Array[] CopyModelRowReplaceStrings(Array[] a, Array a2)
     {
-      Array[] result = new Array[a.Length];
+      var result = new Array[a.Length];
 
-      for(int i = 0; i < a.Length; ++i)
+      for(var i = 0; i < a.Length; ++i)
       {
-        if(a[i] is String[])
+        if(a[i] is string[])
         {
           result[i] = a2;
         }
@@ -185,22 +185,22 @@ namespace nom.tam.fits
       return result;
     }
 
-    protected static String CreateTempFilename()
+    protected static string CreateTempFilename()
     {
       return Fits.TempDirectory + "\\" + DateTime.Now.Ticks;
     }
 
     protected static Array[] ReplaceTroolean(Array[] row)
     {
-      Array[] result = new Array[row.Length];
+      var result = new Array[row.Length];
 
-      for(int i = 0; i < result.Length; ++i)
+      for(var i = 0; i < result.Length; ++i)
       {
         result[i] = row[i];
         if(row[i].GetType() == typeof(Troolean[]))
         {
-          int[] dims = new int[row[i].Rank];
-          for(int j = 0; j < dims.Length; ++j)
+          var dims = new int[row[i].Rank];
+          for(var j = 0; j < dims.Length; ++j)
           {
             dims[j] = row[i].GetLength(j);
           }
@@ -211,27 +211,30 @@ namespace nom.tam.fits
       return result;
     }
 
-    protected static Header ManufactureHeader(Array[] row, String[] columnNames,
-                                              Object[] tnull, int nRows)
+    protected static Header ManufactureHeader(Array[] row, string[] columnNames,
+                                              object[] tnull, int nRows)
     {
-      Header hdr = new Header();
-      Object[][] table = new Object[1][];
+      var hdr = new Header();
+      var table = new object[1][];
       table[0] = row;
       new BinaryTable(table).FillHeader(hdr);
 
       if(columnNames == null)
       {
-        columnNames = new String[row.Length];
-        for(int i = 0; i < columnNames.Length; ++i)
+        columnNames = new string[row.Length];
+        for(var i = 0; i < columnNames.Length; ++i)
         {
           columnNames[i] = "Column" + (i + 1);
         }
       }
 
-      for(HeaderCard c = hdr.NextCard(); c != null; c = hdr.NextCard());
+      for(var c = hdr.NextCard(); c != null; c = hdr.NextCard())
+            {
+                ;
+            }
 
-      Type t = null;
-      for(int i = 0; i < columnNames.Length; ++i)
+            Type t = null;
+      for(var i = 0; i < columnNames.Length; ++i)
       {
         if(!hdr.ContainsKey("TTYPE" + (i + 1)))
         {
@@ -265,7 +268,7 @@ namespace nom.tam.fits
     {
       System.Threading.Monitor.Enter(this);
       //((Writer)_writerMap[new Config(_rs.NRows != RowSource.NA, _hasStrings, s.CanSeek, _writeMode)]).Write(s);
-      Config c = new Config(_rs.NRows != RowSource.NA, _hasStrings, s.CanSeek, _writeMode);
+      var c = new Config(_rs.NRows != RowSource.NA, _hasStrings, s.CanSeek, _writeMode);
       ((Writer)_writerMap[c]).Write(s);
       s.Flush();
       System.Threading.Monitor.Exit(this);
@@ -273,7 +276,7 @@ namespace nom.tam.fits
 
     protected Hashtable CreateWriterMap()
     {
-      Hashtable result = new Hashtable();
+      var result = new Hashtable();
       Writer w1 = new OnePassWriter(this);
       Writer w2 = new FixWriter(this);
       Writer w3 = new HeapWriterWithTempTable(this);
@@ -435,11 +438,11 @@ namespace nom.tam.fits
       myHeader.Write(s);
 
       // write the table
-      int nRows = 0;
-      for(Array[] els = _rs.GetNextRow(ref _row); els != null;)
+      var nRows = 0;
+      for(var els = _rs.GetNextRow(ref _row); els != null;)
       {
         ++nRows;
-        for(int col = 0; col < _byteRenderers.Length; ++col)
+        for(var col = 0; col < _byteRenderers.Length; ++col)
         {
           _byteRenderers[col].Write(els[col], s);
         }
@@ -473,9 +476,9 @@ namespace nom.tam.fits
     /// <param name="s">The destination stream.</param>
     protected void WriteThenFix(ArrayDataIO s)
     {
-      long headerMark = s.Position;
-      int nRows = WriteTable(s);
-      long endMark = s.Position;
+      var headerMark = s.Position;
+      var nRows = WriteTable(s);
+      var endMark = s.Position;
 
       myHeader.RemoveCard("NAXIS2");
       myHeader.SetNaxis(2, nRows);
@@ -504,7 +507,7 @@ namespace nom.tam.fits
     /// what a pain
     protected void WriteHeapOutputWithTempHeapFile(ArrayDataIO s)
     {
-      String heapFilename = CreateTempFilename() + "heap.tmp";
+            var heapFilename = CreateTempFilename() + "heap.tmp";
       HeapStream heapS = null;
       int[] maxColWidths = null;
 
@@ -512,7 +515,7 @@ namespace nom.tam.fits
       {
         maxColWidths = new int[_byteRenderers.Length];
         heapS = new HeapStream(new FileStream(heapFilename, FileMode.Create));
-        for(int col = 0; col < _byteRenderers.Length; ++col)
+        for(var col = 0; col < _byteRenderers.Length; ++col)
         {
           _byteRenderers[col].Heap = heapS;
           maxColWidths[col] = -1;
@@ -529,20 +532,20 @@ namespace nom.tam.fits
       {
         myHeader.AddValue("THEAP", 0, null);
       }
-      long headerMark = s.Position;
+      var headerMark = s.Position;
       myHeader.Write(s);
 
-      int nRows = 0;
-      for(Array[] els = _rs.GetNextRow(ref _row); els != null;)
+      var nRows = 0;
+      for(var els = _rs.GetNextRow(ref _row); els != null;)
       {
         ++nRows;
-        for(int col = 0; col < _byteRenderers.Length; ++col)
+        for(var col = 0; col < _byteRenderers.Length; ++col)
         {
           _byteRenderers[col].Write(els[col], s);
-          if(els[col] is String[])
+          if(els[col] is string[])
           {
-            maxColWidths[col] = maxColWidths[col] < ((String[])els[col])[0].Length ?
-              ((String[])els[col])[0].Length : maxColWidths[col];
+            maxColWidths[col] = maxColWidths[col] < ((string[])els[col])[0].Length ?
+              ((string[])els[col])[0].Length : maxColWidths[col];
           }
         }
 
@@ -552,7 +555,7 @@ namespace nom.tam.fits
       // pad the table.  if there's a heap, pad the heap instead
       if(!_hasStrings)
       {
-        int pad = FitsUtil.Padding((long)nRows * (long)_rowSizeInBytes);
+        var pad = FitsUtil.Padding((long)nRows * (long)_rowSizeInBytes);
         s.Write(new byte[pad], 0, pad);
       }
       s.Flush();
@@ -566,9 +569,9 @@ namespace nom.tam.fits
       // fix NAXIS1
       if(_hasStrings)
       {
-        long theap = (long)nRows * (long)_rowSizeInBytes;
-        int pad = FitsUtil.Padding(theap + heapS.Position);
-        int pcount = (int)heapS.Position + pad;
+        var theap = (long)nRows * (long)_rowSizeInBytes;
+        var pad = FitsUtil.Padding(theap + heapS.Position);
+        var pcount = (int)heapS.Position + pad;
         // here we correct for swapping out actual strings with heap indices/lengths
         myHeader.RemoveCard("NAXIS1");
         myHeader.InsertCard(new HeaderCard("NAXIS1", _rowSizeInBytes, null), "NAXIS2");
@@ -584,14 +587,14 @@ namespace nom.tam.fits
 
         // fix the TFORMn entries for string columns
         IEnumerator ie = null;
-        bool found = false;
-        for(int i = 0; i < maxColWidths.Length; ++i, found = false)
+        var found = false;
+        for(var i = 0; i < maxColWidths.Length; ++i, found = false)
         {
           if(maxColWidths[i] > -1)
           {
             ie = myHeader.GetEnumerator();
             ie.MoveNext();
-            for(int j = 0; !found && ie.Current != null; ++j, ie.MoveNext())
+            for(var j = 0; !found && ie.Current != null; ++j, ie.MoveNext())
             {
               if(("TFORM" + (i + 1)).Equals(((DictionaryEntry)ie.Current).Key))
               {
@@ -607,7 +610,7 @@ namespace nom.tam.fits
         }
       }
       // rewrite the header
-      long heapMark = s.Position;
+      var heapMark = s.Position;
       s.Seek(headerMark, SeekOrigin.Begin);
       myHeader.Write(s);
       #endregion
@@ -616,13 +619,13 @@ namespace nom.tam.fits
       if(_hasStrings)
       {
         // calculate the pad
-        int pad = FitsUtil.Padding((long)nRows * (long)_rowSizeInBytes + heapS.Position);
+        var pad = FitsUtil.Padding((long)nRows * (long)_rowSizeInBytes + heapS.Position);
 
         s.Seek(heapMark, SeekOrigin.Begin);
 
         // write heap to the main stream
         heapS.Seek(0, SeekOrigin.Begin);
-        for(int nRead = heapS.Read(_buf, 0, _buf.Length); nRead > 0;)
+        for(var nRead = heapS.Read(_buf, 0, _buf.Length); nRead > 0;)
         {
           s.Write(_buf, 0, nRead);
           nRead = heapS.Read(_buf, 0, _buf.Length);
@@ -657,18 +660,18 @@ namespace nom.tam.fits
     /// what a pain
     protected void WriteHeapOutputWithTempTableAndHeapFiles(ArrayDataIO s)
     {
-      String tempFilename = CreateTempFilename() + "temp.tmp";
-      String heapFilename = CreateTempFilename() + "heap.tmp";
+            var tempFilename = CreateTempFilename() + "temp.tmp";
+            var heapFilename = CreateTempFilename() + "heap.tmp";
       Stream tempS = new ActualBufferedStream(new FileStream(tempFilename, FileMode.Create));
       HeapStream heapS = null;
       int[] maxColWidths = null;
-      bool _doHeap = _hasStrings && _writeMode != StringWriteMode.TRUNCATE;
+      var _doHeap = _hasStrings && _writeMode != StringWriteMode.TRUNCATE;
 
       if(_doHeap)
       {
         maxColWidths = new int[_byteRenderers.Length];
         heapS = new HeapStream(new FileStream(heapFilename, FileMode.Create));
-        for(int col = 0; col < _byteRenderers.Length; ++col)
+        for(var col = 0; col < _byteRenderers.Length; ++col)
         {
           _byteRenderers[col].Heap = heapS;
           maxColWidths[col] = -1;
@@ -676,17 +679,17 @@ namespace nom.tam.fits
       }
 
       #region 1) write the table
-      int nRows = 0;
-      for(Array[] els = _rs.GetNextRow(ref _row); els != null;)
+      var nRows = 0;
+      for(var els = _rs.GetNextRow(ref _row); els != null;)
       {
         ++nRows;
-        for(int col = 0; col < _byteRenderers.Length; ++col)
+        for(var col = 0; col < _byteRenderers.Length; ++col)
         {
           _byteRenderers[col].Write(els[col], tempS);
-          if(_doHeap && els[col] is String[])
+          if(_doHeap && els[col] is string[])
           {
-            maxColWidths[col] = maxColWidths[col] < ((String[])els[col])[0].Length ?
-              ((String[])els[col])[0].Length : maxColWidths[col];
+            maxColWidths[col] = maxColWidths[col] < ((string[])els[col])[0].Length ?
+              ((string[])els[col])[0].Length : maxColWidths[col];
           }
         }
 
@@ -704,9 +707,9 @@ namespace nom.tam.fits
       if(_doHeap)
       {
         heapS.Flush();
-        int theap = (nRows * _rowSizeInBytes);
-        int pad = FitsUtil.Padding((long)theap + heapS.Position);
-        int pcount = (int)heapS.Position + pad;
+        var theap = (nRows * _rowSizeInBytes);
+        var pad = FitsUtil.Padding((long)theap + heapS.Position);
+        var pcount = (int)heapS.Position + pad;
         // here we correct for swapping out actual strings with heap indices/lengths
         myHeader.RemoveCard("NAXIS1");
         myHeader.InsertCard(new HeaderCard("NAXIS1", _rowSizeInBytes, null), "NAXIS2");
@@ -719,15 +722,15 @@ namespace nom.tam.fits
 
       // fix the TFORMn entries for string columns
       IEnumerator ie = null;
-      bool found = false;
+      var found = false;
       //for(int i = 0; i < maxColWidths.Length; ++i, found = false)
-      for(int i = 0; i < _rs.ModelRow.Length; ++i, found = false)
+      for(var i = 0; i < _rs.ModelRow.Length; ++i, found = false)
       {
-        if(_rs.ModelRow[i] is String[])
+        if(_rs.ModelRow[i] is string[])
         {
           ie = myHeader.GetEnumerator();
           ie.MoveNext();
-          for(int j = 0; !found && ie.Current != null; ++j, ie.MoveNext())
+          for(var j = 0; !found && ie.Current != null; ++j, ie.MoveNext())
           {
             if(("TFORM" + (i + 1)).Equals(((DictionaryEntry)ie.Current).Key))
             {
@@ -758,7 +761,7 @@ namespace nom.tam.fits
 
       #region 3) write the table tempfile to the main stream
       tempS.Seek(0, SeekOrigin.Begin);
-      for(int nRead = tempS.Read(_buf, 0, _buf.Length); nRead > 0;)
+      for(var nRead = tempS.Read(_buf, 0, _buf.Length); nRead > 0;)
       {
         s.Write(_buf, 0, nRead);
         nRead = tempS.Read(_buf, 0, _buf.Length);
@@ -769,7 +772,7 @@ namespace nom.tam.fits
       // if there's a heap, pad the heap instead of the table
       if(!_doHeap)
       {
-        int pad = FitsUtil.Padding((long)nRows * (long)_rowSizeInBytes);
+        var pad = FitsUtil.Padding((long)nRows * (long)_rowSizeInBytes);
         s.Write(new byte[pad], 0, pad);
       }
       #endregion
@@ -778,11 +781,11 @@ namespace nom.tam.fits
       if(_doHeap)
       {
         // calculate the pad
-        int pad = FitsUtil.Padding((long)nRows * (long)_rowSizeInBytes + heapS.Position);
+        var pad = FitsUtil.Padding((long)nRows * (long)_rowSizeInBytes + heapS.Position);
 
         // write to the main stream
         heapS.Seek(0, SeekOrigin.Begin);
-        for(int nRead = heapS.Read(_buf, 0, _buf.Length); nRead > 0;)
+        for(var nRead = heapS.Read(_buf, 0, _buf.Length); nRead > 0;)
         {
           s.Write(_buf, 0, nRead);
           nRead = heapS.Read(_buf, 0, _buf.Length);
@@ -816,23 +819,23 @@ namespace nom.tam.fits
     /// what a pain
     protected void WritePadOutput(ArrayDataIO s)
     {
-      String tempFilename = CreateTempFilename() + "temp.tmp";
-      String heapFilename = CreateTempFilename() + "heap.tmp";
+            var tempFilename = CreateTempFilename() + "temp.tmp";
+            var heapFilename = CreateTempFilename() + "heap.tmp";
       Stream tempS = new ActualBufferedStream(new FileStream(tempFilename, FileMode.Create));
       Stream heapS = null;
       //Stream tempS = new BufferedStream(new FileStream(tempFilename, FileMode.Create), 4096);
       int[] maxColWidths = null;
-      int[] stringIndices = GetStringIndices(_rs.ModelRow);
-      int[] byteWidths = ComputeByteWidths(CopyModelRowStripUnknowns(ReplaceTroolean(_rs.ModelRow), new byte[1]));
-      int nRows = 0;
-      int maxColWidth = 0;
+      var stringIndices = GetStringIndices(_rs.ModelRow);
+      var byteWidths = ComputeByteWidths(CopyModelRowStripUnknowns(ReplaceTroolean(_rs.ModelRow), new byte[1]));
+      var nRows = 0;
+      var maxColWidth = 0;
 
       if(_hasStrings)
       {
         maxColWidths = new int[_byteRenderers.Length];
         heapS = new HeapStream(new FileStream(heapFilename, FileMode.Create));
         //heapS = new BufferedStream(new FileStream(heapFilename, FileMode.Create));
-        for(int col = 0; col < _byteRenderers.Length; ++col)
+        for(var col = 0; col < _byteRenderers.Length; ++col)
         {
           _byteRenderers[col].Heap = heapS;
           maxColWidths[col] = -1;
@@ -840,15 +843,15 @@ namespace nom.tam.fits
       }
 
       #region 1) write the table
-      for(Array[] els = _rs.GetNextRow(ref _row); els != null;)
+      for(var els = _rs.GetNextRow(ref _row); els != null;)
       {
         ++nRows;
-        for(int col = 0; col < _byteRenderers.Length; ++col)
+        for(var col = 0; col < _byteRenderers.Length; ++col)
         {
           _byteRenderers[col].Write(els[col], tempS);
-          if(els[col] is String[] && maxColWidths[col] < ((String[])els[col])[0].Length)
+          if(els[col] is string[] && maxColWidths[col] < ((string[])els[col])[0].Length)
           {
-            maxColWidths[col] = ((String[])els[col])[0].Length;
+            maxColWidths[col] = ((string[])els[col])[0].Length;
 
             if(maxColWidth < maxColWidths[col])
             {
@@ -867,13 +870,13 @@ namespace nom.tam.fits
       if(_hasStrings)
       {
         // fix NAXIS1, NAXIS2
-        Array[] modelRow2 = CopyModelRowReplaceStrings(ReplaceTroolean(_rs.ModelRow), null);
+        var modelRow2 = CopyModelRowReplaceStrings(ReplaceTroolean(_rs.ModelRow), null);
         //modelRow2 = CopyModelRowStripUnknowns(modelRow2, new byte[1]);
-        for(int i = 0; i < modelRow2.Length; ++i)
+        for(var i = 0; i < modelRow2.Length; ++i)
         {
           if(modelRow2[i] == null)
           {
-            modelRow2[i] = new String[]{new String(' ', maxColWidths[i])};
+            modelRow2[i] = new string[]{new string(' ', maxColWidths[i])};
             myHeader.RemoveCard("TFORM" + (i + 1));
             myHeader.InsertValue("TFORM" + (i + 1), maxColWidths[i] + "A", null, "TDIM" + (i + 1));
           }
@@ -892,13 +895,13 @@ namespace nom.tam.fits
       tempS.Seek(0, SeekOrigin.Begin);
       heapS.Seek(0, SeekOrigin.Begin);
       // man, if you can't even fit a row into memory, I give up
-      byte[] row = new byte[_rowSizeInBytes]; // this is the old size
-      byte[] padBuf = SupportClass.ToByteArray(new String(_padChar, maxColWidth));
-      int len = 0;
-      int off = 0;
+      var row = new byte[_rowSizeInBytes]; // this is the old size
+      var padBuf = SupportClass.ToByteArray(new string(_padChar, maxColWidth));
+      var len = 0;
+      var off = 0;
       for(int nRead = tempS.Read(row, 0, row.Length), rowOffset = 0; nRead > 0; rowOffset = 0)
       {
-        for(int i = 0; i < byteWidths.Length; ++i)
+        for(var i = 0; i < byteWidths.Length; ++i)
         {
           if(stringIndices[i] != -1)
           {
@@ -910,7 +913,7 @@ namespace nom.tam.fits
             {
               s.Write(padBuf, 0, maxColWidths[i] - len);
               heapS.Seek(off, SeekOrigin.Begin);
-              int bufread = heapS.Read(_buf, 0, len);
+              var bufread = heapS.Read(_buf, 0, len);
               s.Write(_buf, 0, len);
             }
             else
@@ -940,8 +943,8 @@ namespace nom.tam.fits
       File.Delete(heapFilename);
 
       // pad the table
-      int tableWidth = 0;
-      for(int i = 0; i < byteWidths.Length; ++i)
+      var tableWidth = 0;
+      for(var i = 0; i < byteWidths.Length; ++i)
       {
         if(stringIndices[i] != -1)
         {
@@ -952,7 +955,7 @@ namespace nom.tam.fits
           tableWidth += byteWidths[i];
         }
       }
-      int pad = FitsUtil.Padding((long)nRows * (long)tableWidth);
+      var pad = FitsUtil.Padding((long)nRows * (long)tableWidth);
       s.Write(new byte[pad], 0, pad);
       #endregion
     }
@@ -961,9 +964,9 @@ namespace nom.tam.fits
 
     protected static int[] ComputeByteWidths(Array[] a)
     {
-      int[] result = new int[a.Length];
+      var result = new int[a.Length];
 
-      for(int i = 0; i < a.Length; ++i)
+      for(var i = 0; i < a.Length; ++i)
       {
         result[i] = ArrayFuncs.ComputeSize(a[i]);
       }
@@ -973,11 +976,11 @@ namespace nom.tam.fits
 
     protected static int[] GetStringIndices(Array[] a)
     {
-      int[] result = new int[a.Length];
+      var result = new int[a.Length];
       for(int i = 0, offset = 0; i < a.Length; ++i)
       {
         result[i] = -1;
-        if(a[i] is String[])
+        if(a[i] is string[])
         {
           result[i] = offset;
           offset += 8; // two ints, position & length

@@ -159,10 +159,10 @@ namespace nom.tam.util
 		/// <returns>offset of next unused character in input buffer.</returns>
 		public int format(int val, byte[] buf, int off, int len)
 		{
-      byte[] num = BitConverter.GetBytes(val);
+      var num = BitConverter.GetBytes(val);
       if(num.Length <= len)
       {
-        for(int i = 0; i < num.Length; ++i)
+        for(var i = 0; i < num.Length; ++i)
         {
           buf[i + off] = num[i];
         }
@@ -264,10 +264,10 @@ namespace nom.tam.util
 		/// <returns> offset of next unused character in input buffer.</returns>
 		public int format(long val, byte[] buf, int off, int len)
 		{
-      byte[] num = BitConverter.GetBytes(val);
+      var num = BitConverter.GetBytes(val);
       if(num.Length <= len)
       {
-        for(int i = 0; i < num.Length; ++i)
+        for(var i = 0; i < num.Length; ++i)
         {
           buf[i + off] = num[i];
         }
@@ -409,7 +409,7 @@ namespace nom.tam.util
 		}
 		
 		/// <summary>Insert a string at the beginning of an array</summary>
-		public int format(String val, byte[] array)
+		public int format(string val, byte[] array)
 		{
 			return format(val, array, 0, array.Length);
 		}
@@ -423,18 +423,18 @@ namespace nom.tam.util
 		/// <param name="off">The starting offset to insert the string.</param>
 		/// <param name="len">The maximum number of characters to insert.</param>
 		/// <returns>Offset of next available character in buffer.</returns>
-		public int format(String val, byte[] array, int off, int len)
+		public int format(string val, byte[] array, int off, int len)
 		{
 			if (val == null)
 			{
-				for (int i = 0; i < len; i += 1)
+				for (var i = 0; i < len; i += 1)
 				{
 					array[off + i] = (byte)' ';//(sbyte) SupportClass.Identity(' ');
 				}
 				return off + len;
 			}
 			
-			int slen = val.Length;
+			var slen = val.Length;
 			
 			if ((truncateOnOverflow && slen > len) || (slen > array.Length - off))
 			{
@@ -493,10 +493,10 @@ namespace nom.tam.util
 		/// <returns>Offset of next character in buffer.</returns>
 		public int format(float val, byte[] buf, int off, int len)
 		{
-      byte[] num = BitConverter.GetBytes(val);
+      var num = BitConverter.GetBytes(val);
       if(num.Length <= len)
       {
-        for(int i = 0; i < num.Length; ++i)
+        for(var i = 0; i < num.Length; ++i)
         {
           buf[i + off] = num[i];
         }
@@ -651,10 +651,10 @@ namespace nom.tam.util
 		
 		public int format(double val, byte[] buf, int off, int len)
 		{
-      byte[] num = BitConverter.GetBytes(val);
+      var num = BitConverter.GetBytes(val);
       if(num.Length <= len)
       {
-        for(int i = 0; i < num.Length; ++i)
+        for(var i = 0; i < num.Length; ++i)
         {
           buf[i + off] = num[i];
         }
@@ -1056,7 +1056,7 @@ namespace nom.tam.util
 		/// </summary>
 		internal void  truncationFiller(byte[] buffer, int offset, int length)
 		{
-			for (int i = offset; i < offset + length; i += 1)
+			for (var i = offset; i < offset + length; i += 1)
 			{
 				buffer[i] = truncationFill;
 			}
@@ -1070,7 +1070,7 @@ namespace nom.tam.util
 		/// <summary>Fill the buffer with blanks to align a field.</summary>
 		public int alignFill(byte[] buffer, int offset, int len)
 		{
-			for (int i = offset; i < offset + len; i += 1)
+			for (var i = offset; i < offset + len; i += 1)
 			{
 				buffer[i] = (byte)' ';//(sbyte) SupportClass.Identity(' ');
 			}

@@ -37,7 +37,7 @@ namespace nom.tam.fits
 		/// a very commonly called method and we prefered
 		/// not to change how users must invoke it.
 		/// </summary>
-		override public Object DataArray
+		override public object DataArray
 		{
 			get
 			{
@@ -72,8 +72,8 @@ namespace nom.tam.fits
 			
 			/// <summary>Just get a byte buffer to hold the data.
 			/// </summary>
-			int size = 1;
-			for (int i = 0; i < h.GetIntValue("NAXIS"); i += 1)
+			var size = 1;
+			for (var i = 0; i < h.GetIntValue("NAXIS"); i += 1)
 			{
 				size *= h.GetIntValue("NAXIS" + (i + 1));
 			}
@@ -89,7 +89,7 @@ namespace nom.tam.fits
 		}
 
     /// <summary>Create an UndefinedData object using the specified object.</summary>
-		public UndefinedData(Object x)
+		public UndefinedData(object x)
 		{
 			
 			byteSize = ArrayFuncs.ComputeSize(x);
@@ -133,7 +133,7 @@ namespace nom.tam.fits
 					//temp_BinaryReader = i;
 					temp_Int64 = i.Position; //temp_BinaryReader.BaseStream.Position;
 					temp_Int64 = i.Seek((int)byteSize) - temp_Int64;  //temp_BinaryReader.BaseStream.Seek((int) byteSize, SeekOrigin.Current) - temp_Int64;
-					int generatedAux = (int)temp_Int64;
+					var generatedAux = (int)temp_Int64;
 				}
 				catch (IOException e)
 				{
@@ -152,7 +152,7 @@ namespace nom.tam.fits
 				}
 			}
 			
-			int pad = FitsUtil.Padding(TrueSize);
+			var pad = FitsUtil.Padding(TrueSize);
 			try
 			{
 				//BinaryReader temp_BinaryReader2;
@@ -175,7 +175,7 @@ namespace nom.tam.fits
 		{
 			if (data == null)
 			{
-				Object generatedAux = DataArray;
+				var generatedAux = DataArray;
 			}
 			
 			if (data == null)
@@ -192,7 +192,7 @@ namespace nom.tam.fits
 				throw new FitsException("IO Error on unknown data write" + e);
 			}
 			
-			byte[] padding = new byte[FitsUtil.Padding(TrueSize)];
+			var padding = new byte[FitsUtil.Padding(TrueSize)];
 			try
 			{
 				o.Write(padding);

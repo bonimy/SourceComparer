@@ -17,7 +17,7 @@ public class FitsException:Exception
 	{
 	}
 	
-	public FitsException(String msg):base(msg)
+	public FitsException(string msg):base(msg)
 	{
 	}
 }

@@ -24,11 +24,11 @@ namespace nom.tam.util
 		{
 			get;
 		}
-    Object GetRow(int row);
-    void SetRow(int row, Object newRow);
-    Object GetColumn(int column);
-    void SetColumn(int column, Object newColumn);
-    Object GetElement(int row, int col);
-    void SetElement(int row, int col, Object newElement);
+        object GetRow(int row);
+    void SetRow(int row, object newRow);
+        object GetColumn(int column);
+    void SetColumn(int column, object newColumn);
+        object GetElement(int row, int col);
+    void SetElement(int row, int col, object newElement);
 	}
 }

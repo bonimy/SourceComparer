@@ -37,7 +37,7 @@ namespace nom.tam.fits
 		}
 
     /// <summary>Return the keyword from this card</summary>
-		virtual public String Key
+		virtual public string Key
 		{
       get
       {
@@ -51,7 +51,7 @@ namespace nom.tam.fits
     }
 
     /// <summary>Return the value from this card</summary>
-		virtual public String Value
+		virtual public string Value
 		{
 			get
 			{
@@ -60,7 +60,7 @@ namespace nom.tam.fits
 		}
 
     /// <summary>Return the comment from this card</summary>
-		virtual public String Comment
+		virtual public string Comment
 		{
 			get
 			{
@@ -71,13 +71,13 @@ namespace nom.tam.fits
 
     #region Variables
     /// <summary>The keyword part of the card (set to null if there's no keyword)</summary>
-		private String key;
+		private string key;
 		
 		/// <summary>The value part of the card (set to null if there's no value)</summary>
-		private String val;
+		private string val;
 		
 		/// <summary>The comment part of the card (set to null if there's no comment)</summary>
-		private String comment;
+		private string comment;
 		
 		/// <summary>Does this card represent a nullable field. ?</summary>
 		/// KILL THIS FIELD
@@ -93,7 +93,7 @@ namespace nom.tam.fits
 		public const int MAX_VALUE_LENGTH = 70;
 		
 		/// <summary>padding for building card images</summary>
-		private static String space80 = "                                                                                ";
+		private static string space80 = "                                                                                ";
     #endregion
 
     #region Constructors
@@ -104,7 +104,7 @@ namespace nom.tam.fits
     /// <param name="nullable">Is this a nullable value card?</param>
     /// <exception cref=""> HeaderCardException for any invalid keyword or value</exception>
     //public HeaderCard(String key, String val, String comment, bool nullable)
-    public HeaderCard(String key, String val, String comment)
+    public HeaderCard(string key, string val, string comment)
     {
       if(key == null && val != null)
       {
@@ -160,7 +160,7 @@ namespace nom.tam.fits
     /// <param name="value">value (null for a comment or keyword without an '=')</param>
     /// <param name="comment">comment</param>
     /// <exception cref=""> HeaderCardException for any invalid keyword</exception>
-    public HeaderCard(String key, bool val, String comment):this(key, val ? "T" : "F", comment)
+    public HeaderCard(string key, bool val, string comment):this(key, val ? "T" : "F", comment)
     {
       isString = false;
     }
@@ -170,7 +170,7 @@ namespace nom.tam.fits
     /// <param name="value">value (null for a comment or keyword without an '=')</param>
     /// <param name="comment">comment</param>
     /// <exception cref="">HeaderCardException for any invalid keyword</exception>
-    public HeaderCard(String key, int val, String comment):this(key, val.ToString(), comment)
+    public HeaderCard(string key, int val, string comment):this(key, val.ToString(), comment)
     {
       isString = false;
     }
@@ -180,7 +180,7 @@ namespace nom.tam.fits
     /// <param name="value">value (null for a comment or keyword without an '=')</param>
     /// <param name="comment">comment</param>
     /// <exception cref="">HeaderCardException for any invalid keyword</exception>
-    public HeaderCard(String key, float val, String comment):this(key, val.ToString(), comment)
+    public HeaderCard(string key, float val, string comment):this(key, val.ToString(), comment)
     {
       isString = false;
     }
@@ -190,7 +190,7 @@ namespace nom.tam.fits
     /// <param name="value">value (null for a comment or keyword without an '=')</param>
     /// <param name="comment">comment</param>
     /// <exception cref=""> HeaderCardException for any invalid keyword</exception>
-    public HeaderCard(String key, long val, String comment):this(key, val.ToString(), comment)
+    public HeaderCard(string key, long val, string comment):this(key, val.ToString(), comment)
     {
       isString = false;
     }
@@ -200,7 +200,7 @@ namespace nom.tam.fits
 		/// <param name="value">value (null for a comment or keyword without an '=')</param>
 		/// <param name="comment">comment</param>
 		/// <exception cref="">HeaderCardException for any invalid keyword</exception>
-		public HeaderCard(String key, double val, String comment):this(key, val.ToString(), comment)
+		public HeaderCard(string key, double val, string comment):this(key, val.ToString(), comment)
 		{
 			isString = false;
 		}
@@ -221,7 +221,7 @@ namespace nom.tam.fits
 
     /// <summary>Create a HeaderCard from a FITS card image</summary>
 		/// <param name="card">the 80 character card image</param>
-		public HeaderCard(String card)
+		public HeaderCard(string card)
 		{
 			key = null;
 			val = null;
@@ -263,9 +263,9 @@ namespace nom.tam.fits
 				comment = card.Substring(8).Trim();
 				return ;
 			}
-			
-			// extract the value/comment part of the string
-			String valueAndComment = card.Substring(10).Trim();
+
+            // extract the value/comment part of the string
+            var valueAndComment = card.Substring(10).Trim();
 			
 			// If there is no value/comment part, we are done.
 			if (valueAndComment.Length == 0)
@@ -274,14 +274,14 @@ namespace nom.tam.fits
 				return ;
 			}
 			
-			int vend = - 1;
+			var vend = - 1;
 			//bool quote = false;
 			
 			// If we have a ' then find the matching  '.
 			if (valueAndComment[0] == '\'')
 			{
 				
-				int offset = 1;
+				var offset = 1;
 				while (offset < valueAndComment.Length)
 				{
 					
@@ -348,7 +348,7 @@ namespace nom.tam.fits
 			{
 				
 				// look for a / to terminate the field.
-				int slashLoc = valueAndComment.IndexOf((System.Char) '/');
+				var slashLoc = valueAndComment.IndexOf((System.Char) '/');
 				if (slashLoc != - 1)
 				{
 					comment = valueAndComment.Substring(slashLoc + 1).Trim();
@@ -369,14 +369,14 @@ namespace nom.tam.fits
 		/// character (i.e., not A-Z or _).
 		/// A '/' is assumed to start a comment.
 		/// </summary>
-		private void HierarchCard(String card)
+		private void HierarchCard(string card)
 		{
-			String name = "";
-			String token = null;
-			String separator = "";
+            var name = "";
+            string token = null;
+            var separator = "";
 			int[] tokLimits;
-			int posit = 0;
-			int commStart = - 1;
+			var posit = 0;
+			var commStart = - 1;
 			
 			// First get the hierarchy levels
 			while((tokLimits = GetToken(card, posit)) != null)
@@ -469,7 +469,7 @@ namespace nom.tam.fits
 					isString = false;
 					return ;
 				}
-				for (int i = commStart; i < card.Length; i += 1)
+				for (var i = commStart; i < card.Length; i += 1)
 				{
 					if (card[i] == '/')
 					{
@@ -486,7 +486,7 @@ namespace nom.tam.fits
 			else
 			{
 				isString = false;
-				int sl = token.IndexOf('/');
+				var sl = token.IndexOf('/');
 				if (sl == 0)
 				{
 					val = null;
@@ -501,7 +501,7 @@ namespace nom.tam.fits
 				{
 					val = token;
 					
-					for (int i = tokLimits[1]; i < card.Length; i += 1)
+					for (var i = tokLimits[1]; i < card.Length; i += 1)
 					{
 						if (card[i] == '/')
 						{
@@ -521,7 +521,7 @@ namespace nom.tam.fits
 		/// <summary>Get the next token.  Can't use StringTokenizer
 		/// since we sometimes need to know the position within
 		/// the string.</summary>
-		private int[] GetToken(String card, int posit)
+		private int[] GetToken(string card, int posit)
 		{
 			int i;
 			for (i = posit; i < card.Length; i += 1)
@@ -554,9 +554,9 @@ namespace nom.tam.fits
 		}
 
     /// <summary>Return the 80 character card image</summary>
-		public override String ToString()
+		public override string ToString()
 		{
-			System.Text.StringBuilder buf = new System.Text.StringBuilder(80);
+			var buf = new System.Text.StringBuilder(80);
 			
 			// start with the keyword, if there is one
 			if(key != null)
@@ -597,7 +597,7 @@ namespace nom.tam.fits
           }
           else
           {
-            int offset = buf.Length;
+            var offset = buf.Length;
             if(val.Length < 20)
             {
               buf.Append(space80.Substring(0, 20 - val.Length));
@@ -644,14 +644,14 @@ namespace nom.tam.fits
 			return buf.ToString();
 		}
 
-    private String HierarchToString()
+    private string HierarchToString()
 		{
-			System.Text.StringBuilder b = new System.Text.StringBuilder(80);
-			int p = 0;
-			String space = "";
+			var b = new System.Text.StringBuilder(80);
+			var p = 0;
+            var space = "";
 			while(p < key.Length)
 			{
-				int q = SupportClass.StringIndexOf(key, '.', p);
+				var q = SupportClass.StringIndexOf(key, '.', p);
 				if (q < 0)
 				{
 					b.Append(space + key.Substring(p));
@@ -672,7 +672,7 @@ namespace nom.tam.fits
 				if (val != null)
 				{
 					// Try to align values
-					int avail = 80 - (b.Length + val.Length);
+					var avail = 80 - (b.Length + val.Length);
 					
 					if (isString)
 					{
@@ -719,7 +719,7 @@ namespace nom.tam.fits
 			{
 				b.Append(space80.Substring(0, (80 - b.Length) - (0)));
 			}
-			String card = new String(b.ToString().ToCharArray());
+            var card = new string(b.ToString().ToCharArray());
 			if (card.Length > 80)
 			{
 				card = card.Substring(0, (80) - (0));

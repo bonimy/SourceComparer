@@ -21,7 +21,7 @@ namespace nom.tam.image
 			}
 		}
 		/// <summary>Read the entire image into a multidimensional array.</summary>
-		virtual public Object CompleteImage
+		virtual public object CompleteImage
 		{
 			get
 			{
@@ -30,8 +30,8 @@ namespace nom.tam.image
 					throw new IOException("Attempt to read from null file");
 				}
 				//long currentOffset = f.FilePointer;
-        long currentOffset = f.Position;
-				Object o = ArrayFuncs.NewInstance(base_Renamed, dims);
+        var currentOffset = f.Position;
+                object o = ArrayFuncs.NewInstance(base_Renamed, dims);
 				f.Seek(fileOffset, SeekOrigin.Begin);
 				f.ReadArray(o);
 				f.Seek(currentOffset);
@@ -73,8 +73,8 @@ namespace nom.tam.image
 				throw new IOException("Inconsistent sub-image request");
 			}
 			
-			int arraySize = 1;
-			for (int i = 0; i < dims.Length; i += 1)
+			var arraySize = 1;
+			for (var i = 0; i < dims.Length; i += 1)
 			{
 				if (corners[i] < 0 || lengths[i] < 0 || corners[i] + lengths[i] > dims[i])
 				{
@@ -84,7 +84,7 @@ namespace nom.tam.image
 				arraySize *= lengths[i];
 			}
 			
-			Array outArray = ArrayFuncs.NewInstance(base_Renamed, arraySize);
+			var outArray = ArrayFuncs.NewInstance(base_Renamed, arraySize);
 			
 			GetTile(outArray, corners, lengths);
 			return outArray;
@@ -103,7 +103,7 @@ namespace nom.tam.image
 		/// <param name="lengths">The dimensions of the tile.</param>
 		public virtual void GetTile(Array outArray, int[] corners, int[] lengths)
 		{
-			Array data = MemoryImage;
+			var data = MemoryImage;
 			
 			if(data == null && f == null)
 			{
@@ -124,10 +124,10 @@ namespace nom.tam.image
 		/// <param name="lengths">The dimensions of the subset.</param>
 		protected internal virtual void FillTile(Array data, Array o, int[] dims, int[] corners, int[] lengths)
 		{
-			int n = dims.Length;
-			int[] posits = new int[n];
-      int baseLength = ArrayFuncs.GetBaseLength(o);
-      int segment = lengths[n - 1];
+			var n = dims.Length;
+			var posits = new int[n];
+      var baseLength = ArrayFuncs.GetBaseLength(o);
+      var segment = lengths[n - 1];
 			
 			Array.Copy(corners, 0, posits, 0, n);
 			long currentOffset = 0;
@@ -137,13 +137,13 @@ namespace nom.tam.image
         currentOffset = f.Position;
 			}
 			
-			int outputOffset = 0;
+			var outputOffset = 0;
       if(data != null && data.GetType().Equals(typeof(Array)) && !ArrayFuncs.IsArrayOfArrays(data))
       {
-        int[] index = new int[posits.Length];
+        var index = new int[posits.Length];
         Array.Copy(posits, 0, index, 0, n);
         index[index.Length - 1] -= 1;
-        for(int i = outputOffset; ArrayFuncs.NextIndex(index, posits, lengths); ++i)
+        for(var i = outputOffset; ArrayFuncs.NextIndex(index, posits, lengths); ++i)
         {
           o.SetValue(data.GetValue(index), i);
         }
@@ -155,15 +155,15 @@ namespace nom.tam.image
 			{
 				// This implies there is some overlap in the last index
         // (in conjunction with other tests)
-				int mx = dims.Length - 1;
-				bool validSegment = posits[mx] + lengths[mx] >= 0 && posits[mx] < dims[mx];
+				var mx = dims.Length - 1;
+				var validSegment = posits[mx] + lengths[mx] >= 0 && posits[mx] < dims[mx];
 				
 				
 				// Don't do anything for the current segment if anything but the
 				// last index is out of range.
 				if (validSegment)
 				{
-					for (int i = 0; i < mx; i += 1)
+					for (var i = 0; i < mx; i += 1)
 					{
 						if (posits[i] < 0 || posits[i] >= dims[i])
 						{
@@ -181,13 +181,13 @@ namespace nom.tam.image
 					}
 					else
 					{
-						int offset = GetOffset(dims, posits) * baseLength;
+						var offset = GetOffset(dims, posits) * baseLength;
 						
 						// Point to offset at real beginning
 						// of segment
-						int actualLen = segment;
-						int actualOffset = offset;
-						int actualOutput = outputOffset;
+						var actualLen = segment;
+						var actualOffset = offset;
+						var actualOutput = outputOffset;
 						if (posits[mx] < 0)
 						{
 							actualOffset -= posits[mx] * baseLength;
@@ -243,9 +243,9 @@ namespace nom.tam.image
 			else
 			{
 				// Adjust the spacing for the actual copy.
-				int startFrom = posits[dim];
-				int startTo = outputOffset;
-				int copyLength = length;
+				var startFrom = posits[dim];
+				var startTo = outputOffset;
+				var copyLength = length;
 				
 				if(posits[dim] < 0)
 				{
@@ -313,12 +313,12 @@ namespace nom.tam.image
 		/// <param name="lengths">The desired dimensions of the subset.</param>
 		protected internal static bool IncrementPosition(int[] start, int[] current, int[] lengths)
 		{
-			for (int i = start.Length - 2; i >= 0; i -= 1)
+			for (var i = start.Length - 2; i >= 0; i -= 1)
 			{
 				if (current[i] - start[i] < lengths[i] - 1)
 				{
 					current[i] += 1;
-					for (int j = i + 1; j < start.Length - 1; j += 1)
+					for (var j = i + 1; j < start.Length - 1; j += 1)
 					{
 						current[j] = start[j];
 					}
@@ -334,8 +334,8 @@ namespace nom.tam.image
 		/// <param name="pos">  The index requested.</param>
 		public static int GetOffset(int[] dims, int[] pos)
 		{
-			int offset = 0;
-			for (int i = 0; i < dims.Length; i += 1)
+			var offset = 0;
+			for (var i = 0; i < dims.Length; i += 1)
 			{
 				if (i > 0)
 				{

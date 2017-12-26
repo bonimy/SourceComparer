@@ -56,7 +56,7 @@ namespace nom.tam.fits
 		}
 
     /// <summary>Get the non-FITS data object</summary>
-		virtual public Object Kernel
+		virtual public object Kernel
 		{
 			get
 			{
@@ -77,7 +77,7 @@ namespace nom.tam.fits
 		{
 			get
 			{
-				int size = 0;
+				var size = 0;
 				
 				if (myHeader != null)
 				{
@@ -95,7 +95,7 @@ namespace nom.tam.fits
 		{
 			get
 			{
-				int bitpix = myHeader.GetIntValue("BITPIX", - 1);
+				var bitpix = myHeader.GetIntValue("BITPIX", - 1);
 				switch (bitpix)
 				{
 					case BITPIX_BYTE: 
@@ -116,7 +116,7 @@ namespace nom.tam.fits
 		{
 			get
 			{
-				int nAxis = myHeader.GetIntValue("NAXIS", 0);
+				var nAxis = myHeader.GetIntValue("NAXIS", 0);
 				if (nAxis < 0)
 				{
 					throw new FitsException("Negative NAXIS value " + nAxis);
@@ -131,8 +131,8 @@ namespace nom.tam.fits
 					return null;
 				}
 				
-				int[] axes = new int[nAxis];
-				for (int i = 1; i <= nAxis; i++)
+				var axes = new int[nAxis];
+				for (var i = 1; i <= nAxis; i++)
 				{
 					axes[nAxis - i] = myHeader.GetIntValue("NAXIS" + i, 0);
 				}
@@ -173,7 +173,7 @@ namespace nom.tam.fits
 			}
 		}
 
-    virtual public String BUnit
+    virtual public string BUnit
 		{
 			get
 			{
@@ -199,7 +199,7 @@ namespace nom.tam.fits
 		{
 			get
 			{
-        Object result = null;
+                object result = null;
 
         try
 				{
@@ -220,7 +220,7 @@ namespace nom.tam.fits
 		{
 			get
 			{
-        Object result = null;
+                object result = null;
 
 				try
 				{
@@ -237,7 +237,7 @@ namespace nom.tam.fits
 
     /// <summary> Get the name of the organization which created this FITS file.</summary>
 		/// <returns>	either <CODE>null</CODE> or a String object</returns>
-		virtual public String Origin
+		virtual public string Origin
 		{
 			get
 			{
@@ -247,7 +247,7 @@ namespace nom.tam.fits
 
     /// <summary> Get the name of the telescope which was used to acquire the data in this FITS file.</summary>
 		/// <returns>	either <CODE>null</CODE> or a String object</returns>
-		virtual public String Telescope
+		virtual public string Telescope
 		{
 			get
 			{
@@ -257,7 +257,7 @@ namespace nom.tam.fits
 
     /// <summary> Get the name of the instrument which was used to acquire the data in this FITS file.</summary>
 		/// <returns>	either <CODE>null</CODE> or a String object</returns>
-		virtual public String Instrument
+		virtual public string Instrument
 		{
 			get
 			{
@@ -267,7 +267,7 @@ namespace nom.tam.fits
 
     /// <summary>Get the name of the person who acquired the data in this FITS file.</summary>
 		/// <returns>	either <CODE>null</CODE> or a String object</returns>
-		virtual public String Observer
+		virtual public string Observer
 		{
 			get
 			{
@@ -277,7 +277,7 @@ namespace nom.tam.fits
 
     /// <summary> Get the name of the observed object in this FITS file.</summary>
 		/// <returns>	either <CODE>null</CODE> or a String object</returns>
-		virtual public String Object
+		virtual public string Object
 		{
 			get
 			{
@@ -312,7 +312,7 @@ namespace nom.tam.fits
     /// <summary> Return the name of the person who compiled the information in
 		/// the data associated with this header.</summary>
 		/// <returns>	either <CODE>null</CODE> or a String object</returns>
-		virtual public String Author
+		virtual public string Author
 		{
 			get
 			{
@@ -323,7 +323,7 @@ namespace nom.tam.fits
     /// <summary> Return the citation of a reference where the data associated with
 		/// this header are published.</summary>
 		/// <returns>	either <CODE>null</CODE> or a String object</returns>
-		virtual public String Reference
+		virtual public string Reference
 		{
 			get
 			{
@@ -356,13 +356,13 @@ namespace nom.tam.fits
 		{
 			set
 			{
-				if(value && !this.CanBePrimary)
+				if(value && !CanBePrimary)
 				{
-					throw new FitsException("Invalid attempt to make HDU of type:" + this.GetType().FullName + " primary.");
+					throw new FitsException("Invalid attempt to make HDU of type:" + GetType().FullName + " primary.");
 				}
 				else
 				{
-					this.isPrimary = value;
+                    isPrimary = value;
 				}
 				
 				// Some FITS readers don't like the PCOUNT and GCOUNT keywords
@@ -376,7 +376,7 @@ namespace nom.tam.fits
 				
 				if(isPrimary)
 				{
-					HeaderCard card = myHeader.FindCard("EXTEND");
+					var card = myHeader.FindCard("EXTEND");
 					if(card == null)
 					{
 						myHeader.NextCard();
@@ -386,15 +386,15 @@ namespace nom.tam.fits
 				
 				if(!isPrimary)
 				{
-					Cursor c = myHeader.GetCursor();
+					var c = myHeader.GetCursor();
 					
-					int pcount = myHeader.GetIntValue("PCOUNT", 0);
-					int gcount = myHeader.GetIntValue("GCOUNT", 1);
-					int naxis = myHeader.GetIntValue("NAXIS", 0);
+					var pcount = myHeader.GetIntValue("PCOUNT", 0);
+					var gcount = myHeader.GetIntValue("GCOUNT", 1);
+					var naxis = myHeader.GetIntValue("NAXIS", 0);
 					myHeader.DeleteKey("EXTEND");
 					//HeaderCard card;
-					HeaderCard pcard = myHeader.FindCard("PCOUNT");
-					HeaderCard gcard = myHeader.FindCard("GCOUNT");
+					var pcard = myHeader.FindCard("PCOUNT");
+					var gcard = myHeader.FindCard("GCOUNT");
 					
 					myHeader.GetCard(2 + naxis);
 					if (pcard == null)
@@ -472,12 +472,12 @@ namespace nom.tam.fits
 		/// <exception cref=""> IOException if the Data object could not be skipped.</exception>
 		public static void SkipData(ArrayDataIO stream, Header hdr)
 		{
-			//System.IO.BinaryReader temp_BinaryReader;
-			Int64 temp_Int64;
+            //System.IO.BinaryReader temp_BinaryReader;
+            long temp_Int64;
 			//temp_BinaryReader = stream;
 			temp_Int64 = stream.Position; //temp_BinaryReader.BaseStream.Position;
 			temp_Int64 = stream.Seek((int)hdr.DataSize) - temp_Int64; //temp_BinaryReader.BaseStream.Seek((int) hdr.DataSize, System.IO.SeekOrigin.Current) - temp_Int64;
-			int generatedAux = (int)temp_Int64;
+			var generatedAux = (int)temp_Int64;
 		}
 		
 		/// <summary>Skip the Data object for this HDU.</summary>
@@ -530,9 +530,9 @@ namespace nom.tam.fits
 		/// <summary>Check if a field is present and if so print it out.</summary>
 		/// <param name="name">The header keyword.</param>
 		/// <returns>Was it found in the header?</returns>
-		internal virtual bool CheckField(String name)
+		internal virtual bool CheckField(string name)
 		{
-			String value_Renamed = myHeader.GetStringValue(name);
+            var value_Renamed = myHeader.GetStringValue(name);
 			if (value_Renamed == null)
 			{
 				return false;
@@ -577,7 +577,7 @@ namespace nom.tam.fits
 		/// <summary>Rewrite the HDU</summary>
 		public virtual void Rewrite()
 		{
-			if(this.Rewriteable)
+			if(Rewriteable)
 			{
 				myHeader.Rewrite();
 				myData.Rewrite();
@@ -592,9 +592,9 @@ namespace nom.tam.fits
 		/// <param name="hdr	the">header piece of an HDU</param>
 		/// <param name="keyword	the">FITS keyword</param>
 		/// <returns>	either <CODE>null</CODE> or a String with leading/trailing blanks stripped.</returns>
-		public virtual String GetTrimmedString(String keyword)
+		public virtual string GetTrimmedString(string keyword)
 		{
-			String s = myHeader.GetStringValue(keyword);
+            var s = myHeader.GetStringValue(keyword);
 			if (s != null)
 			{
 				s = s.Trim();
@@ -603,22 +603,22 @@ namespace nom.tam.fits
 		}
 
     /// <summary>Add information to the header</summary>
-		public virtual void AddValue(String key, bool val, String comment)
+		public virtual void AddValue(string key, bool val, string comment)
 		{
 			myHeader.AddValue(key, val, comment);
 		}
 		
-		public virtual void AddValue(String key, int val, String comment)
+		public virtual void AddValue(string key, int val, string comment)
 		{
 			myHeader.AddValue(key, val, comment);
 		}
 		
-		public virtual void AddValue(String key, double val, String comment)
+		public virtual void AddValue(string key, double val, string comment)
 		{
 			myHeader.AddValue(key, val, comment);
 		}
 		
-		public virtual void AddValue(String key, String val, String comment)
+		public virtual void AddValue(string key, string val, string comment)
 		{
 			myHeader.AddValue(key, val, comment);
 		}

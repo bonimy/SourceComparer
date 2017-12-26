@@ -17,7 +17,7 @@ namespace nom.tam.util
 	
 	public class ArrayFuncs : PrimitiveInfo
 	{
-    public static int CountDimensions(Object o)
+    public static int CountDimensions(object o)
     {
       if(o == null || !o.GetType().IsArray)
       {
@@ -36,7 +36,7 @@ namespace nom.tam.util
       }
     }
 
-    public static bool IsArrayOfArrays(Object o)
+    public static bool IsArrayOfArrays(object o)
     {
       if(o == null || !o.GetType().IsArray)
       {
@@ -55,18 +55,18 @@ namespace nom.tam.util
 		/// arrays or scalars of the primitive objects and Strings.  It
 		/// returns 0 for any object array element it does not understand.</summary>
 		/// <param name="o">The object whose size is desired.</param>
-		public static int ComputeSize(Object o)
+		public static int ComputeSize(object o)
 		{
-      int result = 0;
+      var result = 0;
 
       if(o != null)
       {
-        Type t = o.GetType();
+        var t = o.GetType();
         if(t.IsArray)
         {
-          int size = 0;
+          var size = 0;
         
-          for(IEnumerator i = ((Array)o).GetEnumerator(); i.MoveNext();)
+          for(var i = ((Array)o).GetEnumerator(); i.MoveNext();)
           {
             size += ComputeSize(i.Current);
           }
@@ -74,10 +74,10 @@ namespace nom.tam.util
           //return size;
           result = size;
         }
-        else if(t == typeof(String))
+        else if(t == typeof(string))
         {
           //return ((String)o).Length * (int)sizes[typeof(char)];
-          result = ((String)o).Length * (int)sizes[typeof(char)];
+          result = ((string)o).Length * (int)sizes[typeof(char)];
         }
         else if(t == typeof(Troolean))
         {
@@ -99,15 +99,15 @@ namespace nom.tam.util
 		}
 
     /// <summary>Count the number of elements in an array</summary>
-		public static int CountElements(Object o)
+		public static int CountElements(object o)
 		{
-      int result = 0;
+      var result = 0;
 
       if(o.GetType().IsArray)
       {
         if(IsArrayOfArrays(o))
         {
-          for(IEnumerator i = ((Array)o).GetEnumerator(); i.MoveNext();)
+          for(var i = ((Array)o).GetEnumerator(); i.MoveNext();)
           {
             result += CountElements(i.Current);
           }
@@ -132,7 +132,7 @@ namespace nom.tam.util
 		/// e.g., a Vector then only a shallow copy of that object is made.  I.e., deep
 		/// refers only to arrays.</summary>
 		/// <param name="o">The object to be copied.</param>
-		public static System.Object DeepClone(System.Object o)
+		public static object DeepClone(object o)
 		{
 			if(o == null)
 			{
@@ -143,11 +143,11 @@ namespace nom.tam.util
 				return GenericClone(o);
 			}
 
-      Array a = (Array)o;
+      var a = (Array)o;
       if(ArrayFuncs.IsArrayOfArrays(o))
       {
-        Array result = NewInstance(o.GetType().GetElementType(), a.Length);
-        for(int i = 0; i < result.Length; ++i)
+        var result = NewInstance(o.GetType().GetElementType(), a.Length);
+        for(var i = 0; i < result.Length; ++i)
         {
           result.SetValue(DeepClone(a.GetValue(i)), i);
         }
@@ -156,12 +156,12 @@ namespace nom.tam.util
       }
       else
       {
-        int[] lengths = new int[a.Rank];
-        for(int i = 0; i < lengths.Length; ++i)
+        var lengths = new int[a.Rank];
+        for(var i = 0; i < lengths.Length; ++i)
         {
           lengths[i] = a.GetLength(i);
         }
-        Array result = ArrayFuncs.NewInstance(o.GetType().GetElementType(), lengths);
+        var result = ArrayFuncs.NewInstance(o.GetType().GetElementType(), lengths);
         Array.Copy(a, result, a.Length);
 
         return result;
@@ -185,7 +185,7 @@ namespace nom.tam.util
 		/// <param name="o">The object to be cloned.
 		/// 
 		/// </param>
-		public static Object GenericClone(Object o)
+		public static object GenericClone(object o)
 		{
       if(!(o is ICloneable))
 			{
@@ -207,7 +207,7 @@ namespace nom.tam.util
 		/// *
 		/// </summary>
 		/// <param name="o">The object to get the dimensions of.</param>
-		public static int[] GetDimensions(Object o)
+		public static int[] GetDimensions(object o)
 		{			
 			if(o == null)
 			{
@@ -218,15 +218,19 @@ namespace nom.tam.util
       {
         if(IsArrayOfArrays(o))
         {
-          int ndim = 0;
-          for(Object oPrime = o; oPrime is Array; ++ndim, oPrime = ((Array)oPrime).GetValue(0));
-          int[] dimens = new int[ndim];
-          for(int i = 0; i < ndim; i += 1)
+          var ndim = 0;
+          for(var oPrime = o; oPrime is Array; ++ndim, oPrime = ((Array)oPrime).GetValue(0))
+                    {
+                        ;
+                    }
+
+                    var dimens = new int[ndim];
+          for(var i = 0; i < ndim; i += 1)
           {
             dimens[i] = - 1; // So that we can distinguish a null from a 0 length.
           }
 			
-          for(int i = 0; i < ndim; i += 1)
+          for(var i = 0; i < ndim; i += 1)
           {
             dimens[i] = ((Array)o).Length;
             if(dimens[i] == 0)
@@ -247,10 +251,10 @@ namespace nom.tam.util
         }
         else
         {
-          Array a = (Array)o;
-          int ndim = a.Rank;
-          int[] dimens = new int[ndim];
-          for(int i = 0; i < ndim; i += 1)
+          var a = (Array)o;
+          var ndim = a.Rank;
+          var dimens = new int[ndim];
+          for(var i = 0; i < ndim; i += 1)
           {
             dimens[i] = a.GetLength(i);
           }
@@ -267,7 +271,7 @@ namespace nom.tam.util
 
 		/// <summary>This routine returns the base class of an object.  This is just
 		/// the class of the object for non-arrays.</summary>
-		public static Type GetBaseClass(Object o)
+		public static Type GetBaseClass(object o)
 		{			
 			if(o == null)
 			{
@@ -275,7 +279,7 @@ namespace nom.tam.util
 			}
       if(o.GetType().IsArray)
       {
-        IEnumerator i = ((Array)o).GetEnumerator();
+        var i = ((Array)o).GetEnumerator();
         i.MoveNext();
 
         return GetBaseClass(i.Current);
@@ -291,14 +295,14 @@ namespace nom.tam.util
 		/// <param name="o">The array object whose base length is desired.</param>
 		/// <returns>the size of the object in bytes, 0 if null, or -1 if not a primitive array.
 		/// </returns>
-		public static int GetBaseLength(Object o)
+		public static int GetBaseLength(object o)
 		{
 			if(o == null)
 			{
 				return 0;
 			}
 
-      Type t = GetBaseClass(o);
+      var t = GetBaseClass(o);
 
       if(t.IsPrimitive)
       {
@@ -313,7 +317,7 @@ namespace nom.tam.util
 
     /// <summary>Generate a description of an array (presumed rectangular).</summary>
 		/// <param name="o">The array to be described.</param>
-		public static String ArrayDescription(Object o)
+		public static string ArrayDescription(object o)
 		{
       if(o == null)
       {
@@ -333,27 +337,27 @@ namespace nom.tam.util
     /// <summary>Given an array of arbitrary dimensionality return
 		/// the array flattened into a single dimension.</summary>
 		/// <param name="input">The input array.</param>
-		public static Object Flatten(Object input)
+		public static object Flatten(object input)
 		{
-			int[] dimens = GetDimensions(input);
+			var dimens = GetDimensions(input);
 			if(dimens.Length <= 1)
 			{
 				return input;
 			}
-			int size = 1;
-			for(int i = 0; i < dimens.Length; i += 1)
+			var size = 1;
+			for(var i = 0; i < dimens.Length; i += 1)
 			{
 				size *= dimens[i];
 			}
 
-			Array flat = NewInstance(GetBaseClass(input), size);
+			var flat = NewInstance(GetBaseClass(input), size);
 
 			if(size == 0)
 			{
 				return flat;
 			}
 			
-			int offset = 0;
+			var offset = 0;
 			DoFlatten((Array)input, flat, offset);
 
       return flat;
@@ -365,22 +369,22 @@ namespace nom.tam.util
 		/// <param name="output">The flattened array.</param>
 		/// <param name="offset">The current offset within the output array.</param>
 		/// <returns>The number of elements within the array.</returns>
-		protected internal static int DoFlatten(Object input, Array output, int offset)
+		protected internal static int DoFlatten(object input, Array output, int offset)
 		{
-      int result = 0;
+      var result = 0;
 
       if(IsArrayOfArrays(input))
       {
-        for(IEnumerator e = ((Array)input).GetEnumerator(); e.MoveNext();)
+        for(var e = ((Array)input).GetEnumerator(); e.MoveNext();)
         {
-          Array a = (Array)e.Current;
+          var a = (Array)e.Current;
           result += DoFlatten(a, output, offset + result);
         }
       }
       else if(input.GetType().IsArray)
       {
-        IEnumerator e = ((Array)input).GetEnumerator();
-        for(int i = offset; e.MoveNext(); ++i)
+        var e = ((Array)input).GetEnumerator();
+        for(var i = offset; e.MoveNext(); ++i)
         {
           output.SetValue(e.Current, i);
           ++result;
@@ -406,8 +410,8 @@ namespace nom.tam.util
 				throw new SystemException("Attempt to curl non-1D array");
 			}
 			
-			int test = 1;
-			for(int i = 0; i < dimens.Length; i += 1)
+			var test = 1;
+			for(var i = 0; i < dimens.Length; i += 1)
 			{
 				test *= dimens[i];
 			}
@@ -417,15 +421,15 @@ namespace nom.tam.util
 				throw new SystemException("Curled array does not fit desired dimensions");
 			}
 			
-			Array newArray = NewInstance(GetBaseClass(input), dimens);
+			var newArray = NewInstance(GetBaseClass(input), dimens);
 
-      int[] index = new int[dimens.Length];
+      var index = new int[dimens.Length];
       index[index.Length - 1] = -1;
-      for(int i = 0; i < index.Length - 1; ++i)
+      for(var i = 0; i < index.Length - 1; ++i)
       {
         index[i] = 0;
       }
-      for(IEnumerator i = input.GetEnumerator(); i.MoveNext() && NextIndex(index, dimens);)
+      for(var i = input.GetEnumerator(); i.MoveNext() && NextIndex(index, dimens);)
       {
         newArray.SetValue(i.Current, index);
       }
@@ -436,9 +440,9 @@ namespace nom.tam.util
 
     public static bool NextIndex(int[] index, int[] dims)
     {
-      bool ok = false;
+      var ok = false;
 
-      for(int i = index.Length - 1; i >= 0 && !ok; --i)
+      for(var i = index.Length - 1; i >= 0 && !ok; --i)
       {
         index[i] += 1;
         if(index[i] < dims[i])
@@ -456,9 +460,9 @@ namespace nom.tam.util
 
     public static bool NextIndex(int[] index, int[] starts, int[] dims)
     {
-      bool ok = false;
+      var ok = false;
 
-      for(int i = index.Length - 1; i >= 0 && !ok; --i)
+      for(var i = index.Length - 1; i >= 0 && !ok; --i)
       {
         index[i] += 1;
         if(index[i] < dims[i])
@@ -509,10 +513,10 @@ namespace nom.tam.util
 		/// </returns>
 		public static Array NewInstance(Type cl, int dim)
 		{
-			Array o = Array.CreateInstance(cl, dim);
+			var o = Array.CreateInstance(cl, dim);
 			if(o == null)
 			{
-				String desc = cl + "[" + dim + "]";
+                var desc = cl + "[" + dim + "]";
 				throw new System.OutOfMemoryException("Unable to allocate array: " + desc);
 			}
 			return o;
@@ -538,7 +542,7 @@ namespace nom.tam.util
       else
       {
         Array a = new Array[dims[dim]];
-        for(int i = 0; i < a.Length; ++i)
+        for(var i = 0; i < a.Length; ++i)
         {
           a.SetValue(NewInstance(cl, dims, dim + 1), i);
         }

@@ -81,26 +81,26 @@ namespace nom.tam.fits
 				}
 				cursor = GetCursor();
 				cursor.MoveNext();
-				String key = (String)cursor.Key;
+                var key = (string)cursor.Key;
 				if(!key.Equals("SIMPLE") && !key.Equals("XTENSION"))
 				{
 					return false;
 				}
         cursor.MoveNext();
-				key = (String)cursor.Key;
+				key = (string)cursor.Key;
 				if(!key.Equals("BITPIX"))
 				{
           return false;
 				}
         cursor.MoveNext();
-				key = (String)cursor.Key;
+				key = (string)cursor.Key;
 				if(!key.Equals("NAXIS"))
 				{
           return false;
 				}
 				while(cursor.MoveNext())
 				{
-					key = (String)cursor.Key;
+					key = (string)cursor.Key;
 				}
 				if(!key.Equals("END"))
 				{
@@ -127,14 +127,14 @@ namespace nom.tam.fits
 				// (at least not where it needs to be in the primary array).
 				if(FindCard("NAXIS") != null)
 				{
-					int nax = GetIntValue("NAXIS");
+					var nax = GetIntValue("NAXIS");
 					
 					cursor = GetCursor();
 
           if(FindCard("NAXIS" + nax) != null)
 					{
             cursor.MoveNext();
-						HeaderCard hc = (HeaderCard)((DictionaryEntry)cursor.Current).Value;
+						var hc = (HeaderCard)((DictionaryEntry)cursor.Current).Value;
 						try
 						{
 							RemoveCard("EXTEND");
@@ -272,13 +272,13 @@ namespace nom.tam.fits
 		
 		/// <summary>Create a header and initialize it with a vector of strings.</summary>
 		/// <param name="cards">Card images to be placed in the header.</param>
-		public Header(String[] newCards)
+		public Header(string[] newCards)
 		{
 			InitBlock();
 			
-			for(int i = 0; i < newCards.Length; i += 1)
+			for(var i = 0; i < newCards.Length; i += 1)
 			{
-				HeaderCard card = new HeaderCard(newCards[i]);
+				var card = new HeaderCard(newCards[i]);
 				if(card.Value == null)
 				{
 					cards.Add(card);
@@ -315,9 +315,13 @@ namespace nom.tam.fits
       if(card != null)
       {
         RemoveCard(card.Key);
-        Cursor c = cards.GetCursor();
-        while(c.MoveNext());
-        c.Add(card.Key, card);
+        var c = cards.GetCursor();
+        while(c.MoveNext())
+                {
+                    ;
+                }
+
+                c.Add(card.Key, card);
       }
     }
 
@@ -328,7 +332,7 @@ namespace nom.tam.fits
     /// <param name="key">The key of the new HeaderCard</param>
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
-    public virtual void AddValue(String key, String val, String comment)
+    public virtual void AddValue(string key, string val, string comment)
     {
       AddCard(new HeaderCard(key, val, comment));
     }
@@ -340,7 +344,7 @@ namespace nom.tam.fits
     /// <param name="key">The key of the new HeaderCard</param>
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
-    public virtual void AddValue(String key, bool val, String comment)
+    public virtual void AddValue(string key, bool val, string comment)
     {
       AddCard(new HeaderCard(key, val, comment));
     }
@@ -352,7 +356,7 @@ namespace nom.tam.fits
     /// <param name="key">The key of the new HeaderCard</param>
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
-    public virtual void AddValue(String key, int val, String comment)
+    public virtual void AddValue(string key, int val, string comment)
     {
       AddCard(new HeaderCard(key, val, comment));
     }
@@ -364,7 +368,7 @@ namespace nom.tam.fits
     /// <param name="key">The key of the new HeaderCard</param>
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
-    public virtual void AddValue(String key, float val, String comment)
+    public virtual void AddValue(string key, float val, string comment)
     {
       AddCard(new HeaderCard(key, val, comment));
     }
@@ -376,7 +380,7 @@ namespace nom.tam.fits
     /// <param name="key">The key of the new HeaderCard</param>
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
-    public virtual void AddValue(String key, long val, String comment)
+    public virtual void AddValue(string key, long val, string comment)
     {
       AddCard(new HeaderCard(key, val, comment));
     }
@@ -388,7 +392,7 @@ namespace nom.tam.fits
     /// <param name="key">The key of the new HeaderCard</param>
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
-    public virtual void AddValue(String key, double val, String comment)
+    public virtual void AddValue(string key, double val, string comment)
     {
       AddCard(new HeaderCard(key, val, comment));
     }
@@ -398,7 +402,7 @@ namespace nom.tam.fits
     /// and adds the new card to the end of the HeaderCard list
     /// </summary>
     /// <param name="comment">The comment of the new HeaderCard</param>
-    public virtual void AddComment(String comment)
+    public virtual void AddComment(string comment)
     {
       AddCard(new HeaderCard("COMMENT", null, comment));
     }
@@ -408,7 +412,7 @@ namespace nom.tam.fits
     /// and adds the new card to the end of the HeaderCard list
     /// </summary>
     /// <param name="history"></param>
-    public virtual void AddHistory(String history)
+    public virtual void AddHistory(string history)
     {
       AddCard(new HeaderCard("HISTORY", null, history));
     }
@@ -486,7 +490,7 @@ namespace nom.tam.fits
 
       try
       {
-        c = (HeaderCard)cards.getElement(pos).Value;
+        c = (HeaderCard)cards.GetElement(pos).Value;
       }
       catch(Exception)
       {
@@ -506,7 +510,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="pos">The list position into which to insert the new HeaderCard</param>
-    public virtual void InsertValue(String key, String val, String comment, int pos)
+    public virtual void InsertValue(string key, string val, string comment, int pos)
     {
       InsertCard(new HeaderCard(key, val, comment), pos);
     }
@@ -521,7 +525,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="pos">The list position into which to insert the new HeaderCard</param>
-    public virtual void InsertValue(String key, bool val, String comment, int pos)
+    public virtual void InsertValue(string key, bool val, string comment, int pos)
     {
       InsertCard(new HeaderCard(key, val, comment), pos);
     }
@@ -536,7 +540,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="pos">The list position into which to insert the new HeaderCard</param>
-    public virtual void InsertValue(String key, int val, String comment, int pos)
+    public virtual void InsertValue(string key, int val, string comment, int pos)
     {
       InsertCard(new HeaderCard(key, val, comment), pos);
     }
@@ -551,7 +555,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="pos">The list position into which to insert the new HeaderCard</param>
-    public virtual void InsertValue(String key, float val, String comment, int pos)
+    public virtual void InsertValue(string key, float val, string comment, int pos)
     {
       InsertCard(new HeaderCard(key, val, comment), pos);
     }
@@ -566,7 +570,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="pos">The list position into which to insert the new HeaderCard</param>
-    public virtual void InsertValue(String key, long val, String comment, int pos)
+    public virtual void InsertValue(string key, long val, string comment, int pos)
     {
       InsertCard(new HeaderCard(key, val, comment), pos);
     }
@@ -581,7 +585,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="pos">The list position into which to insert the new HeaderCard</param>
-    public virtual void InsertValue(String key, double val, String comment, int pos)
+    public virtual void InsertValue(string key, double val, string comment, int pos)
     {
       InsertCard(new HeaderCard(key, val, comment), pos);
     }
@@ -594,7 +598,7 @@ namespace nom.tam.fits
     /// </summary>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="pos">The list position into which to insert the new HeaderCard</param>
-    public virtual void InsertComment(String comment, int pos)
+    public virtual void InsertComment(string comment, int pos)
     {
       InsertCard(new HeaderCard("COMMENT", null, comment), pos);
     }
@@ -607,7 +611,7 @@ namespace nom.tam.fits
     /// </summary>
     /// <param name="history">The history of the new HeaderCard</param>
     /// <param name="pos">The list position into which to insert the new HeaderCard</param>
-    public virtual void InsertHistory(String history, int pos)
+    public virtual void InsertHistory(string history, int pos)
     {
       InsertCard(new HeaderCard("HISTORY", null, history), pos);
     }
@@ -621,7 +625,7 @@ namespace nom.tam.fits
     /// </summary>
     /// <param name="card">The card to be inserted</param>
     /// <param name="posKey">The key of the HeaderCard in front of which card is to be inserted</param>
-    public virtual void InsertCard(HeaderCard card, String posKey)
+    public virtual void InsertCard(HeaderCard card, string posKey)
     {
       InsertCard(card, FindCard(posKey));
     }
@@ -636,7 +640,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posKey">The key of the HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertValue(String key, String val, String comment, String posKey)
+    public virtual void InsertValue(string key, string val, string comment, string posKey)
     {
       InsertCard(new HeaderCard(key, val, comment), posKey);
     }
@@ -651,7 +655,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posKey">The key of the HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertValue(String key, bool val, String comment, String posKey)
+    public virtual void InsertValue(string key, bool val, string comment, string posKey)
     {
       InsertCard(new HeaderCard(key, val, comment), posKey);
     }
@@ -666,7 +670,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posKey">The key of the HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertValue(String key, int val, String comment, String posKey)
+    public virtual void InsertValue(string key, int val, string comment, string posKey)
     {
       InsertCard(new HeaderCard(key, val, comment), posKey);
     }
@@ -681,7 +685,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posKey">The key of the HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertValue(String key, float val, String comment, String posKey)
+    public virtual void InsertValue(string key, float val, string comment, string posKey)
     {
       InsertCard(new HeaderCard(key, val, comment), posKey);
     }
@@ -696,7 +700,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posKey">The key of the HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertValue(String key, long val, String comment, String posKey)
+    public virtual void InsertValue(string key, long val, string comment, string posKey)
     {
       InsertCard(new HeaderCard(key, val, comment), posKey);
     }
@@ -711,7 +715,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posKey">The key of the HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertValue(String key, double val, String comment, String posKey)
+    public virtual void InsertValue(string key, double val, string comment, string posKey)
     {
       InsertCard(new HeaderCard(key, val, comment), posKey);
     }
@@ -724,7 +728,7 @@ namespace nom.tam.fits
     /// </summary>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posKey">The key of the HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertComment(String comment, String posKey)
+    public virtual void InsertComment(string comment, string posKey)
     {
       InsertCard(new HeaderCard("COMMENT", null, comment), posKey);
     }
@@ -737,7 +741,7 @@ namespace nom.tam.fits
     /// </summary>
     /// <param name="history">The history of the new HeaderCard</param>
     /// <param name="posKey">The key of the HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertHistory(String history, String posKey)
+    public virtual void InsertHistory(string history, string posKey)
     {
       InsertCard(new HeaderCard("HISTORY", null, history), posKey);
     }
@@ -763,11 +767,15 @@ namespace nom.tam.fits
         return;
       }
 
-      Cursor c = cards.GetCursor();
+      var c = cards.GetCursor();
       for(c.MoveNext();
         c.Current != null && !((DictionaryEntry)c.Current).Value.Equals(posCard) &&
-        c.MoveNext(););
-      if(c.Current == null)
+        c.MoveNext();)
+            {
+                ;
+            }
+
+            if (c.Current == null)
       {
         AddCard(card);
       }
@@ -786,7 +794,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posCard">The HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertValue(String key, String val, String comment, HeaderCard posCard)
+    public virtual void InsertValue(string key, string val, string comment, HeaderCard posCard)
     {
       InsertCard(new HeaderCard(key, val, comment), posCard);
     }
@@ -800,7 +808,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posCard">The HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertValue(String key, bool val, String comment, HeaderCard posCard)
+    public virtual void InsertValue(string key, bool val, string comment, HeaderCard posCard)
     {
       InsertCard(new HeaderCard(key, val, comment), posCard);
     }
@@ -814,7 +822,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posCard">The HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertValue(String key, int val, String comment, HeaderCard posCard)
+    public virtual void InsertValue(string key, int val, string comment, HeaderCard posCard)
     {
       InsertCard(new HeaderCard(key, val, comment), posCard);
     }
@@ -828,7 +836,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posCard">The HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertValue(String key, float val, String comment, HeaderCard posCard)
+    public virtual void InsertValue(string key, float val, string comment, HeaderCard posCard)
     {
       InsertCard(new HeaderCard(key, val, comment), posCard);
     }
@@ -842,7 +850,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posCard">The HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertValue(String key, long val, String comment, HeaderCard posCard)
+    public virtual void InsertValue(string key, long val, string comment, HeaderCard posCard)
     {
       InsertCard(new HeaderCard(key, val, comment), posCard);
     }
@@ -856,7 +864,7 @@ namespace nom.tam.fits
     /// <param name="val">The value of the new HeaderCard</param>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posCard">The HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertValue(String key, double val, String comment, HeaderCard posCard)
+    public virtual void InsertValue(string key, double val, string comment, HeaderCard posCard)
     {
       InsertCard(new HeaderCard(key, val, comment), posCard);
     }
@@ -868,7 +876,7 @@ namespace nom.tam.fits
     /// </summary>
     /// <param name="comment">The comment of the new HeaderCard</param>
     /// <param name="posCard">The HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertComment(String comment, HeaderCard posCard)
+    public virtual void InsertComment(string comment, HeaderCard posCard)
     {
       InsertCard(new HeaderCard("COMMENT", null, comment), posCard);
     }
@@ -880,7 +888,7 @@ namespace nom.tam.fits
     /// </summary>
     /// <param name="history">The history of the new HeaderCard</param>
     /// <param name="posCard">The HeaderCard in front of which the new HeaderCard is to be inserted</param>
-    public virtual void InsertHistory(String history, HeaderCard posCard)
+    public virtual void InsertHistory(string history, HeaderCard posCard)
     {
       InsertCard(new HeaderCard("HISTORY", null, history), posCard);
     }
@@ -895,14 +903,14 @@ namespace nom.tam.fits
     /// <param name="index">The position in the HeaderCard list of the HeaderCard to be removed</param>
     public virtual void RemoveCard(int index)
     {
-      RemoveCard((HeaderCard)cards.getElement(index).Value);
+      RemoveCard((HeaderCard)cards.GetElement(index).Value);
     }
 
     /// <summary>
     /// Removes the HeaderCard associated with key
     /// </summary>
     /// <param name="key">The key of the HeaderCard to be removed</param>
-    public virtual void RemoveCard(String key)
+    public virtual void RemoveCard(string key)
     {
       cards.Remove(key);
     }
@@ -918,10 +926,10 @@ namespace nom.tam.fits
         return;
       }
 
-      Cursor c = cards.GetCursor();
-      for(bool done = false; !done && c.MoveNext();)
+      var c = cards.GetCursor();
+      for(var done = false; !done && c.MoveNext();)
       {
-        HeaderCard hc = (HeaderCard)((DictionaryEntry)c.Current).Value;
+        var hc = (HeaderCard)((DictionaryEntry)c.Current).Value;
         if(card.Equals(hc))
         {
           c.Remove();
@@ -938,7 +946,7 @@ namespace nom.tam.fits
     /// <param name="value"> A string to follow the header.</param>
     /// <exception cref=""> HeaderCardException If the parameters cannot build a
     /// valid FITS card.</exception>
-    public virtual void InsertCommentStyle(String header, String value_Renamed)
+    public virtual void InsertCommentStyle(string header, string value_Renamed)
     {
       // Should just truncate strings, so we should never get
       // an exception...
@@ -975,7 +983,7 @@ namespace nom.tam.fits
     /// <param name="key">The header key.</param>
     /// FIX THIS
     /// either kill this or RemoveCard
-    public virtual void DeleteKey(String key)
+    public virtual void DeleteKey(string key)
     {
       cards.Remove(key);			
     }
@@ -984,7 +992,7 @@ namespace nom.tam.fits
     /// <param name="key">the keyword to be found.</param>
     /// <returns> <CODE>true<CODE> if the specified keyword is present in this table;
     /// <CODE>false<CODE> otherwise.</returns>
-    public bool ContainsKey(String key)
+    public bool ContainsKey(string key)
     {
       return cards.ContainsKey(key);
     }
@@ -1011,7 +1019,7 @@ namespace nom.tam.fits
     /// <param name="card">The card to be added.</param>
     /// <exception cref=""> HeaderCardException If the card is not valid.</exception>
     /// FIX THIS
-    protected internal virtual void AddLine(String card)
+    protected internal virtual void AddLine(string card)
     {
       AddLine(new HeaderCard(card));
     }
@@ -1031,9 +1039,9 @@ namespace nom.tam.fits
     /// <returns> <CODE>null</CODE> if the keyword could not be found;
     /// return the HeaderCard object otherwise.</returns>
     /// FIX THIS
-    public virtual HeaderCard FindCard(String key)
+    public virtual HeaderCard FindCard(string key)
     {
-      HeaderCard card = (HeaderCard)cards[key];
+      var card = (HeaderCard)cards[key];
       if(card != null)
       {
         cursor.Key = key;
@@ -1068,9 +1076,9 @@ namespace nom.tam.fits
     /// <returns> <CODE>true</CODE> if the card was replaced.</returns>
     /// <exception cref=""> HeaderCardException If <CODE>newKey</CODE> is not a
     /// valid FITS keyword.</exception>
-    internal virtual bool ReplaceKey(String oldKey, String newKey)
+    internal virtual bool ReplaceKey(string oldKey, string newKey)
     {
-      HeaderCard oldCard = FindCard(oldKey);
+      var oldCard = FindCard(oldKey);
       if(oldCard == null)
       {
         return false;
@@ -1108,13 +1116,13 @@ namespace nom.tam.fits
     /// <returns>the card image; return <CODE>null</CODE> if the n'th card does not exist.</returns>
     /// <deprecated> A cursor should be used for sequential access to the header.</deprecated>
     /// KILL THIS METHOD
-    public String GetCard(int n)
+    public string GetCard(int n)
     {
       if (n >= 0 && n < cards.Count)
       {
         cursor = cards.GetCursor(n);
         cursor.MoveNext();
-        HeaderCard c = (HeaderCard)((DictionaryEntry)cursor.Current).Value;
+        var c = (HeaderCard)((DictionaryEntry)cursor.Current).Value;
         return c.ToString();
       }
       return null;
@@ -1126,17 +1134,17 @@ namespace nom.tam.fits
     /// with the index specified.  The user should specify a
     /// prefix to a keyword that is guaranteed to be present.</summary>
     /// MAN WOULD IT BE GREAT TO GET RID OF THIS METHOD
-    internal virtual Cursor PositionAfterIndex(String prefix, int col)
+    internal virtual Cursor PositionAfterIndex(string prefix, int col)
     {
-      String colnum = "" + col;
+            var colnum = "" + col;
 			
       cursor.Key = prefix + colnum;
-			
-      String key;
+
+            string key;
       while(cursor.MoveNext())
       {
         //key = cursor.Current.Key.Trim();
-        key = ((String)cursor.Key).Trim();
+        key = ((string)cursor.Key).Trim();
         if(key == null || key.Length <= colnum.Length || !key.Substring(key.Length - colnum.Length).Equals(colnum))
         {
           break;
@@ -1178,30 +1186,30 @@ namespace nom.tam.fits
 				return 0;
 			}
 			
-			int naxis = GetIntValue("NAXIS", 0);
-			int bitpix = GetIntValue("BITPIX");
+			var naxis = GetIntValue("NAXIS", 0);
+			var bitpix = GetIntValue("BITPIX");
 			
-			int[] axes = new int[naxis];
+			var axes = new int[naxis];
 			
-			for (int axis = 1; axis <= naxis; axis += 1)
+			for (var axis = 1; axis <= naxis; axis += 1)
 			{
 				axes[axis - 1] = GetIntValue("NAXIS" + axis, 0);
 			}
 			
-			bool isGroup = GetBooleanValue("GROUPS", false);
+			var isGroup = GetBooleanValue("GROUPS", false);
 			
-			int pcount = GetIntValue("PCOUNT", 0);
-			int gcount = GetIntValue("GCOUNT", 1);
+			var pcount = GetIntValue("PCOUNT", 0);
+			var gcount = GetIntValue("GCOUNT", 1);
 			
-			int startAxis = 0;
+			var startAxis = 0;
 			
 			if (isGroup && naxis > 1 && axes[0] == 0)
 			{
 				startAxis = 1;
 			}
 			
-			int size = 1;
-			for (int i = startAxis; i < naxis; i += 1)
+			var size = 1;
+			for (var i = startAxis; i < naxis; i += 1)
 			{
 				size *= axes[i];
 			}
@@ -1233,7 +1241,7 @@ namespace nom.tam.fits
     /// <summary>Get the value associated with the key as an int.</summary>
 		/// <param name="key">The header key.</param>
 		/// <param name="dft">The value to be returned if the key is not found.</param>
-		public virtual int GetIntValue(String key, int dft)
+		public virtual int GetIntValue(string key, int dft)
 		{
 			return (int) GetLongValue(key, (long) dft);
 		}
@@ -1241,7 +1249,7 @@ namespace nom.tam.fits
 		/// <summary>Get the <CODE>int</CODE> value associated with the given key.</summary>
 		/// <param name="key">The header key.</param>
 		/// <returns> The associated value or 0 if not found.</returns>
-		public virtual int GetIntValue(String key)
+		public virtual int GetIntValue(string key)
 		{
 			return (int) GetLongValue(key);
 		}
@@ -1249,7 +1257,7 @@ namespace nom.tam.fits
 		/// <summary>Get the <CODE>long</CODE> value associated with the given key.</summary>
 		/// <param name="key">The header key.</param>
 		/// <returns> The associated value or 0 if not found.</returns>
-		public virtual long GetLongValue(String key)
+		public virtual long GetLongValue(string key)
 		{
 			return GetLongValue(key, 0L);
 		}
@@ -1258,9 +1266,9 @@ namespace nom.tam.fits
 		/// <param name="key">The header key.</param>
 		/// <param name="dft">The default value to be returned if the key cannot be found.</param>
 		/// <returns> the associated value.</returns>
-		public virtual long GetLongValue(String key, long dft)
+		public virtual long GetLongValue(string key, long dft)
 		{
-			HeaderCard fcard = FindCard(key);
+			var fcard = FindCard(key);
 			if (fcard == null)
 			{
 				return dft;
@@ -1268,7 +1276,7 @@ namespace nom.tam.fits
 			
 			try
 			{
-				String v = fcard.Value;
+                var v = fcard.Value;
 				if (v != null)
 				{
 					return Int64.Parse(v);
@@ -1284,7 +1292,7 @@ namespace nom.tam.fits
 		/// <summary>Get the <CODE>float</CODE> value associated with the given key.</summary>
 		/// <param name="key">The header key.</param>
 		/// <param name="dft">The value to be returned if the key is not found.</param>
-		public virtual float GetFloatValue(String key, float dft)
+		public virtual float GetFloatValue(string key, float dft)
 		{
 			return (float)GetDoubleValue(key, dft);
 		}
@@ -1292,7 +1300,7 @@ namespace nom.tam.fits
 		/// <summary>Get the <CODE>float</CODE> value associated with the given key.</summary>
 		/// <param name="key">The header key.</param>
 		/// <returns> The associated value or 0.0 if not found.</returns>
-		public virtual float GetFloatValue(String key)
+		public virtual float GetFloatValue(string key)
 		{
 			return (float)GetDoubleValue(key);
 		}
@@ -1300,7 +1308,7 @@ namespace nom.tam.fits
 		/// <summary>Get the <CODE>double</CODE> value associated with the given key.</summary>
 		/// <param name="key">The header key.</param>
 		/// <returns>The associated value or 0.0 if not found.</returns>
-		public virtual double GetDoubleValue(String key)
+		public virtual double GetDoubleValue(string key)
 		{
 			return GetDoubleValue(key, 0.0);
 		}
@@ -1309,9 +1317,9 @@ namespace nom.tam.fits
 		/// <param name="key">The header key.</param>
 		/// <param name="dft">The default value to return if the key cannot be found.</param>
 		/// <returns> the associated value.</returns>
-		public virtual double GetDoubleValue(String key, double dft)
+		public virtual double GetDoubleValue(string key, double dft)
 		{
-			HeaderCard fcard = FindCard(key);
+			var fcard = FindCard(key);
 			if(fcard == null)
 			{
 				return dft;
@@ -1319,7 +1327,7 @@ namespace nom.tam.fits
 			
 			try
 			{
-				String v = fcard.Value;
+                var v = fcard.Value;
 				if(v != null)
 				{
 					return Double.Parse(v);
@@ -1335,7 +1343,7 @@ namespace nom.tam.fits
 		/// <summary>Get the <CODE>boolean</CODE> value associated with the given key.</summary>
 		/// <param name="The">header key.</param>
 		/// <returns> The value found, or false if not found or if the keyword is not a logical keyword.</returns>
-		public virtual bool GetBooleanValue(String key)
+		public virtual bool GetBooleanValue(string key)
 		{
 			return GetBooleanValue(key, false);
 		}
@@ -1345,15 +1353,15 @@ namespace nom.tam.fits
 		/// <param name="dft">The value to be returned if the key cannot be found
 		/// or if the parameter does not seem to be a boolean.</param>
 		/// <returns> the associated value.</returns>
-		public virtual bool GetBooleanValue(String key, bool dft)
+		public virtual bool GetBooleanValue(string key, bool dft)
 		{
-			HeaderCard fcard = FindCard(key);
+			var fcard = FindCard(key);
 			if (fcard == null)
 			{
 				return dft;
 			}
-			
-			String val = fcard.Value;
+
+            var val = fcard.Value;
 			if (val == null)
 			{
 				return dft;
@@ -1376,9 +1384,9 @@ namespace nom.tam.fits
 		/// <summary>Get the <CODE>String</CODE> value associated with the given key.</summary>
 		/// <param name="key">The header key.</param>
 		/// <returns> The associated value or null if not found or if the value is not a string.</returns>
-		public virtual String GetStringValue(String key)
+		public virtual string GetStringValue(string key)
 		{
-			HeaderCard fcard = FindCard(key);
+			var fcard = FindCard(key);
 			if(fcard == null || !fcard.IsStringValue)
 			{
 				return null;
@@ -1395,7 +1403,7 @@ namespace nom.tam.fits
     /// otherwise return the header read from the input stream.</returns>
     public static Header ReadHeader(ArrayDataIO dis)
     {
-      Header myHeader = new Header();
+      var myHeader = new Header();
       try
       {
         myHeader.Read(dis);
@@ -1426,18 +1434,18 @@ namespace nom.tam.fits
         fileOffset = - 1;
       }
 
-      byte[] buffer = new byte[80];
-      bool firstCard = true;
-      int count = 0;
-      bool notEnd = true;
+      var buffer = new byte[80];
+      var firstCard = true;
+      var count = 0;
+      var notEnd = true;
 
       while(notEnd)
       {
-        int need = 80;
+        var need = 80;
 				
         //				try
         //				{
-        for(int len = 1; need > 0 && len > 0;)
+        for(var len = 1; need > 0 && len > 0;)
         {
           len = dis.Read(buffer, 80 - need, need);
           count += 1;
@@ -1447,24 +1455,24 @@ namespace nom.tam.fits
           }
           need -= len;
         }
-        //				}
-        //				catch(EndOfStreamException e)
-        //				{
-        //					// Rethrow the EOF if we are at the beginning of the header,
-        //					// otherwise we have a FITS error.
-        //					if(firstCard && need == 80)
-        //					{
-        //						throw e;
-        //					}
-        //					throw new TruncatedFileException(e.Message);
-        //				}
-				
-        String cbuf = new String(SupportClass.ToCharArray(buffer));
-        HeaderCard fcard = new HeaderCard(cbuf);
+                //				}
+                //				catch(EndOfStreamException e)
+                //				{
+                //					// Rethrow the EOF if we are at the beginning of the header,
+                //					// otherwise we have a FITS error.
+                //					if(firstCard && need == 80)
+                //					{
+                //						throw e;
+                //					}
+                //					throw new TruncatedFileException(e.Message);
+                //				}
+
+                var cbuf = new string(SupportClass.ToCharArray(buffer));
+        var fcard = new HeaderCard(cbuf);
 
         if(firstCard)
         {
-          String key = fcard.Key;
+                    var key = fcard.Key;
           //Console.Out.WriteLine("key = '" + key + "'");
           if(key == null || (!key.Equals("SIMPLE") && !key.Equals("XTENSION")))
           {
@@ -1473,8 +1481,8 @@ namespace nom.tam.fits
 
           firstCard = false;
         }
-				
-        String key2 = fcard.Key;
+
+                var key2 = fcard.Key;
         if(key2 != null && cards.ContainsKey(key2))
         {
           Console.Error.WriteLine("Warning: multiple occurrences of key:" + key2);
@@ -1502,8 +1510,8 @@ namespace nom.tam.fits
         }
         else
         {
-          int pad = FitsUtil.Padding(count * 80);
-          for (int len = dis.Read(buffer, 0, Math.Min(pad, buffer.Length));
+          var pad = FitsUtil.Padding(count * 80);
+          for (var len = dis.Read(buffer, 0, Math.Min(pad, buffer.Length));
               pad > 0 && len != -1; )
           {
             pad -= len;
@@ -1534,19 +1542,19 @@ namespace nom.tam.fits
 			}
 			
 			//Cursor cursor = cards.GetCursor(0);
-      Cursor cursor = cards.GetCursor();
+      var cursor = cards.GetCursor();
 
       try
 			{
 				while(cursor.MoveNext())
 				{
-					HeaderCard card = (HeaderCard)((DictionaryEntry)cursor.Current).Value;
-					byte[] b = SupportClass.ToByteArray(card.ToString());
+					var card = (HeaderCard)((DictionaryEntry)cursor.Current).Value;
+					var b = SupportClass.ToByteArray(card.ToString());
 					dos.Write(b);
 				}
 				
-				byte[] padding = new byte[FitsUtil.Padding(NumberOfCards * 80)];
-				for (int i = 0; i < padding.Length; i += 1)
+				var padding = new byte[FitsUtil.Padding(NumberOfCards * 80)];
+				for (var i = 0; i < padding.Length; i += 1)
 				{
 					padding[i] = (byte)' ';// SupportClass.Identity(' ');
 				}
@@ -1568,9 +1576,9 @@ namespace nom.tam.fits
 		/// <summary>Rewrite the header.</summary>
 		public virtual void Rewrite()
 		{
-			ArrayDataIO dos = (ArrayDataIO)input;
+			var dos = (ArrayDataIO)input;
 			
-			if(this.Rewriteable)
+			if(Rewriteable)
 			{
 				//FitsUtil.Reposition(dos, fileOffset);
         dos.Seek(fileOffset, SeekOrigin.Begin);
@@ -1643,17 +1651,17 @@ namespace nom.tam.fits
 			{
 				throw new FitsException("Empty Header");
 			}
-			HeaderCard card = (HeaderCard)((DictionaryEntry)cursor.Current).Value;
-			String key = card.Key;
+			var card = (HeaderCard)((DictionaryEntry)cursor.Current).Value;
+            var key = card.Key;
 			if(!key.Equals("SIMPLE") && !key.Equals("XTENSION"))
 			{
 				throw new FitsException("No SIMPLE or XTENSION at beginning of Header");
 			}
-			bool isTable = false;
-			bool isExtension = false;
+			var isTable = false;
+			var isExtension = false;
 			if(key.Equals("XTENSION"))
 			{
-				String value_Renamed = card.Value;
+                var value_Renamed = card.Value;
 				if (value_Renamed == null)
 				{
 					throw new FitsException("Empty XTENSION keyword");
@@ -1670,10 +1678,10 @@ namespace nom.tam.fits
 			CardCheck("BITPIX");
 			CardCheck("NAXIS");
 
-			int nax = GetIntValue("NAXIS");
+			var nax = GetIntValue("NAXIS");
 //			cursor.MoveNext();
 
-			for(int i = 1; i <= nax; i += 1)
+			for(var i = 1; i <= nax; i += 1)
 			{
 				CardCheck("NAXIS" + i);
 			}
@@ -1690,13 +1698,13 @@ namespace nom.tam.fits
 		}
 
     /// <summary>Check if the given key is the next one available in the header.</summary>
-		private void CardCheck(String key)
+		private void CardCheck(string key)
 		{
 			if(!cursor.MoveNext())
 			{
 				throw new FitsException("Header terminates before " + key);
 			}
-			HeaderCard card = (HeaderCard)((DictionaryEntry)cursor.Current).Value;
+			var card = (HeaderCard)((DictionaryEntry)cursor.Current).Value;
 			if(!card.Key.Equals(key))
 			{
 				throw new FitsException("Key " + key + " not found where expected." + "Found " + card.Key);

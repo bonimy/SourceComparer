@@ -51,10 +51,10 @@ namespace nom.tam.fits
 		}
 
     /// <summary>Return the data array object.</summary>
-		public abstract Object DataArray{get;}
+		public abstract object DataArray {get;}
 
 		/// <summary>Return the non-FITS data object</summary>
-		virtual public Object Kernel
+		virtual public object Kernel
 		{
 			get
 			{
@@ -88,7 +88,7 @@ namespace nom.tam.fits
 		protected internal RandomAccess input;
     #endregion
 
-    protected void SetFileOffset(Object o)
+    protected void SetFileOffset(object o)
     {
       if(o is RandomAccess)
       {
@@ -109,7 +109,7 @@ namespace nom.tam.fits
 		
 		public virtual void Rewrite()
 		{
-			if(this.Rewriteable)
+			if(Rewriteable)
 			{
 				throw new FitsException("Illegal attempt to rewrite data");
 			}

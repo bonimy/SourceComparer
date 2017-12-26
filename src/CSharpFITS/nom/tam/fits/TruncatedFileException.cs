@@ -20,7 +20,7 @@ namespace nom.tam.fits
 		public TruncatedFileException():base()
 		{
 		}
-		public TruncatedFileException(String msg):base(msg)
+		public TruncatedFileException(string msg):base(msg)
 		{
 		}
 	}

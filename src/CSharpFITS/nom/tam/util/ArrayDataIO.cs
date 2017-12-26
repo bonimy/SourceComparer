@@ -39,7 +39,7 @@ namespace nom.tam.util
     /// <param name="o">  A [multidimensional] primitive (or Object) array.
     /// 
     /// </param>
-    public abstract int ReadArray(System.Object o);
+    public abstract int ReadArray(object o);
     /* Read a complete primitive array */
     public abstract int Read(byte[] buf);
     public abstract int Read(sbyte[] buf);
@@ -82,7 +82,7 @@ namespace nom.tam.util
     /// @throws IOException if the argument is not of the proper type
     /// 
     /// </param>
-    public abstract void  WriteArray(System.Object o);
+    public abstract void  WriteArray(object o);
     public abstract void  Write(byte b);
     public abstract void  Write(sbyte sb);
     public abstract void  Write(bool b);

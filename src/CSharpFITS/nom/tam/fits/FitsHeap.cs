@@ -112,7 +112,7 @@ namespace nom.tam.fits
 		/// heap does not extend past its prior boundaries.</summary>
 		public virtual void Rewrite()
 		{
-			if(this.Rewriteable)
+			if(Rewriteable)
 			{
 				//ArrayDataIO str = (ArrayDataIO) input;
 				//FitsUtil.Reposition(input, fileOffset);
@@ -128,7 +128,7 @@ namespace nom.tam.fits
 		/// <summary>Get data from the heap.</summary>
 		/// <param name="offset">The offset at which the data begins.</param>
 		/// <param name="array"> The array to be extracted.</param>
-		public virtual void GetData(int offset, Object array)
+		public virtual void GetData(int offset, object array)
 		{
 			try
 			{
@@ -143,7 +143,7 @@ namespace nom.tam.fits
 				//temp_BinaryReader = bstr;
 				temp_Int64 = bstr.Position;  //temp_BinaryReader.BaseStream.Position;
 				temp_Int64 = bstr.Seek(offset - heapOffset) - temp_Int64;  //temp_BinaryReader.BaseStream.Seek(offset - heapOffset, System.IO.SeekOrigin.Current) - temp_Int64;
-				int generatedAux = (int)temp_Int64;
+				var generatedAux = (int)temp_Int64;
 				heapOffset = offset;
 				heapOffset += bstr.ReadArray(array);
 			}
@@ -158,27 +158,27 @@ namespace nom.tam.fits
 		{
 			if (heapSize + need > heap.Length)
 			{
-				int newlen = (heapSize + need) * 2;
+				var newlen = (heapSize + need) * 2;
 				if (newlen < 16384)
 				{
 					newlen = 16384;
 				}
-				byte[] newHeap = new byte[newlen];
+				var newHeap = new byte[newlen];
 				Array.Copy(heap, 0, newHeap, 0, heapSize);
 				heap = newHeap;
 			}
 		}
 		
 		/// <summary>Add some data to the heap.</summary>
-		internal virtual int PutData(Object data)
+		internal virtual int PutData(object data)
 		{
-			int size = ArrayFuncs.ComputeSize(data);
+			var size = ArrayFuncs.ComputeSize(data);
 			ExpandHeap(size);
-			MemoryStream bo = new MemoryStream(size);
+			var bo = new MemoryStream(size);
 			
 			try
 			{
-				BufferedDataStream o = new BufferedDataStream(bo);
+				var o = new BufferedDataStream(bo);
 				o.WriteArray(data);
 				o.Flush();
 				o.Close();
@@ -189,7 +189,7 @@ namespace nom.tam.fits
 			}
 			
 			Array.Copy(bo.ToArray(), 0, heap, heapSize, size);
-			int oldOffset = heapSize;
+			var oldOffset = heapSize;
 			heapSize += size;
 			heapOffset = heapSize;
 			

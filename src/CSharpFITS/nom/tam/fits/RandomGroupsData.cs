@@ -42,7 +42,7 @@ namespace nom.tam.fits
 			
 		}
 
-    override public Object DataArray
+    override public object DataArray
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace nom.tam.fits
 		/// </summary>
 		public RandomGroupsData()
 		{
-			dataArray = new System.Object[0][];
+			dataArray = new object[0][];
 		}
 		
 		/// <summary>Create a RandomGroupsData object using the specified object to
@@ -89,7 +89,7 @@ namespace nom.tam.fits
 			{
 				throw new FitsException("IO error reading Random Groups data " + e);
 			}
-			int pad = FitsUtil.Padding(TrueSize);
+			var pad = FitsUtil.Padding(TrueSize);
 			try
 			{
 				//System.IO.BinaryReader temp_BinaryReader;
@@ -97,7 +97,7 @@ namespace nom.tam.fits
 				//temp_BinaryReader = str;
 				temp_Int64 = str.Position;  //temp_BinaryReader.BaseStream.Position;
 				temp_Int64 = str.Seek(pad) - temp_Int64;  //temp_BinaryReader.BaseStream.Seek(pad, System.IO.SeekOrigin.Current) - temp_Int64;
-				int generatedAux = (int)temp_Int64;
+				var generatedAux = (int)temp_Int64;
 			}
 			catch(IOException)
 			{
@@ -111,7 +111,7 @@ namespace nom.tam.fits
 			try
 			{
 				str.WriteArray(dataArray);
-				byte[] padding = new byte[FitsUtil.Padding(TrueSize)];
+				var padding = new byte[FitsUtil.Padding(TrueSize)];
 				str.Write(padding);
 				str.Flush();
 			}
@@ -123,29 +123,29 @@ namespace nom.tam.fits
 		
 		internal override void FillHeader(Header h)
 		{
-      int[] dims = ArrayFuncs.GetDimensions(dataArray);
+      var dims = ArrayFuncs.GetDimensions(dataArray);
 			//if (dataArray.Length <= 0 || dataArray[0].Length != 2)
       if(dims.Length != 2)
 			{
 				throw new FitsException("Data not conformable to Random Groups");
 			}
 			
-			int gcount = dataArray.Length;
+			var gcount = dataArray.Length;
 			//Object paraSamp = dataArray[0][0];
 			//Object dataSamp = dataArray[0][1];
-      Object paraSamp = dataArray.GetValue(0, 0);
-      Object dataSamp = dataArray.GetValue(0, 1);
+      var paraSamp = dataArray.GetValue(0, 0);
+      var dataSamp = dataArray.GetValue(0, 1);
 			
-			Type pbase = ArrayFuncs.GetBaseClass(paraSamp);
-			Type dbase = ArrayFuncs.GetBaseClass(dataSamp);
+			var pbase = ArrayFuncs.GetBaseClass(paraSamp);
+			var dbase = ArrayFuncs.GetBaseClass(dataSamp);
 			
 			if (pbase != dbase)
 			{
 				throw new FitsException("Data and parameters do not agree in type for random group");
 			}
 			
-			int[] pdims = ArrayFuncs.GetDimensions(paraSamp);
-			int[] ddims = ArrayFuncs.GetDimensions(dataSamp);
+			var pdims = ArrayFuncs.GetDimensions(paraSamp);
+			var ddims = ArrayFuncs.GetDimensions(dataSamp);
 			
 			if (pdims.Length != 1)
 			{
@@ -187,7 +187,7 @@ namespace nom.tam.fits
 			
 			h.Naxes = ddims.Length + 1;
 			h.AddValue("NAXIS1", 0, "");
-			for (int i = 2; i <= ddims.Length + 1; i += 1)
+			for (var i = 2; i <= ddims.Length + 1; i += 1)
 			{
 				h.AddValue("NAXIS" + i, ddims[i - 2], "");
 			}

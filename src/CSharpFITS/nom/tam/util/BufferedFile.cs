@@ -16,14 +16,14 @@ namespace nom.tam.util
   {
     #region Constructors
     /// <summary>Create a read-only buffered file</summary>
-    public BufferedFile(String filename):this(filename, FileAccess.Read, 32768)
+    public BufferedFile(string filename):this(filename, FileAccess.Read, 32768)
     {
     }
 		
     /// <summary>Create a buffered file with the given mode.</summary>
     /// <param name="filename">The file to be accessed.</param>
     /// <param name="access">Read/write</param>
-    public BufferedFile(String filename, FileAccess access):this(filename, access, 32768)
+    public BufferedFile(string filename, FileAccess access):this(filename, access, 32768)
     {
     }
 		
@@ -36,7 +36,7 @@ namespace nom.tam.util
     /// substantially larger than 100 bytes and
     /// defaults to 32768 bytes in the other
     /// constructors.</param>
-    public BufferedFile(String filename, FileAccess access, int bufferSize):base(new FileStream(filename, FileMode.OpenOrCreate, access, FileShare.Read, bufferSize))
+    public BufferedFile(string filename, FileAccess access, int bufferSize):base(new FileStream(filename, FileMode.OpenOrCreate, access, FileShare.Read, bufferSize))
     {
     }
     #endregion

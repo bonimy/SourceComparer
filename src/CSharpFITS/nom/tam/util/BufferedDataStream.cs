@@ -127,42 +127,42 @@ namespace nom.tam.util
 
     public override char ReadChar()
     {
-      char[] buf = new char[1];
+      var buf = new char[1];
       Read(buf);
       return buf[0];
     }
 
     public override short ReadInt16()
     {
-      short[] buf = new short[1];
+      var buf = new short[1];
       Read(buf);
       return buf[0];
     }
 
     public override int ReadInt32()
     {
-      int[] buf = new int[1];
+      var buf = new int[1];
       Read(buf);
       return buf[0];
     }
 
     public override long ReadInt64()
     {
-      long[] buf = new long[1];
+      var buf = new long[1];
       Read(buf);
       return buf[0];
     }
 
     public override float ReadSingle()
     {
-      float[] buf = new float[1];
+      var buf = new float[1];
       Read(buf);
       return buf[0];
     }
 
     public override double ReadDouble()
     {
-      double[] buf = new double[1];
+      var buf = new double[1];
       Read(buf);
       return buf[0];
     }
@@ -178,7 +178,7 @@ namespace nom.tam.util
     /// <returns>s  The number of bytes read.
     /// 
     /// </returns>
-    public override int ReadArray(Object o)
+    public override int ReadArray(object o)
     {
       primitiveArrayCount = 0;
       return primitiveArrayRecurse(o);
@@ -186,7 +186,7 @@ namespace nom.tam.util
 		
     /// <summary>Read recursively over a multi-dimensional array.</summary>
     /// <returns> The number of bytes read.</returns>
-    protected int primitiveArrayRecurse(Object o)
+    protected int primitiveArrayRecurse(object o)
     {
       if(o == null)
       {
@@ -204,8 +204,8 @@ namespace nom.tam.util
       {
         if(ArrayFuncs.IsArrayOfArrays(o))
         {
-          IEnumerator i = ((Array)o).GetEnumerator();
-          for(bool ok = i.MoveNext(); ok; ok = i.MoveNext())
+          var i = ((Array)o).GetEnumerator();
+          for(var ok = i.MoveNext(); ok; ok = i.MoveNext())
           {
             primitiveArrayRecurse(i.Current);
           }
@@ -218,7 +218,7 @@ namespace nom.tam.util
       else
       {
         // This is a one-d array.  Process it using our special functions.
-        Type t = o.GetType().GetElementType();
+        var t = o.GetType().GetElementType();
         if(typeof(bool).Equals(t))
         {
           primitiveArrayCount += Read((bool[])o, 0, ((bool[])o).Length);
@@ -311,11 +311,11 @@ namespace nom.tam.util
 
     public override int Read(byte[] buf, int offset, int size)
     {
-      int result = 0;
+      var result = 0;
 
       try
       {
-        byte[] tbuf = _in.ReadBytes(size);
+        var tbuf = _in.ReadBytes(size);
         Buffer.BlockCopy(tbuf, 0, buf, offset, tbuf.Length);
         result = tbuf.Length;
       }
@@ -329,12 +329,12 @@ namespace nom.tam.util
 
     public override int Read(sbyte[] buf, int offset, int size)
     {
-      int result = 0;
+      var result = 0;
 
       try
       {
-        byte[] tbuf = _in.ReadBytes(size);
-        for(int i = 0; i < tbuf.Length; ++i)
+        var tbuf = _in.ReadBytes(size);
+        for(var i = 0; i < tbuf.Length; ++i)
         {
           buf[i + offset] = (sbyte)tbuf[i];
         }
@@ -350,12 +350,12 @@ namespace nom.tam.util
 
     public override int Read(bool[] buf, int offset, int size)
     {
-      int nRead = 0;
+      var nRead = 0;
 
       try
       {
-        byte[] tbuf = _in.ReadBytes(boolByteStride * size);
-        for(int b = 0; b < tbuf.Length; ++nRead, b += boolByteStride)
+        var tbuf = _in.ReadBytes(boolByteStride * size);
+        for(var b = 0; b < tbuf.Length; ++nRead, b += boolByteStride)
         {
           buf[nRead + offset] = BitConverter.ToBoolean(tbuf, b);
         }
@@ -370,13 +370,13 @@ namespace nom.tam.util
 
     public override int Read(char[] buf, int offset, int size)
     {
-      int nRead = 0;
+      var nRead = 0;
 
       try
       {
         byte bPrime = 0;
-        byte[] tbuf = _in.ReadBytes(charByteStride * size);
-        for(int b = 0; b < tbuf.Length; ++nRead, b += charByteStride)
+        var tbuf = _in.ReadBytes(charByteStride * size);
+        for(var b = 0; b < tbuf.Length; ++nRead, b += charByteStride)
         {
           bPrime = tbuf[b];
           tbuf[b] = tbuf[b + 1];
@@ -394,13 +394,13 @@ namespace nom.tam.util
 
     public override int Read(short[] buf, int offset, int size)
     {
-      int nRead = 0;
+      var nRead = 0;
 
       try
       {
         byte bPrime = 0;
-        byte[] tbuf = _in.ReadBytes(shortByteStride * size);
-        for(int b = 0; b < tbuf.Length; ++nRead, b += shortByteStride)
+        var tbuf = _in.ReadBytes(shortByteStride * size);
+        for(var b = 0; b < tbuf.Length; ++nRead, b += shortByteStride)
         {
           bPrime = tbuf[b];
           tbuf[b] = tbuf[b + 1];
@@ -418,13 +418,13 @@ namespace nom.tam.util
 
     public override int Read(int[] buf, int offset, int size)
     {
-      int nRead = 0;
+      var nRead = 0;
 
       try
       {
         byte bPrime = 0;
-        byte[] tbuf = _in.ReadBytes(intByteStride * size);
-        for(int b = 0; b < tbuf.Length; ++nRead, b += intByteStride)
+        var tbuf = _in.ReadBytes(intByteStride * size);
+        for(var b = 0; b < tbuf.Length; ++nRead, b += intByteStride)
         {
           bPrime = tbuf[b];
           tbuf[b] = tbuf[b + 3];
@@ -445,13 +445,13 @@ namespace nom.tam.util
 
     public override int Read(long[] buf, int offset, int size)
     {
-      int nRead = 0;
+      var nRead = 0;
 
       try
       {
         byte bPrime = 0;
-        byte[] tbuf = _in.ReadBytes(longByteStride * size);
-        for(int b = 0; b < tbuf.Length; ++nRead, b += longByteStride)
+        var tbuf = _in.ReadBytes(longByteStride * size);
+        for(var b = 0; b < tbuf.Length; ++nRead, b += longByteStride)
         {
           bPrime = tbuf[b];
           tbuf[b] = tbuf[b + 7];
@@ -478,13 +478,13 @@ namespace nom.tam.util
 
     public override int Read(float[] buf, int offset, int size)
     {
-      int nRead = 0;
+      var nRead = 0;
 
       try
       {
         byte bPrime = 0;
-        byte[] tbuf = _in.ReadBytes(floatByteStride * size);
-        for(int b = 0; b < tbuf.Length; ++nRead, b += floatByteStride)
+        var tbuf = _in.ReadBytes(floatByteStride * size);
+        for(var b = 0; b < tbuf.Length; ++nRead, b += floatByteStride)
         {
           bPrime = tbuf[b];
           tbuf[b] = tbuf[b + 3];
@@ -506,13 +506,13 @@ namespace nom.tam.util
 
     public override int Read(double[] buf, int offset, int size)
     {
-      int nRead = 0;
+      var nRead = 0;
 
       try
       {
         byte bPrime = 0;
-        byte[] tbuf = _in.ReadBytes(doubleByteStride * size);
-        for(int b = 0; b < tbuf.Length; ++nRead, b += doubleByteStride)
+        var tbuf = _in.ReadBytes(doubleByteStride * size);
+        for(var b = 0; b < tbuf.Length; ++nRead, b += doubleByteStride)
         {
           bPrime = tbuf[b];
           tbuf[b] = tbuf[b + 7];
@@ -557,8 +557,8 @@ namespace nom.tam.util
 
     public override void Write(char x)
     {
-      byte[] tbuf = BitConverter.GetBytes(x);
-      byte bPrime = tbuf[0];
+      var tbuf = BitConverter.GetBytes(x);
+      var bPrime = tbuf[0];
       tbuf[0] = tbuf[1];
       tbuf[1] = bPrime;
 
@@ -567,8 +567,8 @@ namespace nom.tam.util
 
     public override void Write(short x)
     {
-      byte[] tbuf = BitConverter.GetBytes(x);
-      byte bPrime = tbuf[0];
+      var tbuf = BitConverter.GetBytes(x);
+      var bPrime = tbuf[0];
       tbuf[0] = tbuf[1];
       tbuf[1] = bPrime;
 
@@ -577,8 +577,8 @@ namespace nom.tam.util
 
     public override void Write(int x)
     {
-      byte[] tbuf = BitConverter.GetBytes(x);
-      byte bPrime = tbuf[0];
+      var tbuf = BitConverter.GetBytes(x);
+      var bPrime = tbuf[0];
       tbuf[0] = tbuf[3];
       tbuf[3] = bPrime;
       bPrime = tbuf[1];
@@ -590,8 +590,8 @@ namespace nom.tam.util
 
     public override void Write(long x)
     {
-      byte[] tbuf = BitConverter.GetBytes(x);
-      byte bPrime = tbuf[0];
+      var tbuf = BitConverter.GetBytes(x);
+      var bPrime = tbuf[0];
       tbuf[0] = tbuf[7];
       tbuf[7] = bPrime;
       bPrime = tbuf[1];
@@ -609,8 +609,8 @@ namespace nom.tam.util
 
     public override void Write(float x)
     {
-      byte[] tbuf = BitConverter.GetBytes(x);
-      byte bPrime = tbuf[0];
+      var tbuf = BitConverter.GetBytes(x);
+      var bPrime = tbuf[0];
       tbuf[0] = tbuf[3];
       tbuf[3] = bPrime;
       bPrime = tbuf[1];
@@ -622,8 +622,8 @@ namespace nom.tam.util
 
     public override void Write(double x)
     {
-      byte[] tbuf = BitConverter.GetBytes(x);
-      byte bPrime = tbuf[0];
+      var tbuf = BitConverter.GetBytes(x);
+      var bPrime = tbuf[0];
       tbuf[0] = tbuf[7];
       tbuf[7] = bPrime;
       bPrime = tbuf[1];
@@ -652,14 +652,14 @@ namespace nom.tam.util
     /// </summary>
     /// <param name="o"> The object to be written.  It must be an array of a primitive
     /// type, Object, or String.</param>
-    public override void WriteArray(Object o)
+    public override void WriteArray(object o)
     {
       if(!o.GetType().IsArray)
       {
         throw new IOException("Invalid object passed to BufferedDataStream.Write" + o.GetType().FullName);
       }
-      Type type = o.GetType();
-      int rank = ((Array)o).Rank;
+      var type = o.GetType();
+      var rank = ((Array)o).Rank;
 
       // Is this a multidimensional array?  If so process recursively.
       if(ArrayFuncs.GetDimensions(o).Length > 1)
@@ -667,8 +667,8 @@ namespace nom.tam.util
       {
         if(ArrayFuncs.IsArrayOfArrays(o))
         {
-          IEnumerator i = ((Array)o).GetEnumerator();
-          for(bool ok = i.MoveNext(); ok; ok = i.MoveNext())
+          var i = ((Array)o).GetEnumerator();
+          for(var ok = i.MoveNext(); ok; ok = i.MoveNext())
           {
             WriteArray(i.Current);
           }
@@ -681,7 +681,7 @@ namespace nom.tam.util
       else
       {
         // This is a one-d array.  Process it using our special functions.
-        Type t = o.GetType().GetElementType();
+        var t = o.GetType().GetElementType();
 
         if(typeof(bool).Equals(t))
         {
@@ -719,9 +719,9 @@ namespace nom.tam.util
         {
           Write((double[])o, 0, ((double[])o).Length);
         }
-        else if(typeof(String).Equals(t))
+        else if(typeof(string).Equals(t))
         {
-          Write((String[])o, 0, ((String[])o).Length);
+          Write((string[])o, 0, ((string[])o).Length);
         }
         else
         {
@@ -775,7 +775,7 @@ namespace nom.tam.util
       Write(buf, 0, buf.Length);
     }
 
-    public override void Write(String[] buf)
+    public override void Write(string[] buf)
     {
       Write(buf, 0, buf.Length);
     }
@@ -791,7 +791,7 @@ namespace nom.tam.util
       {
         _outBuf = new byte[size];
       }
-      for(int i = 0; i < size; ++i)
+      for(var i = 0; i < size; ++i)
       {
         _outBuf[i] = (byte)buf[offset + i];
       }
@@ -820,7 +820,7 @@ namespace nom.tam.util
       byte bPrime = 0;
       for(int nWritten = 0, b = 0; nWritten < size; ++nWritten, b += charByteStride)
       {
-        byte[] tbuf = BitConverter.GetBytes(buf[nWritten + offset]);
+        var tbuf = BitConverter.GetBytes(buf[nWritten + offset]);
         bPrime = tbuf[0];
         tbuf[0] = tbuf[1];
         tbuf[1] = bPrime;
@@ -838,7 +838,7 @@ namespace nom.tam.util
       byte bPrime = 0;
       for(int nWritten = 0, b = 0; nWritten < size; ++nWritten, b += shortByteStride)
       {
-        byte[] tbuf = BitConverter.GetBytes(buf[nWritten + offset]);
+        var tbuf = BitConverter.GetBytes(buf[nWritten + offset]);
         bPrime = tbuf[0];
         tbuf[0] = tbuf[1];
         tbuf[1] = bPrime;
@@ -856,7 +856,7 @@ namespace nom.tam.util
       byte bPrime = 0;
       for(int nWritten = 0, b = 0; nWritten < size; ++nWritten, b += intByteStride)
       {
-        byte[] tbuf = BitConverter.GetBytes(buf[nWritten + offset]);
+        var tbuf = BitConverter.GetBytes(buf[nWritten + offset]);
         bPrime = tbuf[0];
         tbuf[0] = tbuf[3];
         tbuf[3] = bPrime;
@@ -877,7 +877,7 @@ namespace nom.tam.util
       byte bPrime = 0;
       for(int nWritten = 0, b = 0; nWritten < size; ++nWritten, b += longByteStride)
       {
-        byte[] tbuf = BitConverter.GetBytes(buf[nWritten + offset]);
+        var tbuf = BitConverter.GetBytes(buf[nWritten + offset]);
         bPrime = tbuf[0];
         tbuf[0] = tbuf[7];
         tbuf[7] = bPrime;
@@ -904,7 +904,7 @@ namespace nom.tam.util
       byte bPrime = 0;
       for(int nWritten = 0, b = 0; nWritten < size; ++nWritten, b += floatByteStride)
       {
-        byte[] tbuf = BitConverter.GetBytes(buf[nWritten + offset]);
+        var tbuf = BitConverter.GetBytes(buf[nWritten + offset]);
         bPrime = tbuf[0];
         tbuf[0] = tbuf[3];
         tbuf[3] = bPrime;
@@ -925,7 +925,7 @@ namespace nom.tam.util
       byte bPrime = 0;
       for(int nWritten = 0, b = 0; nWritten < size; ++nWritten, b += doubleByteStride)
       {
-        byte[] tbuf = BitConverter.GetBytes(buf[nWritten + offset]);
+        var tbuf = BitConverter.GetBytes(buf[nWritten + offset]);
         bPrime = tbuf[0];
         tbuf[0] = tbuf[7];
         tbuf[7] = bPrime;
@@ -943,9 +943,9 @@ namespace nom.tam.util
       _out.Write(_outBuf, 0, doubleByteStride * size);
     }
 
-    public override void Write(String[] buf, int offset, int size)
+    public override void Write(string[] buf, int offset, int size)
     {
-      for(int i = offset; i < offset + size; ++i)
+      for(var i = offset; i < offset + size; ++i)
       {
         _out.Write(SupportClass.ToByteArray(buf[i]));
       }
@@ -977,14 +977,14 @@ namespace nom.tam.util
     {
       if (_s.CanSeek)
       {
-        long oldPos = _s.Position;
-        long newPos = _s.Seek(distance, origin);
+        var oldPos = _s.Position;
+        var newPos = _s.Seek(distance, origin);
         return newPos - oldPos;
       }
       else
       {
         long dist = 0;
-        for (int len = _s.Read(_garbageBuf, 0, (int)Math.Min(distance, _garbageBuf.Length));
+        for (var len = _s.Read(_garbageBuf, 0, (int)Math.Min(distance, _garbageBuf.Length));
             distance > 0 && len != -1; )
         {
           dist += len;

@@ -16,7 +16,7 @@ namespace nom.tam.fits
 	public class FitsUtil
 	{
 		/// <summary>Reposition a random access stream to a requested offset</summary>
-		public static void Reposition(Object o, long offset)
+		public static void Reposition(object o, long offset)
 		{
 			if (o == null)
 			{
@@ -38,7 +38,7 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Find out where we are in a random access file</summary>
-		public static long FindOffset(Object o)
+		public static long FindOffset(object o)
 		{
 			if(o is ArrayDataIO && ((ArrayDataIO)o).CanSeek)//if(o is RandomAccess)
 			{
@@ -54,7 +54,7 @@ namespace nom.tam.fits
 		/// <summary>How many bytes are needed to fill the last 2880 block?</summary>
 		public static int Padding(int size)
 		{
-			int mod = size % 2880;
+			var mod = size % 2880;
 			if (mod > 0)
 			{
 				mod = 2880 - mod;
@@ -65,7 +65,7 @@ namespace nom.tam.fits
     /// <summary>How many bytes are needed to fill the last 2880 block?</summary>
     public static int Padding(long size)
     {
-      int mod = (int)(size % (long)2880);
+      var mod = (int)(size % (long)2880);
       if (mod > 0)
       {
         mod = 2880 - mod;
@@ -80,17 +80,17 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Check if a filename seems to imply a compressed data stream.</summary>
-		public static bool IsCompressed(String filename)
+		public static bool IsCompressed(string filename)
 		{
-			int len = filename.Length;
+			var len = filename.Length;
 			return (len > 2 && (filename.Substring(len - 3).ToUpper().Equals(".gz".ToUpper())));
 		}
 		
 		/// <summary>Get the maximum length of a String in a String array.</summary>
-		public static int MaxLength(String[] o)
+		public static int MaxLength(string[] o)
 		{
-			int max = 0;
-			for (int i = 0; i < o.Length; i += 1)
+			var max = 0;
+			for (var i = 0; i < o.Length; i += 1)
 			{
 				if (o != null && o[i].Length > max)
 				{
@@ -101,19 +101,19 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Copy an array of Strings to bytes.</summary>
-		public static byte[] StringsToByteArray(String[] o, int maxLen)
+		public static byte[] StringsToByteArray(string[] o, int maxLen)
 		{
-			byte[] res = new byte[o.Length * maxLen];
-			for (int i = 0; i < o.Length; i += 1)
+			var res = new byte[o.Length * maxLen];
+			for (var i = 0; i < o.Length; i += 1)
 			{
-        byte[] bstr = SupportClass.ToByteArray(o[i]);
-				int cnt = bstr.Length;
+        var bstr = SupportClass.ToByteArray(o[i]);
+				var cnt = bstr.Length;
 				if (cnt > maxLen)
 				{
 					cnt = maxLen;
 				}
 				Array.Copy(bstr, 0, res, i * maxLen, cnt);
-				for (int j = cnt; j < maxLen; j += 1)
+				for (var j = cnt; j < maxLen; j += 1)
 				{
 					res[i * maxLen + j] = (byte)SupportClass.Identity(' ');
 				}
@@ -122,15 +122,15 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Convert bytes to Strings</summary>
-		public static String[] ByteArrayToStrings(byte[] o, int maxLen)
+		public static string[] ByteArrayToStrings(byte[] o, int maxLen)
 		{
-			String[] res = new String[o.Length / maxLen];
-			for (int i = 0; i < res.Length; i += 1)
+            var res = new string[o.Length / maxLen];
+			for (var i = 0; i < res.Length; i += 1)
 			{
 				char[] tmpChar;
 				tmpChar = new char[o.Length];
 				o.CopyTo(tmpChar, 0);
-				res[i] = new String(tmpChar, i * maxLen, maxLen).Trim();
+				res[i] = new string(tmpChar, i * maxLen, maxLen).Trim();
 			}
 			return res;
 		}
@@ -139,8 +139,8 @@ namespace nom.tam.fits
 		/// <summary>Convert an array of booleans to bytes</summary>
 		internal static byte[] BooleanToByte(bool[] bool_Renamed)
 		{
-			byte[] byt = new byte[bool_Renamed.Length];
-			for (int i = 0; i < bool_Renamed.Length; i += 1)
+			var byt = new byte[bool_Renamed.Length];
+			for (var i = 0; i < bool_Renamed.Length; i += 1)
 			{
 				byt[i] = bool_Renamed[i]?(byte)SupportClass.Identity('T'):(byte)SupportClass.Identity('F');
 			}
@@ -150,9 +150,9 @@ namespace nom.tam.fits
 		/// <summary>Convert an array of bytes to booleans</summary>
 		internal static bool[] ByteToBoolean(byte[] byt)
 		{
-			bool[] bool_Renamed = new bool[byt.Length];
+			var bool_Renamed = new bool[byt.Length];
 			
-			for(int i = 0; i < byt.Length; i += 1)
+			for(var i = 0; i < byt.Length; i += 1)
 			{
 				bool_Renamed[i] = (byt[i] == (byte)'T');
 			}

@@ -16,12 +16,12 @@ namespace nom.tam.fits
 				
 			}
 			Array GetRow(int row);
-			Object GetColumn(int col);
-			Object GetElement(int row, int col);
+        object GetColumn(int col);
+        object GetElement(int row, int col);
 			void SetRow(int row, Array newRow);
-			void SetColumn(int col, Object newCol);
-			void SetElement(int row, int col, Object element);
+			void SetColumn(int col, object newCol);
+			void SetElement(int row, int col, object element);
 			int AddRow(Array newRow);
-			int AddColumn(Object newCol);
+			int AddColumn(object newCol);
 		}
 }

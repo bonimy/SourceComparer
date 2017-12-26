@@ -86,7 +86,7 @@ namespace nom.tam.fits
 		
 		/// <summary>Given an object, create the appropriate FITS header to describe it.</summary>
 		/// <param name="o">The object to be described.</param>
-		internal static BasicHDU HDUFactory(Object o)
+		internal static BasicHDU HDUFactory(object o)
 		{
 			Data d;
 			Header h;

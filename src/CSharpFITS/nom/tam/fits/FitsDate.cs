@@ -14,7 +14,7 @@ namespace nom.tam.fits
 	public class FitsDate
 	{
 		/// <summary>Return the current date in FITS date format</summary>
-		public static String FitsDateString
+		public static string FitsDateString
 		{
 			get
 			{
@@ -30,13 +30,13 @@ namespace nom.tam.fits
 		private int second = - 1;
 		private int millisecond = - 1;
 		
-		private DateTime date = (DateTime)((Object)null);
+		private DateTime date = (DateTime)((object)null);
 		
 		/// <summary> Convert a FITS date string to a Java <CODE>Date</CODE> object.</summary>
 		/// <param name="dStr	the">FITS date</param>
 		/// <returns>	either <CODE>null</CODE> or a Date object</returns>
 		/// <exception cref=""> FitsException	if <CODE>dStr</CODE> does not contain a valid FITS date.</exception>
-		public FitsDate(String dStr)
+		public FitsDate(string dStr)
 		{
 			// if the date string is null, we are done
 			if (dStr == null)
@@ -52,7 +52,7 @@ namespace nom.tam.fits
 			}
 			
 			// if string contains at least 8 characters...
-			int len = dStr.Length;
+			var len = dStr.Length;
 			if (len >= 8)
 			{
 				int first;
@@ -86,10 +86,10 @@ namespace nom.tam.fits
 			}
 		}
 		
-		private void BuildOldDate(String dStr, int first, int len)
+		private void BuildOldDate(string dStr, int first, int len)
 		{
 			//int middle = dStr.IndexOf((System.Char) '/', first + 1);
-      int middle = SupportClass.StringIndexOf(dStr, '/', first + 1);
+      var middle = SupportClass.StringIndexOf(dStr, '/', first + 1);
 			if (middle > first + 2 && middle < len)
 			{
 				try
@@ -105,23 +105,23 @@ namespace nom.tam.fits
 			}
 		}
 		
-		private void ParseTime(String tStr)
+		private void ParseTime(string tStr)
 		{
-			int first = tStr.IndexOf(':');
+			var first = tStr.IndexOf(':');
 			if (first < 0)
 			{
 				throw new FitsException("Bad time");
 			}
 			
-			int len = tStr.Length;
+			var len = tStr.Length;
 			
       //int middle = tStr.IndexOf((System.Char) ':', first + 1);
-      int middle = SupportClass.StringIndexOf(tStr, ':', first + 1);
+      var middle = SupportClass.StringIndexOf(tStr, ':', first + 1);
 			if (middle > first + 2 && middle < len)
 			{
 				if (middle + 3 < len && tStr[middle + 3] == '.')
 				{
-					double d = Double.Parse(tStr.Substring(middle + 3));
+					var d = Double.Parse(tStr.Substring(middle + 3));
 					millisecond = (int)(d * 1000);
 					
 					len = middle + 3;
@@ -140,11 +140,11 @@ namespace nom.tam.fits
 			}
 		}
 		
-		private void BuildNewDate(String dStr, int first, int len)
+		private void BuildNewDate(string dStr, int first, int len)
 		{
 			// find the middle separator
 			//int middle = dStr.IndexOf((System.Char) '-', first + 1);
-      int middle = SupportClass.StringIndexOf(dStr, '-', first + 1);
+      var middle = SupportClass.StringIndexOf(dStr, '-', first + 1);
 			if (middle > first + 2 && middle < len)
 			{
 				try
@@ -184,7 +184,7 @@ namespace nom.tam.fits
 		/// <returns> The Java Date object.</returns>
 		public virtual DateTime ToDate()
 		{
-      if(((Object)date) == null && year != -1)
+      if(((object)date) == null && year != -1)
       {
         date = hour == -1 ?
           new DateTime(year, month, mday, 0, 0, 0, 0) :
@@ -198,7 +198,7 @@ namespace nom.tam.fits
 		
 		/// <summary>Create FITS format date string Java Date object.</summary>
 		/// <param name="epoch">The epoch to be converted to FITS format.</param>
-		public static String GetFitsDateString(DateTime epoch)
+		public static string GetFitsDateString(DateTime epoch)
 		{
 			return GetFitsDateString(epoch, true);
 		}
@@ -206,11 +206,11 @@ namespace nom.tam.fits
 		/// <summary>Create FITS format date string. Note that the date is not rounded.</summary>
 		/// <param name="epoch">The epoch to be converted to FITS format.</param>
 		/// <param name="timeOfDay">Should time of day information be included?</param>
-		public static String GetFitsDateString(DateTime epoch, bool timeOfDay)
+		public static string GetFitsDateString(DateTime epoch, bool timeOfDay)
 		{
 			try
 			{
-				System.Text.StringBuilder fitsDate = new System.Text.StringBuilder();
+				var fitsDate = new System.Text.StringBuilder();
         if(timeOfDay)
         {
           fitsDate.AppendFormat("{0:s}", epoch);
@@ -225,22 +225,22 @@ namespace nom.tam.fits
           fitsDate.AppendFormat("{0:D2}", epoch.Day);
         }
 
-        return new String(fitsDate.ToString().ToCharArray());
+        return new string(fitsDate.ToString().ToCharArray());
 			}
 			catch(Exception)
 			{
-				return new String("".ToCharArray());
+				return new string("".ToCharArray());
 			}
 		}
 
-		public override String ToString()
+		public override string ToString()
 		{
 			if (year == - 1)
 			{
 				return "";
 			}
 			
-			System.Text.StringBuilder buf = new System.Text.StringBuilder(23);
+			var buf = new System.Text.StringBuilder(23);
 			buf.Append(year);
 			buf.Append('-');
 			if (month < 10)
@@ -303,13 +303,13 @@ namespace nom.tam.fits
 			return buf.ToString();
 		}
 
-    public static void TestArgs(String[] args)
+    public static void TestArgs(string[] args)
 		{
-			for (int i = 0; i < args.Length; i++)
+			for (var i = 0; i < args.Length; i++)
 			{
 				try
 				{
-					FitsDate fd = new FitsDate(args[i]);
+					var fd = new FitsDate(args[i]);
 					Console.Out.WriteLine("\"" + args[i] + "\" => " + fd + " => " + fd.ToDate());
 				}
 				catch (Exception e)
@@ -322,7 +322,7 @@ namespace nom.tam.fits
 		
 		public static void Autotest()
 		{
-			String[] good = new String[6];
+            var good = new string[6];
 			good[0] = "20/09/79";
 			good[1] = "1997-07-25";
 			good[2] = "1987-06-05T04:03:02.01";
@@ -330,22 +330,22 @@ namespace nom.tam.fits
 			good[4] = null;
 			good[5] = "        ";
 			TestArgs(good);
-			
-			String[] badOld = new String[4];
+
+            var badOld = new string[4];
 			badOld[0] = "20/09/";
 			badOld[1] = "/09/79";
 			badOld[2] = "09//79";
 			badOld[3] = "20/09/79/";
 			TestArgs(badOld);
-			
-			String[] badNew = new String[4];
+
+            var badNew = new string[4];
 			badNew[0] = "1997-07";
 			badNew[1] = "-07-25";
 			badNew[2] = "1997--07-25";
 			badNew[3] = "1997-07-25-";
 			TestArgs(badNew);
-			
-			String[] badMisc = new String[4];
+
+            var badMisc = new string[4];
 			badMisc[0] = "5-Aug-1992";
 			badMisc[1] = "28/02/91 16:32:00";
 			badMisc[2] = "18-Feb-1993";
@@ -354,7 +354,7 @@ namespace nom.tam.fits
 		}
 		
 		[STAThread]
-		public static void Test(String[] args)
+		public static void Test(string[] args)
 		{
 			if (args.Length == 0)
 			{

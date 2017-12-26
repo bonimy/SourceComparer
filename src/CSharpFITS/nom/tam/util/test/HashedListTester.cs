@@ -39,8 +39,8 @@ namespace nom.tam.util.test
 		[STAThread]
 		public static void Test(System.String[] args)
 		{
-			HashedList h1 = new HashedList();
-			HashedList h2 = new HashedList();
+			var h1 = new HashedList();
+			var h2 = new HashedList();
 			
 			Cursor i = h1.GetCursor(0);
 			Cursor j;

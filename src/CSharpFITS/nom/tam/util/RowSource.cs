@@ -16,7 +16,7 @@ namespace nom.tam.util
       get;
     }
 
-    public abstract String[] ColumnNames
+    public abstract string[] ColumnNames
     {
       get;
     }
@@ -26,7 +26,7 @@ namespace nom.tam.util
       get;
     }
 
-    public abstract Object[] TNULL
+    public abstract object[] TNULL
     {
       get;
     }
@@ -45,7 +45,7 @@ namespace nom.tam.util
       }
     }
 
-    public override String[] ColumnNames
+    public override string[] ColumnNames
     {
       get
       {
@@ -61,7 +61,7 @@ namespace nom.tam.util
       }
     }
 
-    public override Object[] TNULL
+    public override object[] TNULL
     {
       get
       {
@@ -70,7 +70,7 @@ namespace nom.tam.util
     }
     #endregion
 
-    protected RowAdapter(int nrows, String[] columnNames, Array[] modelRow, Object[] tnull)
+    protected RowAdapter(int nrows, string[] columnNames, Array[] modelRow, object[] tnull)
     {
       _nrows = nrows;
       _columnNames = columnNames;
@@ -79,9 +79,9 @@ namespace nom.tam.util
     }
 
     protected int _nrows;
-    protected String[] _columnNames;
+    protected string[] _columnNames;
     protected Array[] _modelRow;
-    protected Object[] _tnull;
+    protected object[] _tnull;
   }
 
   public class DataReaderAdapter : RowAdapter
@@ -98,9 +98,9 @@ namespace nom.tam.util
       _rowStuffers = new RowStuffer[reader.FieldCount];
       //_rowStuffers = new RowStuffer[reader.GetSchemaTable().Columns.Count];
 
-      for(int i = 0; i < _rowStuffers.Length; ++i)
+      for(var i = 0; i < _rowStuffers.Length; ++i)
       {
-        Type t = reader.GetFieldType(i);
+        var t = reader.GetFieldType(i);
         //_rowStuffers[i] = RowStuffer.GetRowStuffer(reader.GetFieldType(i));
         try
         {
@@ -110,7 +110,7 @@ namespace nom.tam.util
         {
           throw e;
         }
-        if(reader.GetFieldType(i) == typeof(String))
+        if(reader.GetFieldType(i) == typeof(string))
         {
             _rowStuffers[i] =
               //new RowStuffer.StringRowStuffer(reader.GetSchemaTable().Columns[i].MaxLength);
@@ -130,7 +130,7 @@ namespace nom.tam.util
       {
         Type t = null;
         row = new Array[_reader.FieldCount];
-        for(int i = 0; i < row.Length; ++i)
+        for(var i = 0; i < row.Length; ++i)
         {
           t = GetFieldType(_reader, i);
           t = t == typeof(decimal) ? typeof(long) : t;
@@ -138,7 +138,7 @@ namespace nom.tam.util
         }
       }
 
-      for(int i = 0; i < row.Length; ++i)
+      for(var i = 0; i < row.Length; ++i)
       {
         row[i] = _rowStuffers[i].Stuff(_reader[i]);
       }
@@ -148,11 +148,11 @@ namespace nom.tam.util
     }
 
     protected bool _haveRow = false;
-    protected static String[] MakeColumnNames(IDataReader reader)
+    protected static string[] MakeColumnNames(IDataReader reader)
     {
-      String[] result = new String[reader.FieldCount];
+            var result = new string[reader.FieldCount];
 
-      for(int i = 0; i < result.Length; ++i)
+      for(var i = 0; i < result.Length; ++i)
       {
         result[i] = reader.GetName(i);
         if("".Equals(result[i]))
@@ -166,16 +166,16 @@ namespace nom.tam.util
 
     protected static Array[] MakeModelRow(IDataReader reader)
     {
-      Array[] result = new Array[reader.FieldCount];
+      var result = new Array[reader.FieldCount];
       Type t = null;
 
-      for(int i = 0; i < result.Length; ++i)
+      for(var i = 0; i < result.Length; ++i)
       {
         t = GetFieldType(reader, i);
         t = t == typeof(decimal) ? typeof(long) : t; // to handle mono bug where long => decimal!
         result[i] = Array.CreateInstance(t, 1);
 
-        if(t == typeof(String))
+        if(t == typeof(string))
         {
           result[i].SetValue(" ", 0);
         }
@@ -184,16 +184,16 @@ namespace nom.tam.util
       return result;
     }
 
-    protected static Object[] MakeTNULL(IDataReader reader)
+    protected static object[] MakeTNULL(IDataReader reader)
     {
-      Object[] result = new Object[reader.FieldCount];
+      var result = new object[reader.FieldCount];
 
-      for(int i = 0; i < result.Length; ++i)
+      for(var i = 0; i < result.Length; ++i)
       {
         result[i] = RowStuffer.GetDefaultNullValue(reader.GetFieldType(i));
-        if(reader.GetFieldType(i) == typeof(String))
+        if(reader.GetFieldType(i) == typeof(string))
         {
-          result[i] = new String(' ', 1);
+          result[i] = new string(' ', 1);
         }
       }
 
@@ -202,7 +202,7 @@ namespace nom.tam.util
 
     protected static Type GetFieldType(IDataReader r, int field)
     {
-      Type result = r.GetFieldType(field);
+      var result = r.GetFieldType(field);
       result = result == typeof(bool) ? typeof(Troolean) : result;
       return result;
     }
@@ -213,14 +213,14 @@ namespace nom.tam.util
 
   public abstract class RowStuffer
   {
-    public abstract Array Stuff(Object o);
+    public abstract Array Stuff(object o);
     public abstract RowStuffer GetRowStuffer();
-    protected abstract Object TNull
+    protected abstract object TNull
     {
       get;
     }
 
-    protected Object CheckValue(Object o)
+    protected object CheckValue(object o)
     {
       if(o == null || o.GetType() == typeof(DBNull))
       {
@@ -237,7 +237,7 @@ namespace nom.tam.util
 
     public class DefaultRowStuffer : RowStuffer
     {
-      public override Array Stuff(Object o)
+      public override Array Stuff(object o)
       {
         return _b;
       }
@@ -248,7 +248,7 @@ namespace nom.tam.util
       }
 
       protected byte[] _b = new byte[0];
-      protected override Object TNull
+      protected override object TNull
       {
         get
         {
@@ -259,7 +259,7 @@ namespace nom.tam.util
 
     public class ByteRowStuffer : RowStuffer
     {
-      public override Array Stuff(Object o)
+      public override Array Stuff(object o)
       {
         o = CheckValue(o);
         _b[0] = (byte)o;
@@ -272,7 +272,7 @@ namespace nom.tam.util
       }
 
       protected byte[] _b = new byte[1];
-      protected override Object TNull
+      protected override object TNull
       {
         get
         {
@@ -283,7 +283,7 @@ namespace nom.tam.util
 
     public class TrooleanRowStuffer : RowStuffer
     {
-      public override Array Stuff(Object o)
+      public override Array Stuff(object o)
       {
         o = CheckValue(o);
         _b[0] = (Troolean)o;
@@ -297,7 +297,7 @@ namespace nom.tam.util
 
       protected Troolean[] _b = new Troolean[1];
       protected Troolean _null = new Troolean(false, true);
-      protected override Object TNull
+      protected override object TNull
       {
         get
         {
@@ -308,7 +308,7 @@ namespace nom.tam.util
 
     public class CharRowStuffer : RowStuffer
     {
-      public override Array Stuff(Object o)
+      public override Array Stuff(object o)
       {
         o = CheckValue(o);
         _c[0] = (char)o;
@@ -321,7 +321,7 @@ namespace nom.tam.util
       }
 
       protected char[] _c = new char[1];
-      protected override Object TNull
+      protected override object TNull
       {
         get
         {
@@ -332,7 +332,7 @@ namespace nom.tam.util
 
     public class ShortRowStuffer : RowStuffer
     {
-      public override Array Stuff(Object o)
+      public override Array Stuff(object o)
       {
         o = CheckValue(o);
         _s[0] = (short)o;
@@ -345,7 +345,7 @@ namespace nom.tam.util
       }
 
       protected short[] _s = new short[1];
-      protected override Object TNull
+      protected override object TNull
       {
         get
         {
@@ -356,7 +356,7 @@ namespace nom.tam.util
 
     public class IntRowStuffer : RowStuffer
     {
-      public override Array Stuff(Object o)
+      public override Array Stuff(object o)
       {
         o = CheckValue(o);
         _i[0] = (int)o;
@@ -369,7 +369,7 @@ namespace nom.tam.util
       }
 
       protected int[] _i = new int[1];
-      protected override Object TNull
+      protected override object TNull
       {
         get
         {
@@ -380,7 +380,7 @@ namespace nom.tam.util
 
     public class FloatRowStuffer : RowStuffer
     {
-      public override Array Stuff(Object o)
+      public override Array Stuff(object o)
       {
         o = CheckValue(o);
         _f[0] = (float)o;
@@ -393,18 +393,18 @@ namespace nom.tam.util
       }
 
       protected float[] _f = new float[1];
-      protected override Object TNull
+      protected override object TNull
       {
         get
         {
-          return float.NaN;
+          return Single.NaN;
         }
       }
     }
 
     public class LongRowStuffer : RowStuffer
     {
-      public override Array Stuff(Object o)
+      public override Array Stuff(object o)
       {
         o = CheckValue(o);
         _l[0] = (long)o;
@@ -417,7 +417,7 @@ namespace nom.tam.util
       }
 
       protected long[] _l = new long[1];
-      protected override Object TNull
+      protected override object TNull
       {
         get
         {
@@ -428,7 +428,7 @@ namespace nom.tam.util
 
     public class DoubleRowStuffer : RowStuffer
     {
-      public override Array Stuff(Object o)
+      public override Array Stuff(object o)
       {
         o = CheckValue(o);
         _d[0] = (double)o;
@@ -441,18 +441,18 @@ namespace nom.tam.util
       }
 
       protected double[] _d = new double[1];
-      protected override Object TNull
+      protected override object TNull
       {
         get
         {
-          return double.NaN;
+          return Double.NaN;
         }
       }
     }
 
     public class DecimalRowStuffer : RowStuffer
     {
-      public override Array Stuff(Object o)
+      public override Array Stuff(object o)
       {
         o = CheckValue(o);
         _l[0] = Decimal.ToInt64((decimal)o);
@@ -465,7 +465,7 @@ namespace nom.tam.util
       }
 
       protected long[] _l = new long[1];
-      protected override Object TNull
+      protected override object TNull
       {
         get
         {
@@ -489,13 +489,13 @@ namespace nom.tam.util
         _arrayLength = arrayLength;
         _padChar = padChar;
         _padLeft = padLeft;
-        _tnull = _arrayLength > 0 ? new String(_padChar, _arrayLength) : "";
+        _tnull = _arrayLength > 0 ? new string(_padChar, _arrayLength) : "";
       }
 
-      public override Array Stuff(Object o)
+      public override Array Stuff(object o)
       {
         o = CheckValue(o);
-        _s[0] = o == null ? "" : (String)o;
+        _s[0] = o == null ? "" : (string)o;
         return _s;
         /*
         String s = o == null ? "" : (String)o;
@@ -513,12 +513,12 @@ namespace nom.tam.util
         return new StringRowStuffer();
       }
 
-      protected String[] _s = new String[1];
+      protected string[] _s = new string[1];
       protected bool _padLeft;
       protected char _padChar;
       protected int _arrayLength;
-      protected Object _tnull;
-      protected override Object TNull
+      protected object _tnull;
+      protected override object TNull
       {
         get
         {
@@ -527,7 +527,7 @@ namespace nom.tam.util
       }
     }
 
-    public static Object GetDefaultNullValue(Type t)
+    public static object GetDefaultNullValue(Type t)
     {
       return _defaultNullValues[t];
     }
@@ -537,29 +537,33 @@ namespace nom.tam.util
 
     static RowStuffer()
     {
-      _rowStuffers = new DefaultValueHashtable(new DefaultRowStuffer());
-      _rowStuffers[typeof(byte)] = new ByteRowStuffer();
-      _rowStuffers[typeof(bool)] = new TrooleanRowStuffer();
-      _rowStuffers[typeof(char)] = new CharRowStuffer();
-      _rowStuffers[typeof(short)] = new ShortRowStuffer();
-      _rowStuffers[typeof(int)] = new IntRowStuffer();
-      _rowStuffers[typeof(float)] = new FloatRowStuffer();
-      _rowStuffers[typeof(long)] = new LongRowStuffer();
-      _rowStuffers[typeof(double)] = new DoubleRowStuffer();
-      _rowStuffers[typeof(decimal)] = new DecimalRowStuffer();
-      _rowStuffers[typeof(String)] = new StringRowStuffer();
+            _rowStuffers = new DefaultValueHashtable(new DefaultRowStuffer())
+            {
+                [typeof(byte)] = new ByteRowStuffer(),
+                [typeof(bool)] = new TrooleanRowStuffer(),
+                [typeof(char)] = new CharRowStuffer(),
+                [typeof(short)] = new ShortRowStuffer(),
+                [typeof(int)] = new IntRowStuffer(),
+                [typeof(float)] = new FloatRowStuffer(),
+                [typeof(long)] = new LongRowStuffer(),
+                [typeof(double)] = new DoubleRowStuffer(),
+                [typeof(decimal)] = new DecimalRowStuffer(),
+                [typeof(string)] = new StringRowStuffer()
+            };
 
-      _defaultNullValues = new Hashtable();
-      _defaultNullValues[typeof(byte)] = (byte)0;
-      _defaultNullValues[typeof(bool)] = new Troolean(false, true);
-      _defaultNullValues[typeof(char)] = '\0';
-      _defaultNullValues[typeof(short)] = (short)-99;
-      _defaultNullValues[typeof(int)] = -99;
-      _defaultNullValues[typeof(float)] = float.NaN;
-      _defaultNullValues[typeof(long)] = (long)-99;
-      _defaultNullValues[typeof(double)] = double.NaN;
-      _defaultNullValues[typeof(decimal)] = (long)-99;
-      _defaultNullValues[typeof(String)] = "";
-    }
+            _defaultNullValues = new Hashtable
+            {
+                [typeof(byte)] = (byte)0,
+                [typeof(bool)] = new Troolean(false, true),
+                [typeof(char)] = '\0',
+                [typeof(short)] = (short)-99,
+                [typeof(int)] = -99,
+                [typeof(float)] = Single.NaN,
+                [typeof(long)] = (long)-99,
+                [typeof(double)] = Double.NaN,
+                [typeof(decimal)] = (long)-99,
+                [typeof(string)] = ""
+            };
+        }
   }
 }

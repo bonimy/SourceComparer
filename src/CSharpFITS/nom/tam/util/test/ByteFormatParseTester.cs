@@ -9,31 +9,31 @@ namespace nom.tam.util.test
 	{
 		
 		[STAThread]
-		public static void Test(String[] args)
+		public static void Test(string[] args)
 		{
-			byte[] buffer = new byte[100000];
-			ByteFormatter bf = new ByteFormatter();
-			ByteParser bp = new ByteParser(buffer);
+			var buffer = new byte[100000];
+			var bf = new ByteFormatter();
+			var bp = new ByteParser(buffer);
 
 			bf.Align = true;
 			bf.TruncationThrow = false;
 
-			int[] tint = new int[100];
+			var tint = new int[100];
 
 			tint[0] = Int32.MinValue;
 			tint[1] = Int32.MaxValue;
 			tint[2] = 0;
 
-			for(int i = 3; i < tint.Length; i += 1)
+			for(var i = 3; i < tint.Length; i += 1)
 			{
 				tint[i] = (int)(Int32.MaxValue * (2 * (SupportClass.Random.NextDouble() - .5)));
 			}
 
 			Console.Out.WriteLine("Check formatting options...\n");
 			Console.Out.WriteLine("\n\nFilled, right aligned");
-			int colSize = 12;
-			int cnt = 0;
-			int offset = 0;
+			var colSize = 12;
+			var cnt = 0;
+			var offset = 0;
 			while (cnt < tint.Length)
 			{
 				offset = bf.format(tint[cnt], buffer, offset, colSize);
@@ -47,10 +47,10 @@ namespace nom.tam.util.test
 			
 			bp.Offset = 0;
 			
-			bool error = false;
-			for (int i = 0; i < tint.Length; i += 1)
+			var error = false;
+			for (var i = 0; i < tint.Length; i += 1)
 			{
-				int chk = bp.getInt(colSize);
+				var chk = bp.getInt(colSize);
 				if (chk != tint[i])
 				{
 					error = true;
@@ -74,9 +74,9 @@ namespace nom.tam.util.test
 			offset = 0;
 			while (cnt < tint.Length)
 			{
-				int oldOffset = offset;
+				var oldOffset = offset;
 				offset = bf.format(tint[cnt], buffer, offset, colSize);
-				int nb = colSize - (offset - oldOffset);
+				var nb = colSize - (offset - oldOffset);
 				if (nb > 0)
 				{
 					offset = bf.alignFill(buffer, offset, nb);
@@ -129,8 +129,8 @@ namespace nom.tam.util.test
 			Console.Out.WriteLine("\n\nTest throwing of trunction exception");
 			
 			bf.TruncationThrow = false;
-			int val = 1;
-			for (int i = 0; i < 10; i += 1)
+			var val = 1;
+			for (var i = 0; i < 10; i += 1)
 			{
 				offset = bf.format(val, buffer, 0, 6);
         Console.Out.WriteLine("At power:" + i + " in six chars we get:" + BytesToString(buffer));
@@ -140,7 +140,7 @@ namespace nom.tam.util.test
 			Console.Out.WriteLine("Now enabling TruncationExceptions");
 			bf.TruncationThrow = true;
 			val = 1;
-			for (int i = 0; i < 10; i += 1)
+			for (var i = 0; i < 10; i += 1)
 			{
 				try
 				{
@@ -154,8 +154,8 @@ namespace nom.tam.util.test
 				val *= 10;
 			}
 			
-			long[] lng = new long[100];
-			for (int i = 0; i < lng.Length; i += 1)
+			var lng = new long[100];
+			for (var i = 0; i < lng.Length; i += 1)
 			{
 				lng[i] = (long) (Int64.MaxValue * (2 * (SupportClass.Random.NextDouble() - 0.5)));
 			}
@@ -181,9 +181,9 @@ namespace nom.tam.util.test
 			bp.Offset = 0;
 			
 			error = false;
-			for (int i = 0; i < lng.Length; i += 1)
+			for (var i = 0; i < lng.Length; i += 1)
 			{
-				long chk = bp.getLong(20);
+				var chk = bp.getLong(20);
 				if (chk != lng[i])
 				{
 					Console.Out.WriteLine("Error in getLong:" + i + "  " + lng[i] + " != " + chk);
@@ -200,8 +200,8 @@ namespace nom.tam.util.test
 			}
 			
 			
-			float[] flt = new float[100];
-			for (int i = 0; i < flt.Length; i += 1)
+			var flt = new float[100];
+			for (var i = 0; i < flt.Length; i += 1)
 			{
 				flt[i] = (float) (2 * (SupportClass.Random.NextDouble() - 0.5) * Math.Pow(10, 60 * (SupportClass.Random.NextDouble() - 0.5)));
 			}
@@ -232,7 +232,7 @@ namespace nom.tam.util.test
 			
 			bp.Offset = 0;
 			double delta = 0;
-			for (int i = 0; i < flt.Length; i += 1)
+			for (var i = 0; i < flt.Length; i += 1)
 			{
 				
 				// Skip NaNs and Infinities.
@@ -243,9 +243,9 @@ namespace nom.tam.util.test
 				else
 				{
 					
-					float chk = bp.getFloat(24);
+					var chk = bp.getFloat(24);
 					
-					float dx = Math.Abs(chk - flt[i]);
+					var dx = Math.Abs(chk - flt[i]);
 					if (dx > delta)
 					{
 						Console.Out.WriteLine("Float  High delta:" + i + " " + flt[i] + " " + chk);
@@ -259,8 +259,8 @@ namespace nom.tam.util.test
 				}
 			}
 			
-			double[] dbl = new double[100];
-			for (int i = 0; i < dbl.Length; i += 1)
+			var dbl = new double[100];
+			for (var i = 0; i < dbl.Length; i += 1)
 			{
 				dbl[i] = 2 * (SupportClass.Random.NextDouble() - 0.5) * Math.Pow(10, 60 * (SupportClass.Random.NextDouble() - 0.5));
 			}
@@ -290,7 +290,7 @@ namespace nom.tam.util.test
 			
 			bp.Offset = 0;
 			delta = 0;
-			for (int i = 0; i < dbl.Length; i += 1)
+			for (var i = 0; i < dbl.Length; i += 1)
 			{
 				
 				// Skip NaNs and Infinities.
@@ -301,9 +301,9 @@ namespace nom.tam.util.test
 				else
 				{
 					
-					double chk = bp.getDouble(25);
+					var chk = bp.getDouble(25);
 					
-					double dx = Math.Abs(chk - dbl[i]);
+					var dx = Math.Abs(chk - dbl[i]);
 					if (dx > delta)
 					{
 						Console.Out.WriteLine("Double  High delta:" + i + " " + dbl[i] + " " + chk);
@@ -319,18 +319,18 @@ namespace nom.tam.util.test
 			
 			bp.Offset = 0;
 			bp.skip(4 * 25 + 1 + 2 * 25);
-			for (int i = 0; i < 30; i += 1)
+			for (var i = 0; i < 30; i += 1)
 			{
 				Console.Out.WriteLine("Reading doubles..." + bp.Double);
 			}
 			
-			bool[] btst = new bool[100];
-			for (int i = 0; i < btst.Length; i += 1)
+			var btst = new bool[100];
+			for (var i = 0; i < btst.Length; i += 1)
 			{
 				btst[i] = SupportClass.Random.NextDouble() > 0.5;
 			}
 			offset = 0;
-			for (int i = 0; i < btst.Length; i += 1)
+			for (var i = 0; i < btst.Length; i += 1)
 			{
 				offset = bf.format(btst[i], buffer, offset, 1);
 			}
@@ -338,9 +338,9 @@ namespace nom.tam.util.test
 			
 			
 			bp.Offset = 0;
-			for (int i = 0; i < btst.Length; i += 1)
+			for (var i = 0; i < btst.Length; i += 1)
 			{
-				bool bt = bp.Boolean;
+				var bt = bp.Boolean;
 				if (bt != btst[i])
 				{
 					Console.Out.WriteLine("Mismatch at:" + i + " " + btst[i] + " != " + bt);
@@ -348,30 +348,30 @@ namespace nom.tam.util.test
 			}
 			
 			offset = 0;
-			String bigStr = "abcdefghijklmnopqrstuvwxyz";
-			for (int i = 0; i < 100; i += 1)
+            var bigStr = "abcdefghijklmnopqrstuvwxyz";
+			for (var i = 0; i < 100; i += 1)
 			{
 				offset = bf.format(bigStr.Substring(i % 27), buffer, offset, 13);
 				offset = bf.format(" ", buffer, offset, 1);
 			}
 			
 			bp.Offset = 0;
-			for (int i = 0; i < 100; i += 1)
+			for (var i = 0; i < 100; i += 1)
 			{
-				String s = bp.getString(13);
+                var s = bp.getString(13);
 				Console.Out.WriteLine(i + ":" + s);
 				bp.skip(1);
 			}
 		}
 
-    public static String BytesToString(byte[] bytes)
+    public static string BytesToString(byte[] bytes)
     {
-      char[] c = new char[bytes.Length];
-      for(int i = 0; i < c.Length; ++i)
+      var c = new char[bytes.Length];
+      for(var i = 0; i < c.Length; ++i)
       {
         c[i] = (char)bytes[i];
       }
-      return new String(c).Trim();
+      return new string(c).Trim();
     }
 	}
 }

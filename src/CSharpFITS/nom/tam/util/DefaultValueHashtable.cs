@@ -8,7 +8,7 @@ namespace nom.tam.util
 	/// </summary>
   public class DefaultValueHashtable : Hashtable
   {
-    public override Object this[Object key]
+    public override object this[object key]
     {
       get
       {
@@ -34,7 +34,7 @@ namespace nom.tam.util
       }
     }
 
-    public Object DefaultValue
+    public object DefaultValue
     {
       get
       {
@@ -50,12 +50,12 @@ namespace nom.tam.util
     {
     }
 
-    public DefaultValueHashtable(Object defaultValue) : base()
+    public DefaultValueHashtable(object defaultValue) : base()
     {
       DefaultValue = defaultValue;
     }
 
-    protected Object _result = null;
-    protected Object _defaultValue = null;
+    protected object _result = null;
+    protected object _defaultValue = null;
   }
 }

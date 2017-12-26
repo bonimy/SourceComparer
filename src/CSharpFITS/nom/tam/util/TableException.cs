@@ -16,7 +16,7 @@ namespace nom.tam.util
 		{
 		}
 		
-		public TableException(String msg):base(msg)
+		public TableException(string msg):base(msg)
 		{
 		}
 	}

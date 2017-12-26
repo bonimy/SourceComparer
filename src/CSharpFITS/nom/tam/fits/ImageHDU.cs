@@ -68,11 +68,11 @@ namespace nom.tam.fits
 		/// <returns> <CODE>true</CODE> if this HDU has a valid header.</returns>
 		public static new bool IsHeader(Header hdr)
 		{
-			bool found = false;
+			var found = false;
 			found = hdr.GetBooleanValue("SIMPLE");
 			if (!found)
 			{
-				String s = hdr.GetStringValue("XTENSION");
+                var s = hdr.GetStringValue("XTENSION");
 				if (s != null)
 				{
 					if (s.Trim().Equals("IMAGE") || s.Trim().Equals("IUEIMAGE"))
@@ -90,7 +90,7 @@ namespace nom.tam.fits
 		
 		/// <summary>Check if this object can be described as a FITS image.</summary>
 		/// <param name="o">The Object being tested.</param>
-		public static bool IsData(Object o)
+		public static bool IsData(object o)
 		{
       return o != null && typeof(Array).Equals(o.GetType()) && !ArrayFuncs.GetBaseClass(o).Equals(typeof(bool));
     }
@@ -118,14 +118,14 @@ namespace nom.tam.fits
 				return null;
 			}
 			
-			Header h = new Header();
+			var h = new Header();
 			d.FillHeader(h);
 			
 			return h;
 		}
 		
 		/// <summary>Encapsulate an object as an ImageHDU.</summary>
-		public static Data Encapsulate(Object o)
+		public static Data Encapsulate(object o)
 		{
 			return new ImageData(o);
 		}
@@ -144,9 +144,9 @@ namespace nom.tam.fits
 			
 			Console.Out.WriteLine("      Header Information:");
 			Console.Out.WriteLine("         BITPIX=" + myHeader.GetIntValue("BITPIX", - 1));
-			int naxis = myHeader.GetIntValue("NAXIS", - 1);
+			var naxis = myHeader.GetIntValue("NAXIS", - 1);
 			Console.Out.WriteLine("         NAXIS=" + naxis);
-			for (int i = 1; i <= naxis; i += 1)
+			for (var i = 1; i <= naxis; i += 1)
 			{
 				Console.Out.WriteLine("         NAXIS" + i + "=" + myHeader.GetIntValue("NAXIS" + i, - 1));
 			}

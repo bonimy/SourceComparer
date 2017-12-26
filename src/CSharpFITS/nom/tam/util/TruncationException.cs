@@ -8,7 +8,7 @@ namespace nom.tam.util
 		public TruncationException():base()
 		{
 		}
-		public TruncationException(String msg):base(msg)
+		public TruncationException(string msg):base(msg)
 		{
 		}
 	}

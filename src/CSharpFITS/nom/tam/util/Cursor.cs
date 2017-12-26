@@ -9,10 +9,10 @@ namespace nom.tam.util
 	/// </summary>
 	public interface Cursor : IEnumerator
   {
-		/// <summary>Point the list at a particular element.
-		/// Point to the end of the list if the key is not found.
-		/// </summary>
-		Object Key
+        /// <summary>Point the list at a particular element.
+        /// Point to the end of the list if the key is not found.
+        /// </summary>
+        object Key
 		{
       get;
 			set;
@@ -24,15 +24,15 @@ namespace nom.tam.util
 		/// The new element is placed such that it will be called
 		/// by a prev() call, but not a next() call.
 		/// </summary>
-		void Add(Object val);
+		void Add(object val);
 
-    void Insert(Object key, Object val);
+    void Insert(object key, object val);
 
     /// <summary>Add a keyed element to the collection.
 		/// The new element is placed such that it will be called
 		/// by a prev() call, but not a next() call.
 		/// </summary>
-		void Add(Object key, Object val);
+		void Add(object key, object val);
     /// <summary>Remove the current object from the collection</summary>
     void Remove();
 	}

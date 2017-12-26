@@ -78,35 +78,40 @@ namespace nom.tam.fits
 	/// </version>
 	public class Fits
 	{
-    public static readonly String DEFAULT_TEMP_DIR = Environment.CurrentDirectory;
+    public static readonly string DEFAULT_TEMP_DIR = Environment.CurrentDirectory;
 
-    public static void Write(IDataReader reader, String filename)
+    public static void Write(IDataReader reader, string filename)
     {
       Write(reader, filename, StreamedBinaryTableHDU.StringWriteMode.PAD, 128, true, ' ');
     }
 
-      public static void Write(IDataReader reader, String filename,
+      public static void Write(IDataReader reader, string filename,
       StreamedBinaryTableHDU.StringWriteMode writeMode, int stringTruncationLength,
         bool padStringsLeft, char stringPadChar)
     {
-      Header header = new Header();
-      header.Simple = true;
-      header.Bitpix = 8;
-      header.Naxes = 0;
+            var header = new Header
+            {
+                Simple = true,
+                Bitpix = 8,
+                Naxes = 0
+            };
 
-      Cursor c = header.GetCursor();
+            var c = header.GetCursor();
       // move to the end of the header cards
-      for(c.MoveNext(); c.MoveNext(););
-      // we know EXTEND isn't there yet
-      c.Add("EXTEND", new HeaderCard("EXTEND", true, null));
+      for(c.MoveNext(); c.MoveNext();)
+            {
+                ;
+            }
+            // we know EXTEND isn't there yet
+            c.Add("EXTEND", new HeaderCard("EXTEND", true, null));
 
-      ImageHDU hdu1 = new ImageHDU(header, null);
+      var hdu1 = new ImageHDU(header, null);
 
-      StreamedBinaryTableHDU hdu2 =
+      var hdu2 =
         new StreamedBinaryTableHDU(new DataReaderAdapter(reader), 4096,
         writeMode, stringTruncationLength, padStringsLeft, stringPadChar);
 
-      Fits fits = new Fits();
+      var fits = new Fits();
       fits.addHDU(hdu1);
       fits.addHDU(hdu2);
 
@@ -124,7 +129,7 @@ namespace nom.tam.fits
       }
     }
 
-    public static String TempDirectory
+    public static string TempDirectory
     {
       get
       {
@@ -182,7 +187,7 @@ namespace nom.tam.fits
 		/// <summary>Has the input stream reached the EOF?</summary>
 		private bool atEOF;
 		
-    protected static String _tempDir = DEFAULT_TEMP_DIR;
+    protected static string _tempDir = DEFAULT_TEMP_DIR;
 
 		/// <summary>Indicate the version of these classes</summary>
 		public static System.String version()
@@ -278,10 +283,10 @@ namespace nom.tam.fits
 		}
 		
 		/// <summary>Initialize using buffered random access</summary>
-		protected internal virtual void  randomInit(String filename)
+		protected internal virtual void  randomInit(string filename)
 		{
-      FileInfo f = new FileInfo(filename);
-      FileAccess access =
+      var f = new FileInfo(filename);
+      var access =
         SupportClass.FileCanWrite(f) ? FileAccess.ReadWrite : FileAccess.Read;
 
       if(!f.Exists)
@@ -323,7 +328,7 @@ namespace nom.tam.fits
 		{
 			try
 			{
-				FileStream str = new FileStream(myFile.FullName, FileMode.Open, FileAccess.Read);
+				var str = new FileStream(myFile.FullName, FileMode.Open, FileAccess.Read);
 				streamInit(str, compressed, true);
 			}
 			catch(IOException)
@@ -344,7 +349,7 @@ namespace nom.tam.fits
 		/// <param name="filename">The name of the file or URL to be processed.</param>
 		/// <exception cref=""> FitsException Thrown if unable to find or open
 		/// a file or URL from the string given.</exception>
-		public Fits(String filename)
+		public Fits(string filename)
 		{
 			InitBlock();
 			
@@ -355,9 +360,9 @@ namespace nom.tam.fits
 				throw new FitsException("Null FITS Identifier String");
 			}
 			
-			bool compressed = FitsUtil.IsCompressed(filename);
+			var compressed = FitsUtil.IsCompressed(filename);
 			
-			int len = filename.Length;
+			var len = filename.Length;
 			if (len > 4 && filename.Substring(0, (5) - (0)).ToUpper().Equals("http:".ToUpper()))
 			{
 				// This seems to be a URL.
@@ -373,7 +378,7 @@ namespace nom.tam.fits
 				}
 				try
 				{
-					Stream is_Renamed = System.Net.WebRequest.Create(myURL).GetResponse().GetResponseStream();
+					var is_Renamed = System.Net.WebRequest.Create(myURL).GetResponse().GetResponseStream();
 					streamInit(is_Renamed, compressed, false);
 				}
 				catch(IOException e)
@@ -427,14 +432,14 @@ namespace nom.tam.fits
 		{
 			readToEnd();
 			
-			int size = NumberOfHDUs;
+			var size = NumberOfHDUs;
 			
 			if (size == 0)
 			{
 				return null;
 			}
 			
-			BasicHDU[] hdus = new BasicHDU[size];
+			var hdus = new BasicHDU[size];
 			hduList.CopyTo(hdus);
 			return hdus;
 		}
@@ -450,16 +455,16 @@ namespace nom.tam.fits
 				return null;
 			}
 			
-			Header hdr = Header.ReadHeader(dataStr);
+			var hdr = Header.ReadHeader(dataStr);
 			if (hdr == null)
 			{
 				atEOF = true;
 				return null;
 			}
 			
-			Data datum = hdr.MakeData();
+			var datum = hdr.MakeData();
 			datum.Read(dataStr);
-			BasicHDU nextHDU = FitsFactory.HDUFactory(hdr, datum);
+			var nextHDU = FitsFactory.HDUFactory(hdr, datum);
 			
 			hduList.Add(nextHDU);
 			return nextHDU;
@@ -469,7 +474,7 @@ namespace nom.tam.fits
 		/// <param name="n">The number of HDUs to be skipped.</param>
 		public virtual void  skipHDU(int n)
 		{
-			for (int i = 0; i < n; i += 1)
+			for (var i = 0; i < n; i += 1)
 			{
 				skipHDU();
 			}
@@ -484,13 +489,13 @@ namespace nom.tam.fits
 			}
 			else
 			{
-				Header hdr = new Header(dataStr);
+				var hdr = new Header(dataStr);
 				if (hdr == null)
 				{
 					atEOF = true;
 					return ;
 				}
-				int dataSize = (int) hdr.DataSize;
+				var dataSize = (int) hdr.DataSize;
 //				dataStr.Skip(dataSize);
    				dataStr.Seek(dataSize);
 			}
@@ -505,9 +510,9 @@ namespace nom.tam.fits
 		/// <returns> The n'th HDU or null if it could not be found.</returns>
 		public virtual BasicHDU getHDU(int n)
 		{
-			int size = NumberOfHDUs;
+			var size = NumberOfHDUs;
 			
-			for (int i = size; i <= n; i += 1)
+			for (var i = size; i <= n; i += 1)
 			{
 				BasicHDU hdu;
 				hdu = readHDU();
@@ -632,7 +637,7 @@ namespace nom.tam.fits
 		/// will then be inserted.</param>
 		public virtual void  deleteHDU(int n)
 		{
-			int size = NumberOfHDUs;
+			var size = NumberOfHDUs;
 			if (n < 0 || n >= size)
 			{
 				throw new FitsException("Attempt to delete non-existent HDU:" + n);
@@ -642,7 +647,7 @@ namespace nom.tam.fits
 				hduList.RemoveAt(n);
 				if (n == 0 && size > 1)
 				{
-					BasicHDU newFirst = (BasicHDU) hduList[0];
+					var newFirst = (BasicHDU) hduList[0];
 					if (newFirst.CanBePrimary)
 					{
 						newFirst.PrimaryHDU = true;
@@ -677,7 +682,7 @@ namespace nom.tam.fits
 			}
 			
 			BasicHDU hh;
-			for(int i = 0; i < NumberOfHDUs; i += 1)
+			for(var i = 0; i < NumberOfHDUs; i += 1)
 			{
 				try
 				{
@@ -713,7 +718,7 @@ namespace nom.tam.fits
 		/// <param name="is">The InputStream stream whence the FITS information is found.</param>
 		public virtual void  read(Stream is_Renamed)
 		{
-			bool newIS = false;
+			var newIS = false;
 			
 			if (is_Renamed is ArrayDataIO)
 			{
@@ -745,13 +750,13 @@ namespace nom.tam.fits
 		/// <param name="h"> The header which describes the FITS extension</param>
 		public static BasicHDU makeHDU(Header h)
 		{
-			Data d = FitsFactory.DataFactory(h);
+			var d = FitsFactory.DataFactory(h);
 			return FitsFactory.HDUFactory(h, d);
 		}
 		
 		/// <summary>Create an HDU from the given data kernel.</summary>
 		/// <param name="o">The data to be described in this HDU.</param>
-		public static BasicHDU makeHDU(System.Object o)
+		public static BasicHDU makeHDU(object o)
 		{
 			return FitsFactory.HDUFactory(o);
 		}
@@ -760,7 +765,7 @@ namespace nom.tam.fits
 		/// <param name="datum">The data to be described in this HDU.</param>
 		public static BasicHDU makeHDU(Data datum)
 		{
-			Header hdr = new Header();
+			var hdr = new Header();
 			datum.FillHeader(hdr);
 			return FitsFactory.HDUFactory(hdr, datum);
 		}

@@ -88,7 +88,7 @@ namespace nom.tam.fits
 			{
 				throw new FitsException("Attempt to create null Random Groups data");
 			}
-			Header h = new Header();
+			var h = new Header();
 			d.FillHeader(h);
 			return h;
 		}
@@ -101,8 +101,8 @@ namespace nom.tam.fits
 			{
 				return hdr.GetBooleanValue("GROUPS");
 			}
-			
-			String s = hdr.GetStringValue("XTENSION");
+
+            var s = hdr.GetStringValue("XTENSION");
 			if (s.Trim().Equals("IMAGE"))
 			{
 				return hdr.GetBooleanValue("GROUPS");
@@ -116,7 +116,7 @@ namespace nom.tam.fits
 		/// group having the same base type and the first element being
 		/// a simple primitive array.  We do not check anything but
 		/// the first row.</summary>
-		public static bool IsData(Object oo)
+		public static bool IsData(object oo)
 		{
 			if(ArrayFuncs.CountDimensions(oo) == 2) //oo is Object[][])
 			{
@@ -127,9 +127,9 @@ namespace nom.tam.fits
         {
           try
           {
-            Array a = (Array)oo;
-            Type t1 = ArrayFuncs.GetBaseClass(((Array)a.GetValue(0)).GetValue(0));
-            Type t2 = ArrayFuncs.GetBaseClass(((Array)a.GetValue(0)).GetValue(1));
+            var a = (Array)oo;
+            var t1 = ArrayFuncs.GetBaseClass(((Array)a.GetValue(0)).GetValue(0));
+            var t2 = ArrayFuncs.GetBaseClass(((Array)a.GetValue(0)).GetValue(1));
 
             return ((Array)a.GetValue(0)).Length == 2 &&
               t1.Equals(t2) && !t1.Equals(typeof(char)) && !t1.Equals(typeof(bool));
@@ -143,9 +143,9 @@ namespace nom.tam.fits
         {
           try
           {
-            Array a = (Array)oo;
-            Type t1 = a.GetValue(new int[]{0, 0}).GetType();
-            Type t2 = a.GetValue(new int[]{0, 1}).GetType();
+            var a = (Array)oo;
+            var t1 = a.GetValue(new int[]{0, 0}).GetType();
+            var t2 = a.GetValue(new int[]{0, 1}).GetType();
 
             return a.GetLength(1) == 2 &&
               t1.Equals(t2) && !t1.Equals(typeof(char)) && !t1.Equals(typeof(bool));
@@ -184,45 +184,45 @@ namespace nom.tam.fits
 		/// <summary>Create FITS data object corresponding to a given header.</summary>
 		public static Data ManufactureData(Header hdr)
 		{
-			int gcount = hdr.GetIntValue("GCOUNT", - 1);
-			int pcount = hdr.GetIntValue("PCOUNT", - 1);
+			var gcount = hdr.GetIntValue("GCOUNT", - 1);
+			var pcount = hdr.GetIntValue("PCOUNT", - 1);
 			
 			if (!hdr.GetBooleanValue("GROUPS") || hdr.GetIntValue("NAXIS1", - 1) != 0 || gcount < 0 || pcount < 0 || hdr.GetIntValue("NAXIS") < 2)
 			{
 				throw new FitsException("Invalid Random Groups Parameters");
 			}
-			
-			// Allocate the object.
-			Object[][] dataArray;
+
+            // Allocate the object.
+            object[][] dataArray;
 			
 			if (gcount > 0)
 			{
-				dataArray = new Object[gcount][];
-				for (int i = 0; i < gcount; i++)
+				dataArray = new object[gcount][];
+				for (var i = 0; i < gcount; i++)
 				{
-					dataArray[i] = new Object[2];
+					dataArray[i] = new object[2];
 				}
 			}
 			else
 			{
-				dataArray = new Object[0][];
+				dataArray = new object[0][];
 			}
 			
-			Object[] sampleRow = GenerateSampleRow(hdr);
-			for (int i = 0; i < gcount; i += 1)
+			var sampleRow = GenerateSampleRow(hdr);
+			for (var i = 0; i < gcount; i += 1)
 			{
-				((Object[][]) dataArray)[i][0] = ((Object[]) ArrayFuncs.DeepClone(sampleRow))[0];
-				((Object[][]) dataArray)[i][1] = ((Object[]) ArrayFuncs.DeepClone(sampleRow))[1];
+				((object[][]) dataArray)[i][0] = ((object[]) ArrayFuncs.DeepClone(sampleRow))[0];
+				((object[][]) dataArray)[i][1] = ((object[]) ArrayFuncs.DeepClone(sampleRow))[1];
 			}
 			return new RandomGroupsData(dataArray);
 		}
 		
-		internal static Object[] GenerateSampleRow(Header h)
+		internal static object[] GenerateSampleRow(Header h)
 		{
-			int ndim = h.GetIntValue("NAXIS", 0) - 1;
-			int[] dims = new int[ndim];
+			var ndim = h.GetIntValue("NAXIS", 0) - 1;
+			var dims = new int[ndim];
 			
-			int bitpix = h.GetIntValue("BITPIX", 0);
+			var bitpix = h.GetIntValue("BITPIX", 0);
 			
 			Type baseClass;
 			
@@ -254,7 +254,7 @@ namespace nom.tam.fits
 			// for the FITS file to get the order in the array we
 			// are generating.  Also recall that NAXIS1=0, so that
 			// we have an 'extra' dimension.
-			for (int i = 0; i < ndim; i += 1)
+			for (var i = 0; i < ndim; i += 1)
 			{
 				long cdim = h.GetIntValue("NAXIS" + (i + 2), 0);
 				if (cdim < 0)
@@ -264,14 +264,14 @@ namespace nom.tam.fits
 				dims[ndim - i - 1] = (int) cdim;
 			}
 			
-			Object[] sample = new Object[2];
+			var sample = new object[2];
 			sample[0] = ArrayFuncs.NewInstance(baseClass, h.GetIntValue("PCOUNT"));
 			sample[1] = ArrayFuncs.NewInstance(baseClass, dims);
 			
 			return sample;
 		}
 		
-		public static Data Encapsulate(Object o)
+		public static Data Encapsulate(object o)
 		{
 			if(ArrayFuncs.CountDimensions(o) == 2)// is Object[][])
 			{
@@ -296,7 +296,7 @@ namespace nom.tam.fits
 				Console.Out.WriteLine("     Npar:   " + myHeader.GetIntValue("PCOUNT"));
 				Console.Out.WriteLine("     BITPIX: " + myHeader.GetIntValue("BITPIX"));
 				Console.Out.WriteLine("     NAXIS:  " + myHeader.GetIntValue("NAXIS"));
-				for (int i = 0; i < myHeader.GetIntValue("NAXIS"); i += 1)
+				for (var i = 0; i < myHeader.GetIntValue("NAXIS"); i += 1)
 				{
 					Console.Out.WriteLine("      NAXIS" + (i + 1) + "= " + myHeader.GetIntValue("NAXIS" + (i + 1)));
 				}
