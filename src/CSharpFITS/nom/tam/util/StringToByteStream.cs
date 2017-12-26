@@ -1,51 +1,55 @@
+// <copyright file="StringToByteStream.cs" company="Public Domain">
+//     Copyright (c) 2017 Samuel Carliles.
+// </copyright>
+
 using System;
 using System.IO;
 
 namespace nom.tam.util
 {
-	/// <summary>
-	///   Converts Strings to byte arrays and writes them to the underlying stream.
-	///   Characters are written as 8-bit ASCII, not 16-bit unicode!!!
-	/// </summary>
-	public class StringToByteStream : AdapterStream
-	{
-    public static readonly int DEFAULT_BYTE_BUFFER_SIZE = 4096;
-
-		public StringToByteStream(Stream s) : base(s)
-		{
-      _byteBuf = new byte[_byteBufferSize];
-		}
-
-    public void Write(string s)
+    /// <summary>
+    ///   Converts Strings to byte arrays and writes them to the underlying stream.
+    ///   Characters are written as 8-bit ASCII, not 16-bit unicode!!!
+    /// </summary>
+    public class StringToByteStream : AdapterStream
     {
-      if(s == null)
-      {
-        return;
-      }
+        public static readonly int DEFAULT_BYTE_BUFFER_SIZE = 4096;
 
-      Write(s.ToCharArray());
-    }
-
-    public void Write(char[] c)
-    {
-      if(c == null)
-      {
-        return;
-      }
-
-      var j = 0;
-      for(var i = 0; i < c.Length;)
-      {
-        for(j = 0; i + j < c.Length && j < _byteBufferSize; ++j)
+        public StringToByteStream(Stream s) : base(s)
         {
-          _byteBuf[j] = (byte)c[i + j];
+            _byteBuf = new byte[_byteBufferSize];
         }
-        _s.Write(_byteBuf, 0, j);
-        i += j;
-      }
-    }
 
-    protected int _byteBufferSize = DEFAULT_BYTE_BUFFER_SIZE;
-    protected byte[] _byteBuf = null;
-	}
+        public void Write(string s)
+        {
+            if (s == null)
+            {
+                return;
+            }
+
+            Write(s.ToCharArray());
+        }
+
+        public void Write(char[] c)
+        {
+            if (c == null)
+            {
+                return;
+            }
+
+            var j = 0;
+            for (var i = 0; i < c.Length;)
+            {
+                for (j = 0; i + j < c.Length && j < _byteBufferSize; ++j)
+                {
+                    _byteBuf[j] = (byte)c[i + j];
+                }
+                _s.Write(_byteBuf, 0, j);
+                i += j;
+            }
+        }
+
+        protected int _byteBufferSize = DEFAULT_BYTE_BUFFER_SIZE;
+        protected byte[] _byteBuf = null;
+    }
 }

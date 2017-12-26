@@ -1,3 +1,7 @@
+// <copyright file="FitsException.cs" company="Public Domain">
+//     Copyright (c) 2017 Samuel Carliles.
+// </copyright>
+
 using System;
 
 /*
@@ -10,14 +14,13 @@ using System;
 * improvements, enhancements and bug fixes.
 */
 
-
-public class FitsException:Exception
+public class FitsException : Exception
 {
-	public FitsException():base()
-	{
-	}
-	
-	public FitsException(string msg):base(msg)
-	{
-	}
+    public FitsException() : base()
+    {
+    }
+
+    public FitsException(string msg) : base(msg)
+    {
+    }
 }

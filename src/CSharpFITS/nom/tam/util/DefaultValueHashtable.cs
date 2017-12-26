@@ -1,61 +1,66 @@
+// <copyright file="DefaultValueHashtable.cs" company="Public Domain">
+//     Copyright (c) 2017 Samuel Carliles.
+// </copyright>
+
 using System;
 using System.Collections;
 
 namespace nom.tam.util
 {
-	/// <summary>
-	/// Summary description for DefaultValueHashtable.
-	/// </summary>
-  public class DefaultValueHashtable : Hashtable
-  {
-    public override object this[object key]
+    /// <summary>
+    /// Summary description for DefaultValueHashtable.
+    /// </summary>
+    public class DefaultValueHashtable : Hashtable
     {
-      get
-      {
-        _result = base[key];
-        if(_result == null)
+        public override object this[object key]
         {
-          _result = DefaultValue;
+            get
+            {
+                _result = base[key];
+                if (_result == null)
+                {
+                    _result = DefaultValue;
+                }
+
+                return _result;
+            }
+
+            set
+            {
+                if (key == null)
+                {
+                    DefaultValue = value;
+                }
+                else
+                {
+                    base[key] = value;
+                }
+            }
         }
 
-        return _result;
-      }
-
-      set
-      {
-        if(key == null)
+        public object DefaultValue
         {
-          DefaultValue = value;
+            get
+            {
+                return _defaultValue;
+            }
+
+            set
+            {
+                _defaultValue = value;
+            }
         }
-        else
+
+        public DefaultValueHashtable() : this(null)
         {
-          base[key] = value;
         }
-      }
-    }
 
-    public object DefaultValue
-    {
-      get
-      {
-        return _defaultValue;
-      }
-      set
-      {
-        _defaultValue = value;
-      }
-    }
+        public DefaultValueHashtable(object defaultValue) : base()
+        {
+            DefaultValue = defaultValue;
+        }
 
-    public DefaultValueHashtable() : this(null)
-    {
+        protected object _result = null;
+        protected object _defaultValue = null;
     }
-
-    public DefaultValueHashtable(object defaultValue) : base()
-    {
-      DefaultValue = defaultValue;
-    }
-
-    protected object _result = null;
-    protected object _defaultValue = null;
-  }
 }

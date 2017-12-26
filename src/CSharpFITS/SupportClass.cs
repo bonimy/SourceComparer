@@ -1,3 +1,7 @@
+// <copyright file="SupportClass.cs" company="Public Domain">
+//     Copyright (c) 2017 Samuel Carliles.
+// </copyright>
+
 using System;
 
 public class SupportClass

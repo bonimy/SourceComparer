@@ -1,3 +1,7 @@
+// <copyright file="ByteRenderer.cs" company="Public Domain">
+//     Copyright (c) 2017 Samuel Carliles.
+// </copyright>
+
 using System;
 using System.Collections;
 using System.IO;

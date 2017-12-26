@@ -1,8 +1,12 @@
+// <copyright file="BadHeaderException.cs" company="Public Domain">
+//     Copyright (c) 2017 Samuel Carliles.
+// </copyright>
+
 namespace nom.tam.fits
 {
-	using System;
-	
-	/*
+    using System;
+
+    /*
 	* Copyright: Thomas McGlynn 1997-1998.
 	* This code may be used for any purpose, non-commercial
 	* or commercial so long as this copyright notice is retained
@@ -12,17 +16,18 @@ namespace nom.tam.fits
 	* Many thanks to David Glowacki (U. Wisconsin) for substantial
 	* improvements, enhancements and bug fixes.
 	*/
-	
-	/// <summary>This exception indicates that an error
-	/// was detected while parsing a FITS header record.
-	/// </summary>
-	public class BadHeaderException:FitsException
-	{
-		public BadHeaderException():base()
-		{
-		}
-		public BadHeaderException(string msg):base(msg)
-		{
-		}
-	}
+
+    /// <summary>This exception indicates that an error
+    /// was detected while parsing a FITS header record.
+    /// </summary>
+    public class BadHeaderException : FitsException
+    {
+        public BadHeaderException() : base()
+        {
+        }
+
+        public BadHeaderException(string msg) : base(msg)
+        {
+        }
+    }
 }

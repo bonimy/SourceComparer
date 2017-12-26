@@ -1,73 +1,78 @@
+// <copyright file="HeapStream.cs" company="Public Domain">
+//     Copyright (c) 2017 Samuel Carliles.
+// </copyright>
+
 using System;
 
 namespace nom.tam.util
 {
-  using System.IO;
+    using System.IO;
 
-  /// <summary>
-  /// Summary description for HeapStream.
-  /// </summary>
-  public class HeapStream : ActualBufferedStream
-  {
-    public override long Position
+    /// <summary>
+    /// Summary description for HeapStream.
+    /// </summary>
+    public class HeapStream : ActualBufferedStream
     {
-      get
-      {
-        return _pos;
-      }
+        public override long Position
+        {
+            get
+            {
+                return _pos;
+            }
+        }
+
+        public HeapStream(Stream s) : base(s)
+        {
+        }
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            base.Write(buffer, offset, count);
+
+            //_s.Write(buffer, offset, count);
+            _pos += count;
+        }
+
+        public override void WriteByte(byte val)
+        {
+            base.WriteByte(val);
+            ++_pos;
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            _nRead = base.Read(buffer, offset, count);
+            _pos += _nRead;
+
+            return _nRead;
+        }
+
+        public override int ReadByte()
+        {
+            _byte = base.ReadByte();
+
+            if (_byte != -1)
+            {
+                ++_pos;
+            }
+
+            return _byte;
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            _pos = base.Seek(offset, origin);
+
+            return _pos;
+        }
+
+        public override void SetLength(long value)
+        {
+            throw new NotSupportedException();
+        }
+
+        protected long _pos = 0;
+        protected int _nRead = 0;
+        protected int _byte = 0;
     }
-
-    public HeapStream(Stream s) : base(s)
-    {
-    }
-   
-    public override void Write(byte[] buffer, int offset, int count)
-    {
-      base.Write(buffer, offset, count);
-      //_s.Write(buffer, offset, count);
-      _pos += count;
-    }
-    
-    public override void WriteByte(byte val)
-    {
-      base.WriteByte(val);
-      ++_pos;
-    }
-
-    public override int Read(byte[] buffer, int offset, int count)
-    {
-      _nRead = base.Read(buffer, offset, count);
-      _pos += _nRead;
-
-      return _nRead;
-    }
-
-    public override int ReadByte()
-    {
-      _byte = base.ReadByte();
-
-      if(_byte != -1)
-      {
-        ++_pos;
-      }
-
-      return _byte;
-    }
-
-    public override long Seek(long offset, SeekOrigin origin)
-    {
-      _pos = base.Seek(offset, origin);
-
-      return _pos;
-    }
-
-    public override void SetLength(long value)
-    {
-      throw new NotSupportedException();
-    }
-
-    protected long _pos = 0;
-    protected int _nRead = 0;
-    protected int _byte = 0;
-  }
 }

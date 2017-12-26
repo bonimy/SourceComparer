@@ -1,16 +1,20 @@
+// <copyright file="PrimitiveInfo.cs" company="Public Domain">
+//     Copyright (c) 2017 Samuel Carliles.
+// </copyright>
+
 namespace nom.tam.util
 {
-	using System;
-	using System.Collections;
+    using System;
+    using System.Collections;
 
-  /// <summary>This interface collects some information about Java primitives.
-  /// </summary>
-  public class PrimitiveInfo
-	{
-    public readonly static Hashtable sizes;
-
-    static PrimitiveInfo()
+    /// <summary>This interface collects some information about Java primitives.
+    /// </summary>
+    public class PrimitiveInfo
     {
+        public readonly static Hashtable sizes;
+
+        static PrimitiveInfo()
+        {
             sizes = new Hashtable
             {
                 [typeof(byte)] = 1, // BitConverter.GetBytes((byte)0).Length;
@@ -28,20 +32,20 @@ namespace nom.tam.util
             };
         }
 
-    /// <summary>Suffixes used for the classnames for primitive arrays. 
-			/// </summary>
-			/// <summary>Classes of the primitives. These should be in windening order
-			/// (char is as always a problem).
-			/// </summary>
-			/// <summary>Is this a numeric class 
-			/// </summary>
-			/// <summary>Full names 
-			/// </summary>
-			/// <summary>Sizes 
-			/// </summary>
-			/// <summary>Index of first element of above arrays referring to a numeric type 
-			/// </summary>
-			/// <summary>Index of last element of above arrays referring to a numeric type 
-			/// </summary>
-  }
+        /// <summary>Suffixes used for the classnames for primitive arrays.
+        /// </summary>
+        /// <summary>Classes of the primitives. These should be in windening order
+        /// (char is as always a problem).
+        /// </summary>
+        /// <summary>Is this a numeric class
+        /// </summary>
+        /// <summary>Full names
+        /// </summary>
+        /// <summary>Sizes
+        /// </summary>
+        /// <summary>Index of first element of above arrays referring to a numeric type
+        /// </summary>
+        /// <summary>Index of last element of above arrays referring to a numeric type
+        /// </summary>
+    }
 }

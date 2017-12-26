@@ -1,51 +1,57 @@
+// <copyright file="Troolean.cs" company="Public Domain">
+//     Copyright (c) 2017 Samuel Carliles.
+// </copyright>
+
 using System;
 
 namespace nom.tam.util
 {
-	/// <summary>
-	///   To replace dumbass C# non-nullable bool struct.
-	/// </summary>
-	public class Troolean
-	{
-		public Troolean() : this(false, false)
-		{
-		}
-
-    public Troolean(bool val) : this(val, false)
+    /// <summary>
+    ///   To replace dumbass C# non-nullable bool struct.
+    /// </summary>
+    public class Troolean
     {
-    }
+        public Troolean() : this(false, false)
+        {
+        }
 
-    public Troolean(bool val, bool isNull)
-    {
-      _val = val;
-      _isNull = isNull;
-    }
+        public Troolean(bool val) : this(val, false)
+        {
+        }
 
-    public bool Val
-    {
-      get
-      {
-        return _val;
-      }
-      set
-      {
-        _val = value;
-      }
-    }
+        public Troolean(bool val, bool isNull)
+        {
+            _val = val;
+            _isNull = isNull;
+        }
 
-    public bool IsNull
-    {
-      get
-      {
-        return _isNull;
-      }
-      set
-      {
-        _isNull = value;
-      }
-    }
+        public bool Val
+        {
+            get
+            {
+                return _val;
+            }
 
-    protected bool _val;
-    protected bool _isNull;
-	}
+            set
+            {
+                _val = value;
+            }
+        }
+
+        public bool IsNull
+        {
+            get
+            {
+                return _isNull;
+            }
+
+            set
+            {
+                _isNull = value;
+            }
+        }
+
+        protected bool _val;
+        protected bool _isNull;
+    }
 }
