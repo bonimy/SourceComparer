@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceComparer", "SourceComparer\SourceComparer.csproj", "{A75BD847-D128-4646-BA19-006856402AC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpFITS", "CSharpFITS\CSharpFITS.csproj", "{9BC5F834-BB3A-43D0-A954-E214186BED0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A75BD847-D128-4646-BA19-006856402AC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A75BD847-D128-4646-BA19-006856402AC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A75BD847-D128-4646-BA19-006856402AC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BC5F834-BB3A-43D0-A954-E214186BED0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BC5F834-BB3A-43D0-A954-E214186BED0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BC5F834-BB3A-43D0-A954-E214186BED0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BC5F834-BB3A-43D0-A954-E214186BED0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
