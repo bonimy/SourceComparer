@@ -4,8 +4,8 @@
 
 using System;
 using System.Collections.Generic;
-using SourceNode = System.Collections.Generic.LinkedListNode<SourceComparer.ISource>;
 using NodeList = System.Collections.Generic.List<System.Collections.Generic.LinkedListNode<SourceComparer.ISource>>;
+using SourceNode = System.Collections.Generic.LinkedListNode<SourceComparer.ISource>;
 
 namespace SourceComparer
 {

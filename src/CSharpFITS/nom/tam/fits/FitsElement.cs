@@ -8,7 +8,6 @@
 /// </summary>
 namespace nom.tam.fits
 {
-    using System;
     using nom.tam.util;
 
     public interface FitsElement

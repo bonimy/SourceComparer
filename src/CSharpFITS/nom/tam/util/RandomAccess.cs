@@ -4,8 +4,6 @@
 
 namespace nom.tam.util
 {
-    using System;
-
     /// <summary>These packages define the methods which indicate that
     /// an i/o stream may be accessed in arbitrary order.
     /// The method signatures are taken from RandomAccessFile

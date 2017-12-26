@@ -4,8 +4,6 @@
 
 namespace nom.tam.fits
 {
-    using System;
-
     /// <summary>This class contains the code which
     /// associates particular FITS types with header
     /// and data configurations.  It comprises

@@ -4,7 +4,6 @@
 
 namespace nom.tam.util
 {
-    using System;
     using System.Collections;
 
     /// <summary>This interface extends the IEnumerator interface

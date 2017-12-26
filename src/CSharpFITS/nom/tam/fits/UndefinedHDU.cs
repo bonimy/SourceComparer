@@ -13,7 +13,6 @@ namespace nom.tam.fits
 	* improvements, enhancements and bug fixes.
 	*/
 
-    using System;
     using ArrayFuncs = nom.tam.util.ArrayFuncs;
 
     /// <summary>Holder for unknown data types.

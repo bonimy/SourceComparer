@@ -2,8 +2,6 @@
 //     Copyright (c) 2017 Samuel Carliles.
 // </copyright>
 
-using System;
-
 namespace nom.tam.util
 {
     /// <summary>

@@ -2,7 +2,6 @@
 //     Copyright (c) 2017 Samuel Carliles.
 // </copyright>
 
-using System;
 using System.Collections;
 
 namespace nom.tam.util

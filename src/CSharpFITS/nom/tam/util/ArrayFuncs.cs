@@ -13,7 +13,6 @@ namespace nom.tam.util
 	*/
 
     using System;
-    using System.Collections;
 
     /// <summary>This is a package of static functions which perform
     /// computations on arrays.  Generally these routines attempt

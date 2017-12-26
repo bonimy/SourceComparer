@@ -5,7 +5,6 @@
 namespace nom.tam.fits
 {
     using System;
-    using System.Collections;
     using nom.tam.util;
 
     /*

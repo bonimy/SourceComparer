@@ -4,8 +4,6 @@
 
 namespace nom.tam.fits
 {
-    using System;
-
     /*
 	* Copyright: Thomas McGlynn 1997-1998.
 	* This code may be used for any purpose, non-commercial

@@ -3,9 +3,7 @@
 // </copyright>
 
 using System;
-using System.Collections;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace nom.tam.util
 {

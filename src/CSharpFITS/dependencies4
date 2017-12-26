@@ -435,4 +435,3 @@ dependents:
 ./nom/tam/fits/Header.cs
 ./nom/tam/fits/ImageData.cs
 ./nom/tam/image/ImageTiler.cs
-

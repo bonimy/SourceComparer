@@ -15,7 +15,6 @@ namespace nom.tam.fits
 	*/
 
     using System;
-    using System.Collections;
     using System.IO;
     using nom.tam.util;
 

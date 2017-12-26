@@ -13,7 +13,6 @@ namespace nom.tam.fits
 	* improvements, enhancements and bug fixes.
 	*/
 
-    using System;
     using System.IO;
     using nom.tam.util;
 

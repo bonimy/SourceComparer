@@ -14,8 +14,8 @@ namespace nom.tam.fits
 	*/
 
     using System;
-    using nom.tam.util;
     using nom.tam.image;
+    using nom.tam.util;
 
     /// <summary>FITS image header/data unit</summary>
     public class ImageHDU : BasicHDU
