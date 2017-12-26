@@ -1,3 +1,7 @@
+// <copyright file="HashedList.cs" company="Public Domain">
+//     Copyright (c) 2017 Samuel Carliles.
+// </copyright>
+
 namespace nom.tam.util
 {
     /* Copyright: Thomas McGlynn 1999.
@@ -306,7 +310,7 @@ namespace nom.tam.util
                     var e = current.prev;
                     Enclosing_Instance.RemoveElement(current);
                     current = e;
-                    last = current == null ? null : current.prev;
+                    last = current?.prev;
                 }
             }
 

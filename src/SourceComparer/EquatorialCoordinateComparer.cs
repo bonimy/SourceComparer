@@ -2,7 +2,6 @@
 //     Copyright (c) 2017 Nelson Garcia.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 
 namespace SourceComparer

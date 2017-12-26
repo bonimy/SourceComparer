@@ -1,3 +1,7 @@
+// <copyright file="AsciiTable.cs" company="Public Domain">
+//     Copyright (c) 2017 Samuel Carliles.
+// </copyright>
+
 namespace nom.tam.fits
 {
     using System;
@@ -683,9 +687,8 @@ namespace nom.tam.fits
         public virtual int AddColumn(object newCol)
         {
             var maxLen = 0;
-            if (newCol is string[])
+            if (newCol is string[] sa)
             {
-                var sa = (string[])newCol;
                 for (var i = 0; i < sa.Length; i += 1)
                 {
                     if (sa[i] != null && sa[i].Length > maxLen)
