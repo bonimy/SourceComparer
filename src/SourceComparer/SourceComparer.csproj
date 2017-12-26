@@ -83,5 +83,11 @@
     <None Include="License.licenseheader" />
     <None Include="Settings.StyleCop" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CSharpFITS\CSharpFITS.csproj">
+      <Project>{9bc5f834-bb3a-43d0-a954-e214186bed0d}</Project>
+      <Name>CSharpFITS</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
