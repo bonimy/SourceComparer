@@ -67,14 +67,14 @@ namespace SourceComparer
             var columns = new Column[NameDictionary.Count];
             if (multithreaded)
             {
-                for (var i = 0; i < sourceList.Count; i++)
+                for (var i = 0; i < columns.Length; i++)
                 {
                     Enumeration(i);
                 }
             }
             else
             {
-                Parallel.For(0, sourceList.Count, Enumeration);
+                Parallel.For(0, columns.Length, Enumeration);
             }
 
             Columns = columns;
