@@ -15,6 +15,6 @@ namespace SourceComparer
         ModifiedJulianDate,
         Percent,
         ArcSecondsPerYear,
-        UJY,
+        MicroJansky,
     }
 }

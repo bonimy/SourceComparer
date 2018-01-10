@@ -160,7 +160,7 @@ namespace SourceComparer
                 { "days", Unit.ModifiedJulianDate },
                 { "%", Unit.Percent },
                 { "asecpyr", Unit.ArcSecondsPerYear },
-                { "ujy", Unit.UJY },
+                { "ujy", Unit.MicroJansky },
             };
 
             private static ColumnFormat GetColumnFormat(string text)
