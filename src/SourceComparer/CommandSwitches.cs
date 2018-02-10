@@ -9,7 +9,7 @@ using System.Text;
 
 namespace SourceComparer
 {
-    internal class CommandSwitches
+    public class CommandSwitches
     {
         private static readonly IReadOnlyDictionary<string, string> ArgNames = new Dictionary<string, string>()
             {

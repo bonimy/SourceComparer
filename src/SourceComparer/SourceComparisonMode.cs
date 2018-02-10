@@ -12,65 +12,137 @@ using static SourceComparer.Program;
 
 namespace SourceComparer
 {
-    internal static class SourceComparisonMode
+    public class SourceComparisonMode
     {
-        private static int Status
+        public CommandSwitches CommandSwitches
+        {
+            get;
+        }
+
+        private int Status
         {
             get;
             set;
         }
 
-        public static bool Multithreaded
+        public bool Multithreaded
         {
             get;
-            private set;
         }
 
-        public static bool Verbose
+        public bool Verbose
         {
             get;
-            private set;
         }
 
-        public static bool TimeStamp
+        public bool TimeStamp
         {
             get;
-            private set;
         }
 
-        public static string LogPath
+        public string LogPath
         {
             get;
-            private set;
         }
 
-        public static string PrimaryPath
+        public string PrimaryPath
         {
             get;
-            private set;
         }
 
-        public static string SecondaryPath
+        public string SecondaryPath
         {
             get;
-            private set;
         }
 
-        public static string OutputPath
+        public string OutputPath
         {
             get;
-            private set;
         }
 
-        public static Angle SearchRadius
+        public Angle SearchRadius
         {
             get;
-            private set;
         }
 
-        public static int Run(CommandSwitches commandSwitches)
+        public SourceComparisonMode(CommandSwitches commandSwitches)
         {
-            if (SetSwitches(commandSwitches) != 0)
+            CommandSwitches = commandSwitches ??
+                throw new ArgumentNullException(nameof(commandSwitches));
+
+            // This information is already printed to the output stream.
+            Multithreaded = CommandSwitches.Multithreaded;
+            Verbose = CommandSwitches.Verbose;
+            TimeStamp = CommandSwitches.TimeStamp;
+            LogPath = CommandSwitches.LogPath;
+
+            Console.WriteLine();
+            Console.WriteLine("Draw mode:");
+
+            PrimaryPath = ReadPrimaryPath();
+            SecondaryPath = ReadSecondaryPath();
+            OutputPath = ReadOutputPath();
+            SearchRadius = ReadSearchRadius();
+        }
+
+        private string ReadPrimaryPath()
+        {
+            if (!CommandSwitches.PrimaryPathSet)
+            {
+                Console.WriteLine("Primary path not set.");
+                Status = 1;
+            }
+
+            var result = CommandSwitches.PrimaryPath;
+            Console.WriteLine("Primary source path: {0}", result);
+            return result;
+        }
+
+        private string ReadSecondaryPath()
+        {
+            if (!CommandSwitches.SecondaryPathSet)
+            {
+                Console.WriteLine("Secondary source path not set.");
+                Status = 1;
+                return null;
+            }
+
+            var result = CommandSwitches.SecondaryPath;
+            Console.WriteLine("Secondary source path: {0}", result);
+            return result;
+        }
+
+        private string ReadOutputPath()
+        {
+            if (!CommandSwitches.OutputPathSet)
+            {
+                Console.WriteLine("Matched source list path not set.");
+                Status = 1;
+                return null;
+            }
+
+            var result = CommandSwitches.OutputPath;
+            Console.WriteLine("Matched source list path: {0}", result);
+            return result;
+        }
+
+        private Angle ReadSearchRadius()
+        {
+            if (!CommandSwitches.SearchRadiusArcsecSet)
+            {
+                Console.WriteLine("Search radius not set.");
+                Status = 1;
+                return Angle.FromRadians(0);
+            }
+
+            var arcsec = CommandSwitches.SearchRadiusArcsec;
+            Console.WriteLine("Search radius: {0} asec", arcsec);
+            return Angle.FromArcseconds(arcsec);
+        }
+
+        public int Run()
+        {
+            if (Status != 0)
             {
                 return Status;
             }
@@ -209,7 +281,32 @@ namespace SourceComparer
             }
         }
 
-        private static string[] StringizeMatchCount(SourceMatchLists[] searches)
+        private SourceList CreateSourceList(string path)
+        {
+            var lines = ReadAllLinesSafe(path, Verbose);
+            if (lines is null)
+            {
+                Status = -1;
+                return null;
+            }
+
+            if (Verbose)
+            {
+                Console.WriteLine("Generating source table.");
+            }
+
+            try
+            {
+                return new SourceList(lines, Multithreaded, Verbose);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        private string[] StringizeMatchCount(SourceMatchLists[] searches)
         {
             var lines = new string[searches.Length + 1];
             lines[0] = "radius\tmatches";
@@ -240,7 +337,7 @@ namespace SourceComparer
             }
         }
 
-        private static string[] StringizePositions(SourceMatchLists matches)
+        private string[] StringizePositions(SourceMatchLists matches)
         {
             var lines = new string[matches.MatchCount + 1];
             lines[0] = "WISE ID\tΔRA\tΔDec\tDistance\tW1 SNR\tSNR\tch1 mag";
@@ -294,7 +391,7 @@ namespace SourceComparer
             }
         }
 
-        private static void WriteReliability(SourceMatchLists bounded)
+        private void WriteReliability(SourceMatchLists bounded)
         {
             var reliability2to10 = GetReliabilityBins(bounded, 2.4, 9.4, 0.2);
             var reliability10to80 = GetReliabilityBins(bounded, 10, 80, 1);
@@ -308,7 +405,7 @@ namespace SourceComparer
             File.WriteAllText("reliability.txt", sb.ToString());
         }
 
-        private static string WriteRegions(IEnumerable<ISource> sources)
+        private string WriteRegions(IEnumerable<ISource> sources)
         {
             var sb = new StringBuilder();
 
@@ -348,7 +445,7 @@ namespace SourceComparer
             return sb.ToString();
         }
 
-        private static string StringizeBins(
+        private string StringizeBins(
             IReadOnlyDictionary<double, double> bins)
         {
             var sb = new StringBuilder();
@@ -363,7 +460,7 @@ namespace SourceComparer
             return sb.ToString();
         }
 
-        private static IReadOnlyDictionary<double, double> GetReliabilityBins(
+        private IReadOnlyDictionary<double, double> GetReliabilityBins(
             SourceMatchLists search,
             double startSnr,
             double endSnr,
@@ -401,94 +498,6 @@ namespace SourceComparer
             }
 
             return bins;
-        }
-
-        private static SourceList CreateSourceList(string path)
-        {
-            var lines = ReadAllLinesSafe(path, Verbose);
-            if (lines is null)
-            {
-                Status = -1;
-                return null;
-            }
-
-            try
-            {
-                if (Verbose)
-                {
-                    Console.WriteLine("Generating source table.");
-                }
-
-                return new SourceList(lines, Multithreaded, Verbose);
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
-        }
-
-        private static int SetSwitches(CommandSwitches commandSwitches)
-        {
-            if (commandSwitches is null)
-            {
-                throw new ArgumentNullException(nameof(commandSwitches));
-            }
-
-            // This information is already printed to the output stream.
-            Multithreaded = commandSwitches.Multithreaded;
-            Verbose = commandSwitches.Verbose;
-            TimeStamp = commandSwitches.TimeStamp;
-            LogPath = commandSwitches.LogPath;
-
-            Console.WriteLine();
-            Console.WriteLine("Draw mode:");
-
-            if (commandSwitches.PrimaryPathSet)
-            {
-                PrimaryPath = commandSwitches.PrimaryPath;
-                Console.WriteLine("Primary source path: {0}", PrimaryPath);
-            }
-            else
-            {
-                Console.WriteLine("Primary path not set.");
-                Status = 1;
-            }
-
-            if (commandSwitches.SecondaryPathSet)
-            {
-                SecondaryPath = commandSwitches.SecondaryPath;
-                Console.WriteLine("Secondary source path: {0}", SecondaryPath);
-            }
-            else
-            {
-                Console.WriteLine("Secondary source path not set.");
-                Status = 1;
-            }
-
-            if (commandSwitches.OutputPathSet)
-            {
-                OutputPath = commandSwitches.OutputPath;
-                Console.WriteLine("Matched source list path: {0}", OutputPath);
-            }
-            else
-            {
-                Console.WriteLine("Matched source list path not set.");
-                Status = 1;
-            }
-
-            if (commandSwitches.SearchRadiusArcsecSet)
-            {
-                SearchRadius = Angle.FromArcseconds(commandSwitches.SearchRadiusArcsec);
-                Console.WriteLine("Search radius: {0} asec", SearchRadius.Arcseconds);
-            }
-            else
-            {
-                Console.WriteLine("Search radius not set.");
-                Status = 1;
-            }
-
-            return Status;
         }
     }
 }
