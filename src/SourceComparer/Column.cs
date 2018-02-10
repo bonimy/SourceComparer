@@ -3,14 +3,11 @@
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace SourceComparer
 {
-    public delegate bool ColumnFilter(object value);
-
-    public delegate bool ColumnComparison(object value, Column other);
-
     public class Column : IReadOnlyList<object>
     {
         public NameEntry Name
@@ -61,9 +58,9 @@ namespace SourceComparer
             Values = values ?? throw new ArgumentNullException(nameof(values));
         }
 
-        public Column Filter(ColumnFilter filter)
+        public Column Filter(ColumnFilterCallback filter)
         {
-            if (filter == null)
+            if (filter is null)
             {
                 throw new ArgumentNullException(nameof(filter));
             }
@@ -80,14 +77,14 @@ namespace SourceComparer
             return new Column(Name, values);
         }
 
-        public Column FilterBy(Column other, ColumnComparison comparison)
+        public Column FilterBy(Column other, ColumnComparisonCallback comparison)
         {
-            if (other == null)
+            if (other is null)
             {
                 throw new ArgumentNullException(nameof(other));
             }
 
-            if (comparison == null)
+            if (comparison is null)
             {
                 throw new ArgumentNullException(nameof(comparison));
             }
@@ -109,7 +106,7 @@ namespace SourceComparer
             return Values.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }

@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using NodeList = System.Collections.Generic.List<System.Collections.Generic.LinkedListNode<SourceComparer.ISource>>;
 using SourceNode = System.Collections.Generic.LinkedListNode<SourceComparer.ISource>;
 
@@ -201,7 +202,7 @@ namespace SourceComparer
                 get;
             }
 
-            private IReadOnlyDictionary<Position2D, NodeList> PrimarySourceDictionary
+            private IReadOnlyDictionary<Point, NodeList> PrimarySourceDictionary
             {
                 get;
                 set;
@@ -229,12 +230,12 @@ namespace SourceComparer
                 Angle searchRadius,
                 bool verbose)
             {
-                if (primarySourceList == null)
+                if (primarySourceList is null)
                 {
                     throw new ArgumentNullException(nameof(primarySourceList));
                 }
 
-                if (secondarySourceList == null)
+                if (secondarySourceList is null)
                 {
                     throw new ArgumentNullException(nameof(secondarySourceList));
                 }
@@ -280,7 +281,7 @@ namespace SourceComparer
             private void CreatePrimarySourceDictionary()
             {
                 var nodes = PrimarySources;
-                var dictionary = new Dictionary<Position2D, NodeList>(nodes.Count);
+                var dictionary = new Dictionary<Point, NodeList>(nodes.Count);
                 for (var node = nodes.First; node != null; node = node.Next)
                 {
                     // Get the pixel coordinate of the current equatorial coordinate.
@@ -319,7 +320,7 @@ namespace SourceComparer
                     var matchedNode = GetNearestSourceNode(current, nodeList);
 
                     // Did we get a match?
-                    if (matchedNode == null)
+                    if (matchedNode is null)
                     {
                         // No matches here, go to the next node.
                         node = node.Next;
@@ -347,7 +348,7 @@ namespace SourceComparer
                 }
             }
 
-            private NodeList GetCandidateMatches(Position2D pixel)
+            private NodeList GetCandidateMatches(Point pixel)
             {
                 // Check just the center first.
                 if (PrimarySourceDictionary.TryGetValue(pixel, out var result))
@@ -363,7 +364,7 @@ namespace SourceComparer
                     for (var x = -1; x <= +1; x++)
                     {
                         // Are there candidate sources in this pixel?
-                        var position = pixel + new Position2D(x, y);
+                        var position = new Point(pixel.X + x, pixel.Y + y);
                         if (PrimarySourceDictionary.TryGetValue(position, out result))
                         {
                             // add the result to the collection.

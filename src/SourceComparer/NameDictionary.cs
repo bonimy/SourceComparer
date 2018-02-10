@@ -3,13 +3,14 @@
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace SourceComparer
 {
     public class NameDictionary : INameDictionary
     {
-        private IReadOnlyDictionary<string, int> Base
+        private IReadOnlyDictionary<string, int> Names
         {
             get;
         }
@@ -31,7 +32,7 @@ namespace SourceComparer
         {
             get
             {
-                return Base.Values;
+                return Names.Values;
             }
         }
 
@@ -39,7 +40,7 @@ namespace SourceComparer
         {
             get
             {
-                return Base.Count;
+                return Names.Count;
             }
         }
 
@@ -52,48 +53,48 @@ namespace SourceComparer
         {
             get
             {
-                return Base[key];
+                return Names[key];
             }
         }
 
-        public NameDictionary(IReadOnlyList<NameEntry> names)
+        public NameDictionary(IReadOnlyList<NameEntry> entries)
         {
-            if (names == null)
+            if (entries is null)
             {
-                throw new ArgumentNullException(nameof(names));
+                throw new ArgumentNullException(nameof(entries));
             }
 
-            var keys = new string[names.Count];
-            var dictionary = new Dictionary<string, int>(names.Count, StringComparer.OrdinalIgnoreCase);
-            for (var i = 0; i < names.Count; i++)
+            var keys = new string[entries.Count];
+            var names = new Dictionary<string, int>(entries.Count, StringComparer.OrdinalIgnoreCase);
+            for (var i = 0; i < entries.Count; i++)
             {
-                var name = names[i];
-                var key = name.Name;
-                keys[i] = key;
-                dictionary.Add(key, i);
+                var entry = entries[i];
+                var name = entry.Name;
+                keys[i] = name;
+                names.Add(name, i);
             }
 
-            Entries = names;
+            Entries = entries;
             Keys = keys;
-            Base = dictionary;
+            Names = names;
         }
 
         public bool ContainsKey(string key)
         {
-            return Base.ContainsKey(key);
+            return Names.ContainsKey(key);
         }
 
         public bool TryGetValue(string key, out int value)
         {
-            return Base.TryGetValue(key, out value);
+            return Names.TryGetValue(key, out value);
         }
 
         public IEnumerator<KeyValuePair<string, int>> GetEnumerator()
         {
-            return Base.GetEnumerator();
+            return Names.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }

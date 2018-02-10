@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace SourceComparer
@@ -72,10 +73,16 @@ namespace SourceComparer
             get;
         }
 
-        public SourceListDrawer(SourceList sourceList, EquatorialCoordinateComparer comparer, bool verbose)
+        public SourceListDrawer(
+            SourceList sourceList,
+            EquatorialCoordinateComparer comparer,
+            bool verbose)
         {
-            SourceList = sourceList ?? throw new ArgumentNullException(nameof(sourceList));
-            Comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
+            SourceList = sourceList ??
+                throw new ArgumentNullException(nameof(sourceList));
+
+            Comparer = comparer ??
+                throw new ArgumentNullException(nameof(comparer));
 
             var duplicates = 0;
             var pixels = new Dictionary<int, ISource>(sourceList.Count);
@@ -92,8 +99,15 @@ namespace SourceComparer
                     {
                         Console.WriteLine();
                         Console.WriteLine("Warning: Duplicate source found.");
-                        Console.WriteLine("Source={0}; {1}", source.Id, coordinate);
-                        Console.WriteLine("Match ={0}; {1}", duplicate.Id, coordinate);
+                        Console.WriteLine(
+                            "Source={0}; {1}",
+                            source.Id,
+                            coordinate);
+
+                        Console.WriteLine(
+                            "Match ={0}; {1}",
+                            duplicate.Id,
+                            coordinate);
                     }
 
                     duplicates++;
@@ -152,9 +166,12 @@ namespace SourceComparer
             return this[GetIndex(x, y)];
         }
 
-        public SourceListDrawer MatchTo(SourceListDrawer other, int pixelRadius, bool verbose)
+        public SourceListDrawer MatchTo(
+            SourceListDrawer other,
+            int pixelRadius,
+            bool verbose)
         {
-            if (other == null)
+            if (other is null)
             {
                 throw new ArgumentNullException(nameof(other));
             }
@@ -164,125 +181,24 @@ namespace SourceComparer
                 throw new ArgumentException();
             }
 
-            var duplicates = 0;
-            var matched = new bool[other.SourceList.Count];
-            var filterList = SourceList.Filter(SharesPixel);
+            var searcher = new PixelMatcher(
+                this,
+                other,
+                Comparer,
+                pixelRadius,
+                verbose);
 
-            if (verbose && duplicates > 0)
+            var filterList = SourceList.Filter(searcher.SharesPixel);
+
+            if (verbose && searcher.Duplicates > 0)
             {
                 Console.WriteLine();
-                Console.WriteLine("Number of duplicate sources: {0}", duplicates);
+                Console.WriteLine(
+                    "Number of duplicate sources: {0}",
+                    searcher.Duplicates);
             }
 
             return new SourceListDrawer(filterList, Comparer, false);
-
-            bool SharesPixel(ISource source)
-            {
-                ISource match = null;
-
-                var coordinate = source.EquatorialCoordinate;
-
-                // Convert pixel point according to other pixel coordinate converter.
-                var point = other.Comparer.GetPixel(coordinate);
-
-                ISource duplicate = null;
-                if (GetSource(point.X, point.Y))
-                {
-                    if (duplicate != null)
-                    {
-                        duplicates++;
-                        if (verbose)
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine("Warning: Duplicate source found.");
-                            Console.WriteLine("Source={0}; {1}", source.Id, coordinate);
-                            Console.WriteLine("Match ={0}; {1}", duplicate.Id, coordinate);
-                        }
-                    }
-
-                    return true;
-                }
-
-                return false;
-
-                bool GetSource(int centerX, int centerY)
-                {
-                    // Search by growing out of pixel radius to ensure closest matches.
-                    for (var radius = 0; radius <= pixelRadius; radius++)
-                    {
-                        if (SearchInRadius(centerX, centerY, radius))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool SearchInRadius(int centerX, int centerY, int radius)
-                {
-                    for (var relativeY = -radius; relativeY <= +radius; relativeY++)
-                    {
-                        var index = other.GetIndex(centerX, centerY + relativeY);
-                        if (index == -1)
-                        {
-                            continue;
-                        }
-
-                        if (SearchLine(centerX, relativeY, index, radius))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool SearchLine(int centerX, int relativeY, int index, int radius)
-                {
-                    for (var relativeX = -radius; relativeX <= +radius; relativeX++)
-                    {
-                        var absoluteX = centerX + relativeX;
-                        if (absoluteX < 0 || absoluteX >= other.Comparer.PixelWidth)
-                        {
-                            return false;
-                        }
-
-                        // Confine to circular radius.
-                        if ((relativeX * relativeX) + (relativeY * relativeY) > radius * radius)
-                        {
-                            continue;
-                        }
-
-                        if (CheckPixel(index + relativeX))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CheckPixel(int index)
-                {
-                    if (other.TryGetValue(index, out var result))
-                    {
-                        var matchIndex = result.Id - 1;
-
-                        // Don't match to a source that was already matched.
-                        if (matched[matchIndex])
-                        {
-                            duplicate = result;
-                            return false;
-                        }
-
-                        match = result;
-                        return matched[matchIndex] = true;
-                    }
-
-                    return false;
-                }
-            }
         }
 
         public IEnumerator<KeyValuePair<int, ISource>> GetEnumerator()
@@ -290,9 +206,203 @@ namespace SourceComparer
             return Pixels.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        private class PixelMatcher
+        {
+            public SourceListDrawer Primary
+            {
+                get;
+            }
+
+            public SourceListDrawer Secondary
+            {
+                get;
+            }
+
+            public EquatorialCoordinateComparer Comparer
+            {
+                get;
+            }
+
+            public int PixelRadius
+            {
+                get;
+            }
+
+            public bool Verbose
+            {
+                get;
+            }
+
+            public int Duplicates
+            {
+                get;
+                private set;
+            }
+
+            private bool[] Matched
+            {
+                get;
+            }
+
+            private ISource Duplicate
+            {
+                get;
+                set;
+            }
+
+            public PixelMatcher(
+                SourceListDrawer primary,
+                SourceListDrawer secondary,
+                EquatorialCoordinateComparer comparer,
+                int pixelRadius,
+                bool verbose)
+            {
+                Primary = primary ??
+                    throw new ArgumentNullException(nameof(primary));
+
+                Secondary = secondary ??
+                    throw new ArgumentNullException(nameof(secondary));
+
+                Comparer = Secondary.Comparer;
+
+                PixelRadius = pixelRadius;
+                Verbose = verbose;
+                Duplicates = 0;
+
+                Matched = new bool[Secondary.SourceList.Count];
+            }
+
+            public bool SharesPixel(ISource source)
+            {
+                // Convert pixel point according to other pixel coordinate converter.
+                var coordinate = source.EquatorialCoordinate;
+                var point = Comparer.GetPixel(coordinate);
+
+                Duplicate = null;
+                if (!GetSource(point.X, point.Y))
+                {
+                    return false;
+                }
+
+                CheckForDuplicate(source);
+                return true;
+            }
+
+            private void CheckForDuplicate(ISource source)
+            {
+                if (Duplicate is null)
+                {
+                    return;
+                }
+
+                Duplicates++;
+                if (!Verbose)
+                {
+                    return;
+                }
+
+                var coordinate = source.EquatorialCoordinate;
+                Console.WriteLine();
+                Console.WriteLine("Warning: Duplicate source found.");
+                Console.WriteLine(
+                    "Source={0}; {1}",
+                    source.Id,
+                    coordinate);
+
+                Console.WriteLine(
+                    "Match ={0}; {1}",
+                    Duplicate.Id,
+                    coordinate);
+            }
+
+            private bool GetSource(int centerX, int centerY)
+            {
+                // Search by growing out of pixel radius to ensure closest matches.
+                for (var radius = 0; radius <= PixelRadius; radius++)
+                {
+                    if (SearchInRadius(centerX, centerY, radius))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            private bool SearchInRadius(int centerX, int centerY, int radius)
+            {
+                for (var relativeY = -radius; relativeY <= +radius; relativeY++)
+                {
+                    var index = Secondary.GetIndex(centerX, centerY + relativeY);
+                    if (index == -1)
+                    {
+                        continue;
+                    }
+
+                    if (SearchLine(centerX, relativeY, index, radius))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            private bool SearchLine(
+                int centerX,
+                int relativeY,
+                int index,
+                int radius)
+            {
+                for (var relativeX = -radius; relativeX <= +radius; relativeX++)
+                {
+                    var absoluteX = centerX + relativeX;
+                    if (absoluteX < 0 || absoluteX >= Comparer.PixelWidth)
+                    {
+                        return false;
+                    }
+
+                    // Confine to circular radius.
+                    var x2 = relativeX * relativeX;
+                    var y2 = relativeY * relativeY;
+                    var r2 = radius * radius;
+                    if (x2 + y2 > r2)
+                    {
+                        continue;
+                    }
+
+                    if (CheckPixel(index + relativeX))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            private bool CheckPixel(int index)
+            {
+                if (!Secondary.TryGetValue(index, out var result))
+                {
+                    return false;
+                }
+
+                var matchIndex = result.Id - 1;
+
+                // Don't match to a source that was already matched.
+                if (Matched[matchIndex])
+                {
+                    Duplicate = result;
+                    return false;
+                }
+
+                return Matched[matchIndex] = true;
+            }
         }
     }
 }

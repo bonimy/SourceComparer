@@ -3,8 +3,8 @@
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 // Redo source output to be an SNR inequality instead of SNR bin.
 // Output ds9 region files for source matches with SNR > 20 and distance > 5".
@@ -39,28 +39,42 @@ namespace SourceComparer
             }
         }
 
-        public SourceList(string[] lines, bool multithreaded, bool verbose)
+        public SourceList(
+            string[] lines,
+            bool multithreaded,
+            bool verbose)
         {
-            var parser = new SourceListParser(lines, multithreaded, verbose);
+            var parser = new SourceListParser(
+                lines,
+                multithreaded,
+                verbose);
 
             NameDictionary = parser.NameDictionary;
             Sources = parser.Sources;
         }
 
-        internal SourceList(INameDictionary nameList, IEnumerable<ISource> sources)
+        internal SourceList(
+            INameDictionary nameList,
+            IEnumerable<ISource> sources)
         {
-            NameDictionary = nameList ?? throw new ArgumentNullException(nameof(nameList));
+            NameDictionary = nameList ??
+                throw new ArgumentNullException(nameof(nameList));
+
             Sources = new List<ISource>(sources);
         }
 
         public Column GetColumn(string name)
         {
-            return GetColumn(NameDictionary.Entries[NameDictionary[name]]);
+            var entries = NameDictionary.Entries;
+            var index = NameDictionary[name];
+            var entry = entries[index];
+
+            return GetColumn(entry);
         }
 
         public Column GetColumn(NameEntry entry)
         {
-            if (entry == null)
+            if (entry is null)
             {
                 throw new ArgumentNullException(nameof(entry));
             }
@@ -68,9 +82,11 @@ namespace SourceComparer
             var name = entry.Name;
             var index = NameDictionary[name];
             var values = new object[Count];
+
             for (var i = 0; i < values.Length; i++)
             {
-                values[i] = this[i][index];
+                var source = this[i];
+                values[i] = source[index];
             }
 
             return new Column(entry, values);
@@ -78,7 +94,7 @@ namespace SourceComparer
 
         public SourceList Filter(SourceFilterCallback filter)
         {
-            if (filter == null)
+            if (filter is null)
             {
                 throw new ArgumentNullException(nameof(filter));
             }
@@ -93,17 +109,19 @@ namespace SourceComparer
                 }
             }
 
-            return new SourceList(NameDictionary, sources.ToArray());
+            return new SourceList(NameDictionary, sources);
         }
 
-        public SourceList FilterBy(SourceList other, SourceComparisonCallback comparison)
+        public SourceList FilterBy(
+            SourceList other,
+            SourceComparisonCallback comparison)
         {
-            if (other == null)
+            if (other is null)
             {
                 throw new ArgumentNullException(nameof(other));
             }
 
-            if (comparison == null)
+            if (comparison is null)
             {
                 throw new ArgumentNullException(nameof(comparison));
             }
@@ -118,7 +136,7 @@ namespace SourceComparer
                 }
             }
 
-            return new SourceList(NameDictionary, sources.ToArray());
+            return new SourceList(NameDictionary, sources);
         }
 
         public IReadOnlyDictionary<double, IReadOnlyCollection<ISource>> CreateBins(
@@ -137,7 +155,8 @@ namespace SourceComparer
                 var center = comparer.GetBinCenter(snr);
                 if (dictionary.TryGetValue(center, out var list))
                 {
-                    ((List<ISnrSource>)list).Add(snrSource);
+                    var collection = list as ICollection<ISnrSource>;
+                    collection.Add(snrSource);
                     continue;
                 }
 
@@ -153,7 +172,7 @@ namespace SourceComparer
             return Sources.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
@@ -274,12 +293,16 @@ namespace SourceComparer
                 get;
             }
 
-            public SourceListParser(string[] lines, bool multithreaded, bool verbose)
+            public SourceListParser(
+                string[] lines,
+                bool multithreaded,
+                bool verbose)
             {
                 // Assign input parameters.
-                Lines = lines ?? throw new ArgumentNullException(nameof(lines));
-                Verbose = verbose;
+                Lines = lines ??
+                    throw new ArgumentNullException(nameof(lines));
 
+                Verbose = verbose;
                 Multithreaded = multithreaded;
 
                 // Get start line for name list.
@@ -296,42 +319,26 @@ namespace SourceComparer
 
                 NameDictionary = CreateNameDictionary();
 
-                var lastThousdand = 0;
-
-                var count = 0;
                 var sources = new ISource[Lines.Length - LineNumber];
-                if (Multithreaded)
-                {
-                    Parallel.For(0, sources.Length, Iteration);
-                }
-                else
-                {
-                    for (var i = 0; i < sources.Length; i++)
-                    {
-                        Iteration(i);
-                    }
-                }
+                MultithreadHelper.For(
+                    Multithreaded,
+                    0,
+                    sources.Length,
+                    Iteration);
 
                 Sources = sources;
 
                 if (verbose)
                 {
                     Console.WriteLine();
-                    Console.WriteLine("Total rows: {0}", Sources.Count);
+                    Console.WriteLine(
+                        "Total rows: {0}",
+                        Sources.Count);
                 }
 
                 void Iteration(int index)
                 {
                     sources[index] = ReadSource(Lines[index + LineNumber]);
-
-                    count++;
-
-                    if (verbose && count - lastThousdand > 1000)
-                    {
-                        lastThousdand = count - (count % 1000);
-
-                        //Console.Write("Successfully read {0} rows", lastThousdand);
-                    }
                 }
             }
 
@@ -353,28 +360,25 @@ namespace SourceComparer
             {
                 var names = new string[Indexes.Count - 1];
 
-                if (Multithreaded)
-                {
-                    Parallel.For(0, names.Length, Iteration);
-                }
-                else
-                {
-                    for (var i = 0; i < names.Length; i++)
-                    {
-                        Iteration(i);
-                    }
-                }
+                MultithreadHelper.For(
+                    Multithreaded,
+                    0,
+                    names.Length,
+                    Iteration);
 
                 return names;
 
                 void Iteration(int index)
                 {
                     var start = Indexes[index] + 1;
-                    var end = Math.Min(Indexes[index + 1], line.Length);
+                    var end = Math.Min(
+                        Indexes[index + 1],
+                        line.Length);
+
                     var length = end - start;
 
-                    var text = line.Substring(start, length).Trim();
-                    names[index] = text;
+                    var text = line.Substring(start, length);
+                    names[index] = text.Trim();
                 }
             }
 
@@ -383,17 +387,11 @@ namespace SourceComparer
                 var names = GetNames(line);
 
                 var formats = new ColumnFormat[names.Count];
-                if (Multithreaded)
-                {
-                    Parallel.For(0, formats.Length, Iteration);
-                }
-                else
-                {
-                    for (var i = 0; i < formats.Length; i++)
-                    {
-                        Iteration(i);
-                    }
-                }
+                MultithreadHelper.For(
+                    Multithreaded,
+                    0,
+                    formats.Length,
+                    Iteration);
 
                 return formats;
 
@@ -408,17 +406,11 @@ namespace SourceComparer
                 var names = GetNames(line);
 
                 var units = new Unit[names.Count];
-                if (Multithreaded)
-                {
-                    Parallel.For(0, units.Length, Iteration);
-                }
-                else
-                {
-                    for (var i = 0; i < units.Length; i++)
-                    {
-                        Iteration(i);
-                    }
-                }
+                MultithreadHelper.For(
+                    Multithreaded,
+                    0,
+                    units.Length,
+                    Iteration);
 
                 return units;
 
@@ -431,37 +423,70 @@ namespace SourceComparer
             private INameDictionary CreateNameDictionary()
             {
                 var entries = new NameEntry[Names.Count];
-                if (Multithreaded)
-                {
-                    Parallel.For(0, entries.Length, Iteration);
-                }
-                else
-                {
-                    for (var i = 0; i < entries.Length; i++)
-                    {
-                        Iteration(i);
-                    }
-                }
+                MultithreadHelper.For(
+                    Multithreaded,
+                    0,
+                    entries.Length,
+                    Iteration);
 
                 if (Verbose)
                 {
-                    Console.WriteLine("Number of column entries: {0}", entries.Length);
-                }
+                    Console.WriteLine(
+                        "Number of column entries: {0}",
+                        entries.Length);
 
-                if (Verbose)
-                {
                     Console.WriteLine();
-                    Console.WriteLine("Begin reading rows: Line {0}", LineNumber + 1);
+                    Console.WriteLine(
+                        "Begin reading rows: Line {0}",
+                        LineNumber + 1);
                 }
 
-                // HACK: fix this
-                switch (entries.Length)
-                {
-                    case 8:
-                        return new MdetNameDictionary(entries);
+                return CreateNameDictionary(entries);
 
-                    case 10:
-                        return new SpitzerNameDictionary(entries);
+                void Iteration(int index)
+                {
+                    var name = Names[index];
+                    var format = Formats[index];
+                    var unit = Units[index];
+                    var nullSpecifier = NullSpecifiers[index];
+
+                    entries[index] = CreateNameEntry(
+                        name,
+                        format,
+                        unit,
+                        nullSpecifier);
+                }
+            }
+
+            private NameEntry CreateNameEntry(
+                string name,
+                ColumnFormat format,
+                Unit unit,
+                string nullSpecifier)
+            {
+                if (unit == Unit.Degrees || unit == Unit.ArcSeconds)
+                {
+                    format = ColumnFormat.Angle;
+                }
+
+                return new NameEntry(
+                    name,
+                    format,
+                    unit,
+                    nullSpecifier);
+            }
+
+            private INameDictionary CreateNameDictionary(NameEntry[] entries)
+            {
+                // HACK: fix this
+                if (entries.Length == 8)
+                {
+                    return new MdetNameDictionary(entries);
+                }
+
+                if (entries.Length == 10)
+                {
+                    return new SpitzerNameDictionary(entries);
                 }
 
                 // Wphot tables have variable header sizes.
@@ -474,48 +499,6 @@ namespace SourceComparer
                 {
                     // If we fail, default to normal name dictionary.
                     return new NameDictionary(entries);
-                }
-
-                void Iteration(int index)
-                {
-                    var unit = Units[index];
-                    var format = Formats[index];
-
-                    if (format == ColumnFormat.Double)
-                    {
-                        switch (unit)
-                        {
-                            case Unit.ModifiedJulianDate:
-                                entries[index] = new NameEntry(
-                                    Names[index],
-                                    ColumnFormat.ModifiedJulianDate,
-                                    unit,
-                                    NullSpecifiers[index]);
-                                return;
-
-                            case Unit.Degrees:
-                                entries[index] = new NameEntry(
-                                    Names[index],
-                                    ColumnFormat.Angle,
-                                    unit,
-                                    NullSpecifiers[index]);
-                                return;
-
-                            case Unit.ArcSeconds:
-                                entries[index] = new NameEntry(
-                                    Names[index],
-                                    ColumnFormat.Angle,
-                                    unit,
-                                    NullSpecifiers[index]);
-                                return;
-                        }
-                    }
-
-                    entries[index] = new NameEntry(
-                        Names[index],
-                        Formats[index],
-                        Units[index],
-                        NullSpecifiers[index]);
                 }
             }
 
@@ -535,7 +518,8 @@ namespace SourceComparer
                         return new SpitzerSource(spitzerNameDictionary, values);
 
                     default:
-                        throw new ArgumentException();
+                        throw new ArgumentException(
+                            "Name dictionary is of an unrecognized type.");
                 }
             }
 

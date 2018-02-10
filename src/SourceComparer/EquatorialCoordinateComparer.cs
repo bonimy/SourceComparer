@@ -3,6 +3,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace SourceComparer
 {
@@ -83,7 +84,10 @@ namespace SourceComparer
             SearchRadius = searchRadius;
 
             // Get equatorial center and range.
-            Center = new EquatorialCoordinate((MinRa + MaxRa) / 2, (MinDec + MaxDec) / 2);
+            Center = new EquatorialCoordinate(
+                (MinRa + MaxRa) / 2,
+                (MinDec + MaxDec) / 2);
+
             RaWidth = MaxRa - MinRa;
             DecHeight = MaxRa - MinRa;
 
@@ -96,7 +100,7 @@ namespace SourceComparer
             PixelHeight = (int)(DecHeight.Radians * PixelsPerRadian);
         }
 
-        public Position2D GetPixel(EquatorialCoordinate obj)
+        public Point GetPixel(EquatorialCoordinate obj)
         {
             var relRa = obj.RA - MinRa;
             var scaleX = relRa.Radians * PixelsPerRadian;
@@ -107,16 +111,16 @@ namespace SourceComparer
             var y = (int)scaleY;
 
             // ToDo: allow rotation angle.
-            return new Position2D(x, y);
+            return new Point(x, y);
         }
 
-        public EquatorialCoordinate GetEquatorialCoordinate(Position2D position)
+        public EquatorialCoordinate GetEquatorialCoordinate(Point pixel)
         {
             // ToDo: allow rotation angle.
-            var relRa = Angle.FromRadians(position.X * RadiansPerPixel);
+            var relRa = Angle.FromRadians(pixel.X * RadiansPerPixel);
             var ra = relRa + MinRa;
 
-            var relDec = Angle.FromRadians(position.Y * RadiansPerPixel);
+            var relDec = Angle.FromRadians(pixel.Y * RadiansPerPixel);
             var dec = relDec + MinDec;
 
             return new EquatorialCoordinate(ra, dec);
@@ -124,7 +128,9 @@ namespace SourceComparer
 
         public bool Equals(EquatorialCoordinate x, EquatorialCoordinate y)
         {
-            return GetPixel(x) == GetPixel(y);
+            var left = GetPixel(x);
+            var right = GetPixel(y);
+            return left.Equals(right);
         }
 
         public int GetHashCode(EquatorialCoordinate obj)

@@ -3,12 +3,22 @@
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace SourceComparer
 {
     public abstract class Source : ISource
     {
+        private static IReadOnlyDictionary<ColumnFormat, ParseColumnCallback> ParseDictionary = new Dictionary<ColumnFormat, ParseColumnCallback>()
+        {
+            { ColumnFormat.String, (text, unit) => text },
+            { ColumnFormat.Integer, (text, unit) => Int32.Parse(text) },
+            { ColumnFormat.Double, (text, unit) => Double.Parse(text) },
+            { ColumnFormat.Angle, ParseAngle },
+            { ColumnFormat.ModifiedJulianDate, (text, unit) => ParseDateTime(text) }
+        };
+
         private IReadOnlyList<object> Entries
         {
             get;
@@ -67,9 +77,12 @@ namespace SourceComparer
             }
         }
 
-        protected Source(ISourceNameDictionary names, IReadOnlyList<string> values)
+        protected Source(
+            ISourceNameDictionary names,
+            IReadOnlyList<string> values)
         {
-            Names = names ?? throw new ArgumentNullException(nameof(names));
+            Names = names ??
+                throw new ArgumentNullException(nameof(names));
 
             if (values.Count != names.Count)
             {
@@ -87,7 +100,12 @@ namespace SourceComparer
             for (var i = 0; i < values.Count; i++)
             {
                 var entry = names.Entries[i];
-                var value = GetValue(values[i], entry.Format, entry.Units, entry.NullSpecifier);
+                var value = GetValue(
+                    values[i],
+                    entry.Format,
+                    entry.Units,
+                    entry.NullSpecifier);
+
                 result[i] = value;
             }
 
@@ -101,7 +119,11 @@ namespace SourceComparer
             }
         }
 
-        private static object GetValue(string text, ColumnFormat format, Unit unit, string nullSpecifier)
+        private static object GetValue(
+            string text,
+            ColumnFormat format,
+            Unit unit,
+            string nullSpecifier)
         {
             if (text == nullSpecifier)
             {
@@ -113,38 +135,27 @@ namespace SourceComparer
                 return null;
             }
 
-            switch (format)
+            if (ParseDictionary.TryGetValue(format, out var parse))
             {
-                case ColumnFormat.String:
-                    return text;
+                return parse(text, unit);
+            }
 
-                case ColumnFormat.Integer:
-                    return Int32.Parse(text);
+            return null;
+        }
 
-                case ColumnFormat.Double:
-                    return Double.Parse(text);
+        private static object ParseAngle(string text, Unit unit)
+        {
+            var angle = Double.Parse(text);
+            switch (unit)
+            {
+                case Unit.ArcSeconds:
+                    return Angle.FromArcseconds(angle);
 
-                case ColumnFormat.Angle:
-                    var angle = Double.Parse(text);
-                    switch (unit)
-                    {
-                        case Unit.ArcSeconds:
-                            return Angle.FromArcseconds(angle);
-
-                        case Unit.Degrees:
-                            return Angle.FromDegrees(angle);
-
-                        default:
-                            return angle;
-                    }
-
-                case ColumnFormat.ModifiedJulianDate:
-                    var days = Double.Parse(text);
-                    var date = JulianDate.FromModifiedJulianDate(days);
-                    return (DateTime)date;
+                case Unit.Degrees:
+                    return Angle.FromDegrees(angle);
 
                 default:
-                    return null;
+                    return angle;
             }
         }
 
@@ -153,7 +164,7 @@ namespace SourceComparer
             return Entries.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
@@ -161,6 +172,13 @@ namespace SourceComparer
         public override string ToString()
         {
             return Id.ToString();
+        }
+
+        private static DateTime ParseDateTime(string text)
+        {
+            var days = Double.Parse(text);
+            var date = JulianDate.FromModifiedJulianDate(days);
+            return date;
         }
     }
 }

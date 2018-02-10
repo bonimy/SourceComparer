@@ -7,20 +7,18 @@ using static System.Math;
 
 namespace SourceComparer
 {
-    public struct EquatorialCoordinate
+    public struct EquatorialCoordinate : IEquatable<EquatorialCoordinate>
     {
         public static readonly EquatorialCoordinate Empty = new EquatorialCoordinate();
 
         public Angle RA
         {
             get;
-            private set;
         }
 
         public Angle Dec
         {
             get;
-            private set;
         }
 
         public EquatorialCoordinate(Angle ra, Angle dec)
@@ -48,16 +46,6 @@ namespace SourceComparer
             return Angle.FromRadians(result);
         }
 
-        public static bool operator ==(EquatorialCoordinate left, EquatorialCoordinate right)
-        {
-            return left.RA == right.RA && left.Dec == right.Dec;
-        }
-
-        public static bool operator !=(EquatorialCoordinate left, EquatorialCoordinate right)
-        {
-            return !(left == right);
-        }
-
         public override bool Equals(object obj)
         {
             if (obj is EquatorialCoordinate value)
@@ -68,6 +56,13 @@ namespace SourceComparer
             return false;
         }
 
+        public bool Equals(EquatorialCoordinate obj)
+        {
+            return
+                RA.Equals(obj.RA) &&
+                Dec.Equals(obj.Dec);
+        }
+
         public override int GetHashCode()
         {
             return RA.GetHashCode() ^ Dec.GetHashCode();
@@ -75,7 +70,21 @@ namespace SourceComparer
 
         public override string ToString()
         {
-            return String.Format("RA={0:000.00000}, Dec={1:0.00000}", RA, Dec);
+            return String.Format("RA={0}, Dec={1}", RA, Dec);
+        }
+
+        public static bool operator ==(
+            EquatorialCoordinate left,
+            EquatorialCoordinate right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(
+            EquatorialCoordinate left,
+            EquatorialCoordinate right)
+        {
+            return !(left == right);
         }
     }
 }

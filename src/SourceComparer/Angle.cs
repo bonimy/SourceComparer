@@ -7,18 +7,37 @@ using static System.Math;
 
 namespace SourceComparer
 {
-    public struct Angle : IEquatable<Angle>, IComparable<Angle>, IComparable, IFormattable
+    public struct Angle :
+        IEquatable<Angle>,
+        IComparable<Angle>,
+        IComparable,
+        IFormattable
     {
         public const double RadiansPerDegree = PI / 180.0;
+
         public const double DegreesPerRadian = 180.0 / PI;
+
         public const double ArcminutesPerDegree = 60.0;
+
         public const double ArcsecondsPerDegree = 3600.0;
-        public const double DegreesPerArcminute = 1 / ArcminutesPerDegree;
-        public const double DegreesPerArcsecond = 1 / ArcsecondsPerDegree;
-        public const double ArcminutesPerRadian = ArcminutesPerDegree * DegreesPerRadian;
-        public const double RadiansPerArcminute = RadiansPerDegree * DegreesPerArcminute;
-        public const double ArcsecondsPerRadian = ArcsecondsPerDegree * DegreesPerRadian;
-        public const double RadiansPerArcsecond = RadiansPerDegree * DegreesPerArcsecond;
+
+        public const double DegreesPerArcminute =
+            1 / ArcminutesPerDegree;
+
+        public const double DegreesPerArcsecond =
+            1 / ArcsecondsPerDegree;
+
+        public const double ArcminutesPerRadian =
+            ArcminutesPerDegree * DegreesPerRadian;
+
+        public const double RadiansPerArcminute =
+            RadiansPerDegree * DegreesPerArcminute;
+
+        public const double ArcsecondsPerRadian =
+            ArcsecondsPerDegree * DegreesPerRadian;
+
+        public const double RadiansPerArcsecond =
+            RadiansPerDegree * DegreesPerArcsecond;
 
         public double Radians
         {
@@ -64,11 +83,11 @@ namespace SourceComparer
             Radians = radians;
         }
 
-        public Angle Range(Angle minAngle)
+        public Angle KeepInRange(Angle minAngle)
         {
-            var radians = Radians;
             var min = minAngle.Radians;
             var max = min + (2 * PI);
+            var radians = Radians;
 
             while (radians <= min)
             {
@@ -120,7 +139,7 @@ namespace SourceComparer
 
         public bool Equals(Angle other)
         {
-            return Radians == other.Radians;
+            return Radians.Equals(other.Radians);
         }
 
         public override bool Equals(object obj)
@@ -140,7 +159,9 @@ namespace SourceComparer
 
         public override string ToString()
         {
-            return Degrees.ToString();
+            return String.Format(
+                "{0:0.000}°",
+                Degrees);
         }
 
         public string ToString(string format, IFormatProvider provider)

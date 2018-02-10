@@ -7,7 +7,10 @@ using System.ComponentModel;
 
 namespace SourceComparer
 {
-    public class NameEntry : IEquatable<NameEntry>, IComparable<NameEntry>, IComparable
+    public class NameEntry :
+        IEquatable<NameEntry>,
+        IComparable<NameEntry>,
+        IComparable
     {
         public string Name
         {
@@ -29,9 +32,14 @@ namespace SourceComparer
             get;
         }
 
-        public NameEntry(string name, ColumnFormat format, Unit units, string nullSpecifier)
+        public NameEntry(
+            string name,
+            ColumnFormat format,
+            Unit units,
+            string nullSpecifier)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Name = name ??
+                throw new ArgumentNullException(nameof(name));
 
             if (!Enum.IsDefined(typeof(ColumnFormat), format))
             {
@@ -63,7 +71,7 @@ namespace SourceComparer
 
         public int CompareTo(NameEntry other)
         {
-            if (other == null)
+            if (other is null)
             {
                 return +1;
             }
@@ -83,7 +91,7 @@ namespace SourceComparer
 
         public bool Equals(NameEntry other)
         {
-            if (other == null)
+            if (other is null)
             {
                 return false;
             }

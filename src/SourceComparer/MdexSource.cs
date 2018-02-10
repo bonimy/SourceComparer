@@ -72,7 +72,10 @@ namespace SourceComparer
             }
         }
 
-        public MdexSource(MdexNameDictionary names, IReadOnlyList<string> values) : base(names, values)
+        public MdexSource(
+            MdexNameDictionary names,
+            IReadOnlyList<string> values) :
+            base(names, values)
         {
             var typeChecks = new Dictionary<int, Type>()
             {

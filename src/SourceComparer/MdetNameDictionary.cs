@@ -2,7 +2,6 @@
 //     Copyright (c) 2017 Nelson Garcia.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 
 namespace SourceComparer
@@ -36,41 +35,10 @@ namespace SourceComparer
 
         public MdetNameDictionary(IReadOnlyList<NameEntry> names) : base(names)
         {
-            if (TryGetValue(IdName, out var idIndex))
-            {
-                IdIndex = idIndex;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-
-            if (TryGetValue(RaName, out var raIndex))
-            {
-                RaIndex = raIndex;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-
-            if (TryGetValue(DecName, out var decIndex))
-            {
-                DecIndex = decIndex;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-
-            if (TryGetValue(SnrName, out var snrIndex))
-            {
-                SnrIndex = snrIndex;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
+            IdIndex = this[IdName];
+            RaIndex = this[RaName];
+            DecIndex = this[DecName];
+            SnrIndex = this[SnrName];
         }
     }
 }

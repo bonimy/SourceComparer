@@ -49,7 +49,10 @@ namespace SourceComparer
             }
         }
 
-        public SpitzerSource(SpitzerNameDictionary names, IReadOnlyList<string> values) : base(names, values)
+        public SpitzerSource(
+            SpitzerNameDictionary names,
+            IReadOnlyList<string> values) :
+            base(names, values)
         {
         }
     }

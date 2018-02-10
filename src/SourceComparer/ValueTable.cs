@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace SourceComparer
@@ -40,7 +41,8 @@ namespace SourceComparer
 
         public ValueTable(ColumnList columnList)
         {
-            ColumnList = columnList ?? throw new ArgumentNullException(nameof(columnList));
+            ColumnList = columnList ??
+                throw new ArgumentNullException(nameof(columnList));
         }
 
         public IEnumerator<object> GetEnumerator()
@@ -48,7 +50,7 @@ namespace SourceComparer
             return new Enumerator(this);
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
@@ -153,7 +155,8 @@ namespace SourceComparer
 
             public Enumerator(ValueTable valueTable)
             {
-                ValueTable = valueTable ?? throw new ArgumentNullException(nameof(valueTable));
+                ValueTable = valueTable ??
+                    throw new ArgumentNullException(nameof(valueTable));
 
                 NameEnumerator = ValueTable.NameDictionary.Keys.GetEnumerator();
 
@@ -208,7 +211,7 @@ namespace SourceComparer
                 return true;
             }
 
-            public void Dispose()
+            void IDisposable.Dispose()
             {
             }
         }

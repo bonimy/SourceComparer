@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Math;
 using static SourceComparer.Program;
+using static System.Math;
 
 namespace SourceComparer
 {
@@ -406,7 +406,7 @@ namespace SourceComparer
         private static SourceList CreateSourceList(string path)
         {
             var lines = ReadAllLinesSafe(path, Verbose);
-            if (lines == null)
+            if (lines is null)
             {
                 Status = -1;
                 return null;
@@ -430,7 +430,7 @@ namespace SourceComparer
 
         private static int SetSwitches(CommandSwitches commandSwitches)
         {
-            if (commandSwitches == null)
+            if (commandSwitches is null)
             {
                 throw new ArgumentNullException(nameof(commandSwitches));
             }

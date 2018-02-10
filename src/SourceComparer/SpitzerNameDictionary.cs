@@ -2,12 +2,12 @@
 //     Copyright (c) 2017 Nelson Garcia.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 
 namespace SourceComparer
 {
-    public sealed class SpitzerNameDictionary : NameDictionary, ISourceNameDictionary
+    public sealed class SpitzerNameDictionary : NameDictionary,
+        ISourceNameDictionary
     {
         private const string IdName = "Id";
         private const string RaName = "RA";
@@ -42,50 +42,11 @@ namespace SourceComparer
 
         public SpitzerNameDictionary(IReadOnlyList<NameEntry> names) : base(names)
         {
-            if (TryGetValue(IdName, out var idIndex))
-            {
-                IdIndex = idIndex;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-
-            if (TryGetValue(RaName, out var raIndex))
-            {
-                RaIndex = raIndex;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-
-            if (TryGetValue(DecName, out var decIndex))
-            {
-                DecIndex = decIndex;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-
-            if (TryGetValue(Flux1Name, out var flux1Index))
-            {
-                Flux1Index = flux1Index;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-
-            if (TryGetValue(Flux2Name, out var flux2Index))
-            {
-                Flux2Index = flux2Index;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
+            IdIndex = this[IdName];
+            RaIndex = this[RaName];
+            DecIndex = this[DecName];
+            Flux1Index = this[Flux1Name];
+            Flux2Index = this[Flux2Name];
         }
     }
 }

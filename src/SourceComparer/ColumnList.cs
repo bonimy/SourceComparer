@@ -3,9 +3,9 @@
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SourceComparer
 {
@@ -47,7 +47,8 @@ namespace SourceComparer
 
         public ColumnList(SourceList sourceList, bool multithreaded, bool verbose)
         {
-            SourceList = sourceList ?? throw new ArgumentNullException(nameof(sourceList));
+            SourceList = sourceList ??
+                throw new ArgumentNullException(nameof(sourceList));
 
             var keys = NameDictionary.Keys;
             var verboseOutputPadding = 0;
@@ -65,21 +66,15 @@ namespace SourceComparer
             }
 
             var columns = new Column[NameDictionary.Count];
-            if (multithreaded)
-            {
-                for (var i = 0; i < columns.Length; i++)
-                {
-                    Enumeration(i);
-                }
-            }
-            else
-            {
-                Parallel.For(0, columns.Length, Enumeration);
-            }
+            MultithreadHelper.For(
+                multithreaded,
+                0,
+                columns.Length,
+                Iteration);
 
             Columns = columns;
 
-            void Enumeration(int index)
+            void Iteration(int index)
             {
                 var name = NameDictionary.Keys[index];
                 var entry = NameDictionary.Entries[index];
@@ -114,7 +109,7 @@ namespace SourceComparer
             return Columns.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }

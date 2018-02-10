@@ -4,6 +4,5 @@
 
 namespace SourceComparer
 {
-    public delegate bool SourceFilterCallback(
-        ISource source);
+    public delegate bool SourceFilterCallback(ISource source);
 }

@@ -30,11 +30,15 @@ namespace SourceComparer
             }
         }
 
-        public MdetSource(MdetNameDictionary names, IReadOnlyList<string> values) : base(names, values)
+        public MdetSource(
+            MdetNameDictionary names,
+            IReadOnlyList<string> values) :
+            base(names, values)
         {
-            if (this[Names.SnrIndex].GetType() != typeof(double))
+            var snr = this[Names.SnrIndex];
+            if (snr.GetType() != typeof(double))
             {
-                throw new ArgumentException();
+                throw new ArgumentException("Expected SNR to have type \"double\".");
             }
         }
     }

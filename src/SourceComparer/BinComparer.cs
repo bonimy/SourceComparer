@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace SourceComparer
 {
-    public class BinComparer : IEqualityComparer<double>
+    public class BinComparer : EqualityComparer<double>
     {
         private double Zero
         {
@@ -79,7 +79,7 @@ namespace SourceComparer
             return (index * Width) + Center;
         }
 
-        public bool Equals(double x, double y)
+        public override bool Equals(double x, double y)
         {
             var left = GetBinIndex(x);
             var right = GetBinIndex(y);
@@ -87,9 +87,9 @@ namespace SourceComparer
             return left == right;
         }
 
-        public int GetHashCode(double value)
+        public override int GetHashCode(double value)
         {
-            return GetBinIndex(value).GetHashCode();
+            return GetBinIndex(value);
         }
 
         public override string ToString()

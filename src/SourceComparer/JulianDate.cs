@@ -9,10 +9,15 @@ namespace SourceComparer
     public struct JulianDate
     {
         private const double JdFromOa = 2415018.5;
+
         private const double OaFromJd = -JdFromOa;
+
         private const double JdFromMjd = 2440000.5;
+
         private const double MjdFromJd = -JdFromMjd;
+
         private const double OaFromMjd = OaFromJd - MjdFromJd;
+
         private const double MjdFromOa = -OaFromMjd;
 
         private DateTime DateTime

@@ -2,7 +2,6 @@
 //     Copyright (c) 2017 Nelson Garcia.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 
 namespace SourceComparer
@@ -43,46 +42,15 @@ namespace SourceComparer
 
         public MdexNameDictionary(IReadOnlyList<NameEntry> names) : base(names)
         {
-            if (TryGetValue(IdName, out var idIndex))
-            {
-                IdIndex = idIndex;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-
-            if (TryGetValue(RaName, out var raIndex))
-            {
-                RaIndex = raIndex;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-
-            if (TryGetValue(DecName, out var decIndex))
-            {
-                DecIndex = decIndex;
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-
             var snrIndexes = new int[SnrNames.Count];
             for (var i = 0; i < snrIndexes.Length; i++)
             {
-                if (TryGetValue(SnrNames[i], out var snrIndex))
-                {
-                    snrIndexes[i] = snrIndex;
-                }
-                else
-                {
-                    throw new ArgumentException();
-                }
+                snrIndexes[i] = this[SnrNames[i]];
             }
 
+            IdIndex = this[IdName];
+            RaIndex = this[RaName];
+            DecIndex = this[DecName];
             SnrIndexes = snrIndexes;
         }
     }

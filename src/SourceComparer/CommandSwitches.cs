@@ -11,7 +11,32 @@ namespace SourceComparer
 {
     internal class CommandSwitches
     {
-        private static readonly IReadOnlyDictionary<string, string> ArgNames = InitializeArgNames();
+        private static readonly IReadOnlyDictionary<string, string> ArgNames = new Dictionary<string, string>()
+            {
+                { "-draw"          , "Draw mode"               },
+                { "-compare"       , "Source comparison mode"  },
+                { "-filter"        , "Filter mode"             },
+                { "-mt"            , "Multi-thread mode"       },
+                { "-multithreaded" , "Multi-thread mode"       },
+                { "-v"             , "Verbosity"               },
+                { "-verbose"       , "Verbosity"               },
+                { "-ts"            , "Time-stamp"              },
+                { "-timestamp"     , "Time-stamp"              },
+                { "-logpath"       , "Console log output path" },
+                { "-input"         , "Input source path"       },
+                { "-primary"       , "Primary source path"     },
+                { "-secondary"     , "Secondary source path"   },
+                { "-output"        , "Output path"             },
+                { "-center_ra"     , "Center RA"               },
+                { "-center_dec"    , "Center dec"              },
+                { "-pixel_width"   , "Pixel width"             },
+                { "-pixel_height"  , "Pixel height"            },
+                { "-asecperpix_x"  , "Arcsec per pixel (X)"    },
+                { "-asecperpix_y"  , "Arcsec per pixel (Y)"    },
+                { "-rot_deg"       , "Rotation (degrees)"      },
+                { "-searchrad_asec", "Search radius (arcsec)"  },
+                { "-snrlist"       , "SNR range list"          },
+            };
 
         private IReadOnlyDictionary<string, Action> Commands
         {
@@ -282,7 +307,9 @@ namespace SourceComparer
 
         public CommandSwitches(IReadOnlyList<string> args, out int status)
         {
-            Args = args ?? throw new ArgumentNullException(nameof(args));
+            Args = args ??
+                throw new ArgumentNullException(nameof(args));
+
             Commands = InitializeCommandDictionary();
             HashParsedArgs = InitializeHashParsedArgs();
             Status = status = 0;
@@ -302,13 +329,17 @@ namespace SourceComparer
                 Console.SetOut(stringWriter);
 
                 // Parse each arg in order.
-                for (ArgIndex = 0; ArgIndex < Args.Count && Status == 0; ArgIndex++)
+                for (ArgIndex = 0; ArgIndex < Args.Count; ArgIndex++)
                 {
                     // Update the status each time.
                     Status = ParseArg(Args[ArgIndex]);
+                    if (Status != 0)
+                    {
+                        break;
+                    }
                 }
 
-                // Flush the stream before finishing.
+                // Do this to ensure all stream writes are complete.
                 stringWriter.Flush();
             }
 
@@ -418,16 +449,30 @@ namespace SourceComparer
 
         private void PrintBasics()
         {
+            PrintVerboseState();
+            PrintTimeStampState();
+            PrintMultithreadState();
+            PrintLogPathState();
+        }
+
+        private void PrintVerboseState()
+        {
             if (Verbose)
             {
                 Console.WriteLine("Using verbosity.");
             }
+        }
 
+        private void PrintTimeStampState()
+        {
             if (TimeStamp)
             {
                 Console.WriteLine("Adding timestamps to output.");
             }
+        }
 
+        private void PrintMultithreadState()
+        {
             if (Multithreaded)
             {
                 Console.WriteLine("Multi-thread mode enabled.");
@@ -436,18 +481,18 @@ namespace SourceComparer
             {
                 Console.WriteLine("Single-thread mode.");
             }
+        }
 
+        private void PrintLogPathState()
+        {
             if (LogPathSet)
             {
                 Console.WriteLine("Output log path: {0}", LogPath);
             }
         }
 
-        private void PrintDrawMode()
+        private void PrintInputPathState()
         {
-            Console.WriteLine("Draw mode:");
-            PrintBasics();
-
             if (InputPathSet)
             {
                 Console.WriteLine("Input path: {0}", InputPath);
@@ -457,7 +502,10 @@ namespace SourceComparer
                 Console.WriteLine("Input path not provided.");
                 Status = 1;
             }
+        }
 
+        private void PrintOutputPathState()
+        {
             if (OutputPathSet)
             {
                 Console.WriteLine("Output image path: {0}", OutputPath);
@@ -467,7 +515,10 @@ namespace SourceComparer
                 Console.WriteLine("Output image path not provided.");
                 Status = 1;
             }
+        }
 
+        private void PrintCenterCoordinatesState()
+        {
             if (CenterRaSet)
             {
                 Console.WriteLine("Center RA: {0}", CenterRa);
@@ -487,7 +538,10 @@ namespace SourceComparer
                 Console.WriteLine("Center Dec not set.");
                 Status = 1;
             }
+        }
 
+        private void PrintPixelSizeState()
+        {
             if (PixelWidthSet)
             {
                 Console.WriteLine("Image width (pixels): {0}", PixelWidth);
@@ -507,7 +561,10 @@ namespace SourceComparer
                 Console.Write("Image height not set.");
                 Status = 1;
             }
+        }
 
+        private void PrintPixelResolutionState()
+        {
             if (ArcsecPerPixelXSet)
             {
                 Console.WriteLine("Arcsec per pixel (X): {0}", ArcsecPerPixelX);
@@ -527,7 +584,10 @@ namespace SourceComparer
                 Console.WriteLine("Arcsec per pixel (Y) not set.");
                 Status = 1;
             }
+        }
 
+        private void PrintRotationAngleState()
+        {
             if (RotationDegreesSet)
             {
                 Console.WriteLine("Rotation (degrees): {0}", RotationDegrees);
@@ -536,7 +596,10 @@ namespace SourceComparer
             {
                 Console.WriteLine("Rotation not set, assuming zero.");
             }
+        }
 
+        private void PrintSnrRangeState()
+        {
             if (SnrRangeSet)
             {
                 if (SnrRange.Count != 0)
@@ -549,16 +612,25 @@ namespace SourceComparer
                     }
 
                     Console.WriteLine("SNR range: {0}", sb.ToString());
-                }
-                else
-                {
-                    Console.WriteLine("SNR range not set. Will take best guess.");
+                    return;
                 }
             }
-            else
-            {
-                Console.WriteLine("SNR range not set. Will take best guess.");
-            }
+
+            Console.WriteLine("SNR range not set. Will take best guess.");
+        }
+
+        private void PrintDrawMode()
+        {
+            Console.WriteLine("Draw mode:");
+            PrintBasics();
+
+            PrintInputPathState();
+            PrintOutputPathState();
+            PrintCenterCoordinatesState();
+            PrintPixelSizeState();
+            PrintPixelResolutionState();
+            PrintRotationAngleState();
+            PrintSnrRangeState();
         }
 
         private string NextString()
@@ -831,36 +903,6 @@ namespace SourceComparer
                 { "-rot_deg"       , () => RotationDegreesSet   },
                 { "-searchrad_asec", () => SearchRadiusArcsecSet},
                 { "-snrlist"       , () => SnrRangeSet          },
-            };
-        }
-
-        private static IReadOnlyDictionary<string, string> InitializeArgNames()
-        {
-            return new Dictionary<string, string>()
-            {
-                { "-draw"          , "Draw mode"               },
-                { "-compare"       , "Source comparison mode"  },
-                { "-filter"        , "Filter mode"             },
-                { "-mt"            , "Multi-thread mode"       },
-                { "-multithreaded" , "Multi-thread mode"       },
-                { "-v"             , "Verbosity"               },
-                { "-verbose"       , "Verbosity"               },
-                { "-ts"            , "Time-stamp"              },
-                { "-timestamp"     , "Time-stamp"              },
-                { "-logpath"       , "Console log output path" },
-                { "-input"         , "Input source path"       },
-                { "-primary"       , "Primary source path"     },
-                { "-secondary"     , "Secondary source path"   },
-                { "-output"        , "Output path"             },
-                { "-center_ra"     , "Center RA"               },
-                { "-center_dec"    , "Center dec"              },
-                { "-pixel_width"   , "Pixel width"             },
-                { "-pixel_height"  , "Pixel height"            },
-                { "-asecperpix_x"  , "Arcsec per pixel (X)"    },
-                { "-asecperpix_y"  , "Arcsec per pixel (Y)"    },
-                { "-rot_deg"       , "Rotation (degrees)"      },
-                { "-searchrad_asec", "Search radius (arcsec)"  },
-                { "-snrlist"       , "SNR range list"          },
             };
         }
     }
