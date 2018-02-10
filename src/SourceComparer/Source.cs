@@ -10,7 +10,7 @@ namespace SourceComparer
 {
     public abstract class Source : ISource
     {
-        private static IReadOnlyDictionary<ColumnFormat, ParseColumnCallback> ParseDictionary = new Dictionary<ColumnFormat, ParseColumnCallback>()
+        private static readonly IReadOnlyDictionary<ColumnFormat, ParseColumnCallback> ParseDictionary = new Dictionary<ColumnFormat, ParseColumnCallback>()
         {
             { ColumnFormat.String, (text, unit) => text },
             { ColumnFormat.Integer, (text, unit) => Int32.Parse(text) },

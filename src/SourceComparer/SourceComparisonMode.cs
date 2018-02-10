@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using static SourceComparer.Program;
 using static System.Math;
+using static SourceComparer.Program;
 
 namespace SourceComparer
 {
@@ -185,7 +185,7 @@ namespace SourceComparer
                 new SourceList(secondary.NameDictionary, total2),
                 searches[searches.Length - 1].SecondaryUnmatchedSources);
 
-            //WriteReliability(result);
+            //// WriteReliability(result);
 
             File.WriteAllLines("counts-20.txt", StringizeMatchCount(searches));
             File.WriteAllLines("data-20.txt", StringizePositions(result));

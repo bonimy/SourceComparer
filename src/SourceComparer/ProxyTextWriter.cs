@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="ProxyTextWriter.cs" company="Public Domain">
+//     Copyright (c) 2018 Nelson Garcia.
+// </copyright>
+
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;

@@ -170,13 +170,10 @@ namespace SourceComparer
             return (
 
                  minRa,
-
-                //Angle.FromDegrees(149.36076),
+                //// Angle.FromDegrees(149.36076),
                 maxRa,
-
                 minDec,
-
-                //Angle.FromDegrees(1.4154749),
+                //// Angle.FromDegrees(1.4154749),
                 maxDec);
         }
 

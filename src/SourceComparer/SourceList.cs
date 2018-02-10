@@ -6,8 +6,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-// Redo source output to be an SNR inequality instead of SNR bin.
-// Output ds9 region files for source matches with SNR > 20 and distance > 5".
+/*
+Redo source output to be an SNR inequality instead of SNR bin.
+Output ds9 region files for source matches with SNR > 20 and distance > 5".
+*/
 
 namespace SourceComparer
 {
