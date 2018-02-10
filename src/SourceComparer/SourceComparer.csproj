@@ -53,6 +53,8 @@
     <Compile Include="EquatorialCoordinate.cs" />
     <Compile Include="EquatorialCoordinateComparer.cs" />
     <Compile Include="FitsWriter.cs" />
+    <Compile Include="SourceComparisonCallback.cs" />
+    <Compile Include="SourceFilterCallback.cs" />
     <Compile Include="SourceListDrawer.cs" />
     <Compile Include="SourceMatchLists.cs" />
     <Compile Include="INameDictionary.cs" />

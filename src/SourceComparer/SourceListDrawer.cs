@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="SourceListDrawer.cs" company="Public Domain">
+//     Copyright (c) 2017 Nelson Garcia.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 
 namespace SourceComparer

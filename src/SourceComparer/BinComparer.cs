@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="BinComparer.cs" company="Public Domain">
+//     Copyright (c) 2018 Nelson Garcia.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 
 namespace SourceComparer

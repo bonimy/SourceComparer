@@ -11,10 +11,6 @@ using System.Threading.Tasks;
 
 namespace SourceComparer
 {
-    public delegate bool SourceFilter(ISource source);
-
-    public delegate bool SourceComparison(ISource source, SourceList other);
-
     public sealed class SourceList : IReadOnlyList<ISource>
     {
         public INameDictionary NameDictionary
@@ -80,7 +76,7 @@ namespace SourceComparer
             return new Column(entry, values);
         }
 
-        public SourceList Filter(SourceFilter filter)
+        public SourceList Filter(SourceFilterCallback filter)
         {
             if (filter == null)
             {
@@ -100,7 +96,7 @@ namespace SourceComparer
             return new SourceList(NameDictionary, sources.ToArray());
         }
 
-        public SourceList FilterBy(SourceList other, SourceComparison comparison)
+        public SourceList FilterBy(SourceList other, SourceComparisonCallback comparison)
         {
             if (other == null)
             {
@@ -461,11 +457,11 @@ namespace SourceComparer
                 // HACK: fix this
                 switch (entries.Length)
                 {
-                case 8:
-                return new MdetNameDictionary(entries);
+                    case 8:
+                        return new MdetNameDictionary(entries);
 
-                case 10:
-                return new SpitzerNameDictionary(entries);
+                    case 10:
+                        return new SpitzerNameDictionary(entries);
                 }
 
                 // Wphot tables have variable header sizes.
@@ -489,29 +485,29 @@ namespace SourceComparer
                     {
                         switch (unit)
                         {
-                        case Unit.ModifiedJulianDate:
-                        entries[index] = new NameEntry(
-                            Names[index],
-                            ColumnFormat.ModifiedJulianDate,
-                            unit,
-                            NullSpecifiers[index]);
-                        return;
+                            case Unit.ModifiedJulianDate:
+                                entries[index] = new NameEntry(
+                                    Names[index],
+                                    ColumnFormat.ModifiedJulianDate,
+                                    unit,
+                                    NullSpecifiers[index]);
+                                return;
 
-                        case Unit.Degrees:
-                        entries[index] = new NameEntry(
-                            Names[index],
-                            ColumnFormat.Angle,
-                            unit,
-                            NullSpecifiers[index]);
-                        return;
+                            case Unit.Degrees:
+                                entries[index] = new NameEntry(
+                                    Names[index],
+                                    ColumnFormat.Angle,
+                                    unit,
+                                    NullSpecifiers[index]);
+                                return;
 
-                        case Unit.ArcSeconds:
-                        entries[index] = new NameEntry(
-                            Names[index],
-                            ColumnFormat.Angle,
-                            unit,
-                            NullSpecifiers[index]);
-                        return;
+                            case Unit.ArcSeconds:
+                                entries[index] = new NameEntry(
+                                    Names[index],
+                                    ColumnFormat.Angle,
+                                    unit,
+                                    NullSpecifiers[index]);
+                                return;
                         }
                     }
 
@@ -529,17 +525,17 @@ namespace SourceComparer
 
                 switch (NameDictionary)
                 {
-                case MdetNameDictionary mdetNameDictionary:
-                return new MdetSource(mdetNameDictionary, values);
+                    case MdetNameDictionary mdetNameDictionary:
+                        return new MdetSource(mdetNameDictionary, values);
 
-                case MdexNameDictionary mdexNameDictionary:
-                return new MdexSource(mdexNameDictionary, values);
+                    case MdexNameDictionary mdexNameDictionary:
+                        return new MdexSource(mdexNameDictionary, values);
 
-                case SpitzerNameDictionary spitzerNameDictionary:
-                return new SpitzerSource(spitzerNameDictionary, values);
+                    case SpitzerNameDictionary spitzerNameDictionary:
+                        return new SpitzerSource(spitzerNameDictionary, values);
 
-                default:
-                throw new ArgumentException();
+                    default:
+                        throw new ArgumentException();
                 }
             }
 
