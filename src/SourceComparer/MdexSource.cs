@@ -66,7 +66,9 @@ namespace SourceComparer
         {
             get
             {
-                return Math.Sqrt((W1Snr * W1Snr) + (W2Snr * W2Snr));
+                var w1 = Double.IsNaN(W1Snr) ? 0 : W1Snr;
+                var w2 = Double.IsNaN(W2Snr) ? 0 : W2Snr;
+                return Math.Sqrt((w1 * w1) + (w2 * w2));
             }
         }
 

@@ -105,41 +105,46 @@ namespace SourceComparer
         {
             if (text == nullSpecifier)
             {
+                if (format == ColumnFormat.Double)
+                {
+                    return Double.NaN;
+                }
+
                 return null;
             }
 
             switch (format)
             {
-            case ColumnFormat.String:
-            return text;
+                case ColumnFormat.String:
+                    return text;
 
-            case ColumnFormat.Integer:
-            return Int32.Parse(text);
+                case ColumnFormat.Integer:
+                    return Int32.Parse(text);
 
-            case ColumnFormat.Double:
-            return Double.Parse(text);
+                case ColumnFormat.Double:
+                    return Double.Parse(text);
 
-            case ColumnFormat.Angle:
-            var angle = Double.Parse(text);
-            switch (unit)
-            {
-            case Unit.ArcSeconds:
-            return Angle.FromArcseconds(angle);
+                case ColumnFormat.Angle:
+                    var angle = Double.Parse(text);
+                    switch (unit)
+                    {
+                        case Unit.ArcSeconds:
+                            return Angle.FromArcseconds(angle);
 
-            case Unit.Degrees:
-            return Angle.FromDegrees(angle);
+                        case Unit.Degrees:
+                            return Angle.FromDegrees(angle);
 
-            default:
-            return angle;
-            }
+                        default:
+                            return angle;
+                    }
 
-            case ColumnFormat.ModifiedJulianDate:
-            var days = Double.Parse(text);
-            var date = JulianDate.FromModifiedJulianDate(days);
-            return (DateTime)date;
+                case ColumnFormat.ModifiedJulianDate:
+                    var days = Double.Parse(text);
+                    var date = JulianDate.FromModifiedJulianDate(days);
+                    return (DateTime)date;
 
-            default:
-            return null;
+                default:
+                    return null;
             }
         }
 

@@ -11,29 +11,37 @@ namespace SourceComparer
 {
     public class SourceMatchLists
     {
-        public IReadOnlyList<ISource> PrimaryMatchedSources
+        public int MatchCount
+        {
+            get
+            {
+                return PrimaryMatchedSources.Count;
+            }
+        }
+
+        public SourceList PrimaryMatchedSources
         {
             get;
         }
 
-        public IReadOnlyList<ISource> SecondaryMatchedSources
+        public SourceList SecondaryMatchedSources
         {
             get;
         }
 
-        public IReadOnlyCollection<ISource> PrimaryUnmatchedSources
+        public SourceList PrimaryUnmatchedSources
         {
             get;
         }
 
-        public IReadOnlyCollection<ISource> SecondaryUnmatchedSources
+        public SourceList SecondaryUnmatchedSources
         {
             get;
         }
 
         public SourceMatchLists(
-            IReadOnlyCollection<ISource> primarySourceList,
-            IReadOnlyCollection<ISource> secondarySourceList,
+            SourceList primarySourceList,
+            SourceList secondarySourceList,
             Angle searchRadius,
             bool verbose)
         {
@@ -43,11 +51,132 @@ namespace SourceComparer
                 searchRadius,
                 verbose);
 
-            PrimaryMatchedSources = matches.PrimaryMatchedSources;
-            SecondaryMatchedSources = matches.SecondaryMatchedSources;
+            PrimaryMatchedSources = new SourceList(
+                primarySourceList.NameDictionary,
+                matches.PrimaryMatchedSources);
 
-            PrimaryUnmatchedSources = matches.PrimaryUnmatchedSources;
-            SecondaryUnmatchedSources = matches.SecondaryUnmatchedSources;
+            PrimaryUnmatchedSources = new SourceList(
+                primarySourceList.NameDictionary,
+                matches.PrimarySources);
+
+            SecondaryMatchedSources = new SourceList(
+                secondarySourceList.NameDictionary,
+                matches.SecondaryMatchedSources);
+
+            SecondaryUnmatchedSources = new SourceList(
+                secondarySourceList.NameDictionary,
+                matches.SecondarySources);
+        }
+
+        internal SourceMatchLists(
+            SourceList primaryMatchedSources,
+            SourceList primaryUnmatchedSources,
+            SourceList secondaryMatchedSources,
+            SourceList secondaryUnmatchedSources)
+        {
+            PrimaryMatchedSources = primaryMatchedSources;
+            PrimaryUnmatchedSources = primaryUnmatchedSources;
+            SecondaryMatchedSources = secondaryMatchedSources;
+            SecondaryUnmatchedSources = secondaryUnmatchedSources;
+        }
+
+        public SourceMatchLists RestrictToBounds()
+        {
+            var (minRa, maxRa, minDec, maxDec) = GetBounds(PrimaryMatchedSources);
+            return RestrictToBounds(minRa, maxRa, minDec, maxDec);
+        }
+
+        public SourceMatchLists RestrictToBounds(
+            Angle minRa,
+            Angle maxRa,
+            Angle minDec,
+            Angle maxDec)
+        {
+            var sources1 = new List<ISource>(PrimaryMatchedSources.Count);
+            var sources2 = new List<ISource>(SecondaryMatchedSources.Count);
+            for (var i = 0; i < PrimaryMatchedSources.Count; i++)
+            {
+                var source1 = PrimaryMatchedSources[i];
+                var source2 = SecondaryMatchedSources[i];
+
+                // Both matching sources must be in bounds to be considered.
+                if (InBounds(source1) && InBounds(source2))
+                {
+                    sources1.Add(source1);
+                    sources2.Add(source2);
+                }
+            }
+
+            var primaryMatched = new SourceList(
+                PrimaryMatchedSources.NameDictionary,
+                sources1);
+
+            var secondaryMatched = new SourceList(
+                SecondaryMatchedSources.NameDictionary,
+                sources2);
+
+            var primaryUnmatched = PrimaryUnmatchedSources.Filter(InBounds);
+
+            var secondaryUnmatched = SecondaryUnmatchedSources.Filter(InBounds);
+
+            return new SourceMatchLists(
+                primaryMatched,
+                primaryUnmatched,
+                secondaryMatched,
+                secondaryUnmatched);
+
+            bool InBounds(ISource source)
+            {
+                return
+                    source.RA >= minRa &&
+                    source.RA <= maxRa &&
+                    source.Dec >= minDec &&
+                    source.Dec <= maxDec;
+            }
+        }
+
+        public static (Angle minRa, Angle maxRa, Angle minDec, Angle maxDec) GetBounds(
+            IEnumerable<ISource> sources)
+        {
+            var minRa = Angle.FromRadians(Double.MaxValue);
+            var maxRa = Angle.FromRadians(Double.MinValue);
+            var minDec = Angle.FromRadians(Double.MaxValue);
+            var maxDec = Angle.FromRadians(Double.MinValue);
+
+            foreach (var source in sources)
+            {
+                if (minRa > source.RA)
+                {
+                    minRa = source.RA;
+                }
+
+                if (minDec > source.Dec)
+                {
+                    minDec = source.Dec;
+                }
+
+                if (maxRa < source.RA)
+                {
+                    maxRa = source.RA;
+                }
+
+                if (maxDec < source.Dec)
+                {
+                    maxDec = source.Dec;
+                }
+            }
+
+            return (
+
+                 minRa,
+
+                //Angle.FromDegrees(149.36076),
+                maxRa,
+
+                minDec,
+
+                //Angle.FromDegrees(1.4154749),
+                maxDec);
         }
 
         private class SourceMatchBuilder
@@ -62,12 +191,12 @@ namespace SourceComparer
                 get;
             }
 
-            public LinkedList<ISource> PrimaryUnmatchedSources
+            public LinkedList<ISource> PrimarySources
             {
                 get;
             }
 
-            public LinkedList<ISource> SecondaryUnmatchedSources
+            public LinkedList<ISource> SecondarySources
             {
                 get;
             }
@@ -113,11 +242,11 @@ namespace SourceComparer
                 Verbose = verbose;
                 SearchRadius = searchRadius;
 
-                PrimaryUnmatchedSources = new LinkedList<ISource>(primarySourceList);
-                SecondaryUnmatchedSources = new LinkedList<ISource>(secondarySourceList);
+                PrimarySources = new LinkedList<ISource>(primarySourceList);
+                SecondarySources = new LinkedList<ISource>(secondarySourceList);
 
-                PrimaryMatchedSources = new List<ISource>(PrimaryUnmatchedSources.Count);
-                SecondaryMatchedSources = new List<ISource>(SecondaryUnmatchedSources.Count);
+                PrimaryMatchedSources = new List<ISource>(PrimarySources.Count);
+                SecondaryMatchedSources = new List<ISource>(SecondarySources.Count);
 
                 if (Verbose)
                 {
@@ -143,14 +272,14 @@ namespace SourceComparer
                 if (Verbose)
                 {
                     Console.WriteLine("Number of matches:           {0}", PrimaryMatchedSources.Count);
-                    Console.WriteLine("Unmatched primary sources:   {0}", PrimaryUnmatchedSources.Count);
-                    Console.WriteLine("Unmatched secondary sources: {0}", SecondaryUnmatchedSources.Count);
+                    Console.WriteLine("Unmatched primary sources:   {0}", PrimarySources.Count);
+                    Console.WriteLine("Unmatched secondary sources: {0}", SecondarySources.Count);
                 }
             }
 
             private void CreatePrimarySourceDictionary()
             {
-                var nodes = PrimaryUnmatchedSources;
+                var nodes = PrimarySources;
                 var dictionary = new Dictionary<Position2D, NodeList>(nodes.Count);
                 for (var node = nodes.First; node != null; node = node.Next)
                 {
@@ -177,7 +306,7 @@ namespace SourceComparer
             private void MatchSources()
             {
                 // Check every source in the secondary collection.
-                var nodes = SecondaryUnmatchedSources;
+                var nodes = SecondarySources;
                 for (var node = nodes.First; node != null;)
                 {
                     // Get the source at this node, and the pixel it falls in.
@@ -208,12 +337,12 @@ namespace SourceComparer
                     nodeList.Remove(matchedNode);
 
                     // Remove the matched source from the primary list (so we end up with all unmatched sources afterwards).
-                    PrimaryUnmatchedSources.Remove(matchedNode);
+                    PrimarySources.Remove(matchedNode);
 
                     // Remove this node from the secondary list and update the position.
                     var temp = node;
                     node = node.Next;
-                    SecondaryUnmatchedSources.Remove(temp);
+                    SecondarySources.Remove(temp);
                     continue;
                 }
             }
@@ -278,7 +407,7 @@ namespace SourceComparer
                 var minDec = Double.MaxValue;
                 var maxDec = Double.MinValue;
 
-                foreach (var source in PrimaryUnmatchedSources)
+                foreach (var source in PrimarySources)
                 {
                     var ra = source.RA.Radians;
                     var dec = source.Dec.Radians;

@@ -200,17 +200,17 @@ namespace SourceComparer
 
         public static Angle operator *(Angle left, double right)
         {
-            return FromRadians(left.Radians + right);
+            return FromRadians(left.Radians * right);
         }
 
         public static Angle operator /(Angle left, double right)
         {
-            return FromRadians(left.Radians - right);
+            return FromRadians(left.Radians / right);
         }
 
         public static Angle operator *(double left, Angle right)
         {
-            return FromRadians(left + right.Radians);
+            return FromRadians(left * right.Radians);
         }
     }
 }

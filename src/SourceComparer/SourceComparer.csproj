@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Angle.cs" />
+    <Compile Include="BinComparer.cs" />
     <Compile Include="CollectionTextWriter.cs" />
     <Compile Include="Column.cs" />
     <Compile Include="ColumnFormat.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="DrawSourcesMode.cs" />
     <Compile Include="EquatorialCoordinate.cs" />
     <Compile Include="EquatorialCoordinateComparer.cs" />
+    <Compile Include="FitsWriter.cs" />
     <Compile Include="SourceListDrawer.cs" />
     <Compile Include="SourceMatchLists.cs" />
     <Compile Include="INameDictionary.cs" />
@@ -77,6 +79,7 @@
     <Compile Include="MdexNameDictionary.cs" />
     <Compile Include="MdexSource.cs" />
     <Compile Include="ValueTable.cs" />
+    <Compile Include="VerboseTextWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -6,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+// Redo source output to be an SNR inequality instead of SNR bin.
+// Output ds9 region files for source matches with SNR > 20 and distance > 5".
+
 namespace SourceComparer
 {
     public delegate bool SourceFilter(ISource source);
@@ -48,10 +51,10 @@ namespace SourceComparer
             Sources = parser.Sources;
         }
 
-        private SourceList(INameDictionary nameList, IReadOnlyList<ISource> sources)
+        internal SourceList(INameDictionary nameList, IEnumerable<ISource> sources)
         {
             NameDictionary = nameList ?? throw new ArgumentNullException(nameof(nameList));
-            Sources = sources ?? throw new ArgumentNullException(nameof(sources));
+            Sources = new List<ISource>(sources);
         }
 
         public Column GetColumn(string name)
@@ -122,6 +125,33 @@ namespace SourceComparer
             return new SourceList(NameDictionary, sources.ToArray());
         }
 
+        public IReadOnlyDictionary<double, IReadOnlyCollection<ISource>> CreateBins(
+            double startSnr,
+            double width)
+        {
+            var comparer = new BinComparer(startSnr, width / 2);
+            var dictionary = new Dictionary<double, IReadOnlyCollection<ISource>>(
+                Count,
+                comparer);
+
+            foreach (var source in this)
+            {
+                var snrSource = source as ISnrSource;
+                var snr = snrSource.SignalToNoise;
+                var center = comparer.GetBinCenter(snr);
+                if (dictionary.TryGetValue(center, out var list))
+                {
+                    ((List<ISnrSource>)list).Add(snrSource);
+                    continue;
+                }
+
+                list = new List<ISnrSource>() { snrSource };
+                dictionary.Add(center, list);
+            }
+
+            return dictionary;
+        }
+
         public IEnumerator<ISource> GetEnumerator()
         {
             return Sources.GetEnumerator();
@@ -134,7 +164,8 @@ namespace SourceComparer
 
         private class SourceListParser
         {
-            private static readonly Dictionary<string, ColumnFormat> ColumnFormatDictionary = new Dictionary<string, ColumnFormat>(StringComparer.OrdinalIgnoreCase)
+            private static readonly IReadOnlyDictionary<string, ColumnFormat> ColumnFormatDictionary = new Dictionary<string, ColumnFormat>(
+                StringComparer.OrdinalIgnoreCase)
             {
                 { "i", ColumnFormat.Integer },
                 { "int", ColumnFormat.Integer },
@@ -144,7 +175,8 @@ namespace SourceComparer
                 { "char", ColumnFormat.String },
             };
 
-            private static readonly IReadOnlyDictionary<string, Unit> UnitDictionary = new Dictionary<string, Unit>(StringComparer.OrdinalIgnoreCase)
+            private static readonly IReadOnlyDictionary<string, Unit> UnitDictionary = new Dictionary<string, Unit>(
+                StringComparer.OrdinalIgnoreCase)
             {
                 { String.Empty, Unit.None },
                 { "-", Unit.None },
@@ -163,32 +195,17 @@ namespace SourceComparer
                 { "ujy", Unit.MicroJansky },
             };
 
-            private static ColumnFormat GetColumnFormat(string text)
-            {
-                if (ColumnFormatDictionary.TryGetValue(text, out var result))
-                {
-                    return result;
-                }
-
-                throw new ArgumentException("Could not match format: " + text);
-            }
-
-            private static Unit GetUnitFormat(string text)
-            {
-                if (UnitDictionary.TryGetValue(text, out var result))
-                {
-                    return result;
-                }
-
-                throw new ArgumentException("Could not match format: " + text);
-            }
-
-            private string[] Lines
+            private bool Verbose
             {
                 get;
             }
 
             private bool Multithreaded
+            {
+                get;
+            }
+
+            private string[] Lines
             {
                 get;
             }
@@ -201,15 +218,19 @@ namespace SourceComparer
                     {
                         var line = Lines[i];
 
-                        if (!line.StartsWith("\\"))
+                        if (line.StartsWith("\\"))
                         {
-                            if (Verbose)
-                            {
-                                Console.WriteLine("Start line for column entry info: {0}", i + 1);
-                            }
-
-                            return i;
+                            continue;
                         }
+
+                        if (Verbose)
+                        {
+                            Console.WriteLine(
+                                "Start line for column entry info: {0}",
+                                i + 1);
+                        }
+
+                        return i;
                     }
 
                     throw new ArgumentException("Could not get start line.", nameof(Lines));
@@ -220,11 +241,6 @@ namespace SourceComparer
             {
                 get;
                 set;
-            }
-
-            private bool Verbose
-            {
-                get;
             }
 
             public INameDictionary NameDictionary
@@ -317,7 +333,8 @@ namespace SourceComparer
                     if (verbose && count - lastThousdand > 1000)
                     {
                         lastThousdand = count - (count % 1000);
-                        Console.WriteLine("Successfully read {0} rows", lastThousdand);
+
+                        //Console.Write("Successfully read {0} rows", lastThousdand);
                     }
                 }
             }
@@ -524,6 +541,26 @@ namespace SourceComparer
                 default:
                 throw new ArgumentException();
                 }
+            }
+
+            private static ColumnFormat GetColumnFormat(string text)
+            {
+                if (ColumnFormatDictionary.TryGetValue(text, out var result))
+                {
+                    return result;
+                }
+
+                throw new ArgumentException("Could not match format: " + text);
+            }
+
+            private static Unit GetUnitFormat(string text)
+            {
+                if (UnitDictionary.TryGetValue(text, out var result))
+                {
+                    return result;
+                }
+
+                throw new ArgumentException("Could not match format: " + text);
             }
         }
     }
