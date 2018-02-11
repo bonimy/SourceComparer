@@ -7,34 +7,47 @@ using System.IO;
 
 namespace SourceComparer
 {
-    internal class Program
+    internal static class Program
     {
         private static int Main(string[] args)
         {
             var startTime = DateTime.Now;
+            using (var process = GetProcess(null, out var status))
+            {
+                if (status != 0)
+                {
+                    return status;
+                }
 
-            var commandSwitches = new CommandSwitches(args, out var status);
+                status = process.Run();
+
+                Console.WriteLine("Elapsed time: {0}", DateTime.Now - startTime);
+
+                // Explicitly flush the standard output stream (for file log).
+                Console.Out.Close();
+
+                return status;
+            }
+        }
+
+        private static IProcess GetProcess(string[] args, out int status)
+        {
+            var commandSwitches = new CommandSwitches(args, out status);
             if (status != 0)
             {
-                return status;
+                return null;
             }
 
             if (commandSwitches.CompareMode)
             {
-                status = SourceComparisonMode.Run(commandSwitches);
-            }
-            else
-            {
-                Console.WriteLine("Mode not set (-draw, -compare, or -filter expected).");
-                status = 1;
+                return new SourceComparisonMode(commandSwitches);
             }
 
-            Console.WriteLine("Elapsed time: {0}", DateTime.Now - startTime);
+            Console.WriteLine(
+                "Mode not set (-draw, -compare, or -filter expected).");
 
-            // Explicitly flush the standard output stream (for file log).
-            Console.Out.Close();
-
-            return status;
+            status = 1;
+            return null;
         }
 
         public static string[] ReadAllLinesSafe(string path, bool verbose)

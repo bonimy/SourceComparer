@@ -12,7 +12,7 @@ using static SourceComparer.Program;
 
 namespace SourceComparer
 {
-    public class SourceComparisonMode
+    public class SourceComparisonMode : IProcess
     {
         public CommandSwitches CommandSwitches
         {
@@ -63,6 +63,18 @@ namespace SourceComparer
         public Angle SearchRadius
         {
             get;
+        }
+
+        public SourceList Primary
+        {
+            get;
+            private set;
+        }
+
+        public SourceList Secondary
+        {
+            get;
+            private set;
         }
 
         public SourceComparisonMode(CommandSwitches commandSwitches)
@@ -498,6 +510,10 @@ namespace SourceComparer
             }
 
             return bins;
+        }
+
+        void IDisposable.Dispose()
+        {
         }
     }
 }

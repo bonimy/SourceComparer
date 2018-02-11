@@ -57,6 +57,7 @@
     <Compile Include="EquatorialCoordinate.cs" />
     <Compile Include="EquatorialCoordinateComparer.cs" />
     <Compile Include="FitsWriter.cs" />
+    <Compile Include="IProcess.cs" />
     <Compile Include="MultithreadHelper.cs" />
     <Compile Include="ParseColumnCallback.cs" />
     <Compile Include="ProxyTextWriter.cs" />
