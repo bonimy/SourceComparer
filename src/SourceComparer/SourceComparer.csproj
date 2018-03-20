@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -22,6 +22,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+    <DocumentationFile>bin\Debug\SourceComparer.xml</DocumentationFile>
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +34,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\SourceComparer.xml</DocumentationFile>
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -44,59 +49,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Angle.cs" />
-    <Compile Include="BinComparer.cs" />
-    <Compile Include="CollectionTextWriter.cs" />
-    <Compile Include="Column.cs" />
-    <Compile Include="ColumnComparisonCallback.cs" />
-    <Compile Include="ColumnFilterCallback.cs" />
-    <Compile Include="ColumnFormat.cs" />
-    <Compile Include="ColumnList.cs" />
     <Compile Include="CommandSwitches.cs" />
-    <Compile Include="DrawSourcesMode.cs" />
-    <Compile Include="EquatorialCoordinate.cs" />
-    <Compile Include="EquatorialCoordinateComparer.cs" />
-    <Compile Include="FitsWriter.cs" />
-    <Compile Include="IProcess.cs" />
-    <Compile Include="MultithreadHelper.cs" />
-    <Compile Include="ParseColumnCallback.cs" />
-    <Compile Include="ProxyTextWriter.cs" />
-    <Compile Include="SourceComparisonCallback.cs" />
-    <Compile Include="SourceFilterCallback.cs" />
-    <Compile Include="SourceListDrawer.cs" />
-    <Compile Include="SourceMatchLists.cs" />
-    <Compile Include="INameDictionary.cs" />
-    <Compile Include="ISnrSource.cs" />
-    <Compile Include="ISourceNameDictionary.cs" />
-    <Compile Include="ISource.cs" />
-    <Compile Include="JulianDate.cs" />
-    <Compile Include="MdetNameDictionary.cs" />
-    <Compile Include="MdetSource.cs" />
-    <Compile Include="NameDictionary.cs" />
-    <Compile Include="NameEntry.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Source.cs" />
     <Compile Include="SourceComparisonMode.cs" />
-    <Compile Include="SourceList.cs" />
-    <Compile Include="SourceType.cs" />
-    <Compile Include="SpitzerNameDictionary.cs" />
-    <Compile Include="SpitzerSource.cs" />
-    <Compile Include="TimeStampTextWriter.cs" />
-    <Compile Include="Unit.cs" />
-    <Compile Include="MdexNameDictionary.cs" />
-    <Compile Include="MdexSource.cs" />
-    <Compile Include="ValueTable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="License.licenseheader" />
-    <None Include="Settings.StyleCop" />
+    <AdditionalFiles Include="stylecop.json" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CSharpFITS\CSharpFITS.csproj">
-      <Project>{9bc5f834-bb3a-43d0-a954-e214186bed0d}</Project>
-      <Name>CSharpFITS</Name>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Helper\Helper.csproj">
+      <Project>{7c74e6ec-9c6c-49ae-a01a-beb774402d0b}</Project>
+      <Name>Helper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sources\Sources.csproj">
+      <Project>{2d7e2993-7e84-4577-8256-010a68f8ce0f}</Project>
+      <Name>Sources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Wcs\Wcs.csproj">
+      <Project>{f37c3d51-8d50-4522-b3f5-b71ed1deb059}</Project>
+      <Name>Wcs</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

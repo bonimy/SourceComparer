@@ -1,7 +1,11 @@
 ﻿// <copyright file="AssemblyInfo.cs" company="Public Domain">
-//     Copyright (c) 2017 Nelson Garcia.
+//     Copyright (c) 2018 Nelson Garcia. All rights reserved
+//     Licensed under GNU Affero General Public License.
+//     See LICENSE in project root for full license information, or
+//     https://www.gnu.org/licenses/#AGPL
 // </copyright>
 
+using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -16,6 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+[assembly: CLSCompliant(true)]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
